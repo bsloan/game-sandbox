@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/bsloan/game-sandbox/assets"
 	"github.com/bsloan/game-sandbox/boards"
@@ -93,6 +94,7 @@ func (p *viewport) Draw() {
 type Game struct {
 	vp    viewport
 	board [][]int
+	debug bool
 }
 
 func (g *Game) Update() error {
@@ -115,21 +117,21 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	// render the screen from the viewport
-	// TODO: just for debug mode
+	// render the screen from the viewport. calculate the offset coords (ox, oy)
+	// from where we begin the copy from viewport to the screen.
 	x, y := g.vp.Position()
-	tx, ty := g.vp.TilePosition()
-
 	ox, oy := x%tileSize, y%tileSize
 	op := ebiten.DrawImageOptions{}
 	screen.DrawImage(g.vp.view.SubImage(image.Rect(ox, oy, ox+screenWidth, oy+screenHeight)).(*ebiten.Image), &op)
 
-	// TODO: just for debug mode
-	debugMsg :=
-		fmt.Sprintf(
-			"TPS: %0.2f Origin X,Y: (%v, %v) Tile X,Y: (%v, %v)\nOffset X,Y (%v, %v)",
-			ebiten.ActualTPS(), x, y, tx, ty, ox, oy)
-	ebitenutil.DebugPrint(screen, debugMsg)
+	if g.debug {
+		tx, ty := g.vp.TilePosition()
+		debugMsg :=
+			fmt.Sprintf(
+				"TPS: %0.2f Origin X,Y: (%v, %v) Tile X,Y: (%v, %v)\nOffset X,Y (%v, %v)",
+				ebiten.ActualTPS(), x, y, tx, ty, ox, oy)
+		ebitenutil.DebugPrint(screen, debugMsg)
+	}
 }
 
 func (g *Game) Layout(outsideWidth int, outsideHeight int) (int, int) {
@@ -137,6 +139,9 @@ func (g *Game) Layout(outsideWidth int, outsideHeight int) (int, int) {
 }
 
 func main() {
+	debugMode := flag.Bool("debug", false, "Enable debug features")
+	flag.Parse()
+
 	assets.Initialize()
 
 	// TODO: refactor
@@ -150,6 +155,7 @@ func main() {
 	ebiten.SetWindowTitle("Hello, World!")
 
 	g := Game{
+		debug: *debugMode,
 		vp: viewport{
 			viewX:    0,
 			viewY:    0,
