@@ -12,6 +12,7 @@ import (
 )
 
 const (
+	ticksPerSecond    = 120
 	screenWidth       = 320
 	screenHeight      = 240
 	tileSize          = 16
@@ -95,6 +96,7 @@ type Game struct {
 	vp    viewport
 	board [][]int
 	debug bool
+	ticks uint64
 }
 
 func (g *Game) Update() error {
@@ -111,6 +113,9 @@ func (g *Game) Update() error {
 
 	// render the image of the current viewport
 	g.vp.Draw()
+
+	// update ticks counter
+	g.ticks++
 
 	// return any errors
 	return nil
@@ -151,8 +156,9 @@ func main() {
 	TileImages[4] = assets.DirtMiddle
 
 	ebiten.SetWindowSize(screenWidth*2, screenHeight*2)
-	//ebiten.SetWindowResizable(true)
+	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowTitle("Hello, World!")
+	ebiten.SetTPS(ticksPerSecond)
 
 	g := Game{
 		debug: *debugMode,
