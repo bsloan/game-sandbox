@@ -79,8 +79,8 @@ func (p *viewport) Draw() {
 		// across the entire game board. draw any instances of the image that happen
 		// to be visible within the viewport boundaries. skip any that are not visible.
 		// draw them at constant height
-		p.midground = ebiten.NewImage(int(float64(boards.GameBoardPixelWidth)*midgroundScrollMultiplier), int(float64(boards.GameBoardPixelHeight)*midgroundScrollMultiplier))
-		midY := float64(250)
+		p.midground = ebiten.NewImage(int(float64(boards.GameBoardPixelWidth)), int(float64(boards.GameBoardPixelHeight)))
+		midY := float64(300)
 		for midX := 0; midX < boards.GameBoardPixelWidth; midX += 160 {
 			op := ebiten.DrawImageOptions{}
 			op.GeoM.Translate(float64(midX), midY)
