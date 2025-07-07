@@ -23,13 +23,24 @@ var (
 )
 
 type viewport struct {
-	viewX int
-	viewY int
-	view  *ebiten.Image
+	viewX    int
+	viewY    int
+	maxViewX int
+	maxViewY int
+	view     *ebiten.Image
 }
 
 func (p *viewport) Move(x, y int) {
-	// TODO: stay in bounds
+	if x < 0 {
+		x = 0
+	} else if x > p.maxViewX {
+		x = p.maxViewX
+	}
+	if y < 0 {
+		y = 0
+	} else if y > p.maxViewY {
+		y = p.maxViewY
+	}
 	p.viewX = x
 	p.viewY = y
 }
@@ -131,8 +142,10 @@ func main() {
 
 	g := Game{
 		vp: viewport{
-			viewX: 0,
-			viewY: 0,
+			viewX:    0,
+			viewY:    0,
+			maxViewX: boards.GameBoardPixelWidth - screenWidth,
+			maxViewY: boards.GameBoardPixelHeight - screenHeight,
 		},
 		board: boards.GameBoard,
 	}
