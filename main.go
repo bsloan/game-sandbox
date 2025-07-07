@@ -1,0 +1,144 @@
+package main
+
+import (
+	"fmt"
+	"github.com/bsloan/game-sandbox/assets"
+	"github.com/bsloan/game-sandbox/boards"
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"image"
+	"log"
+)
+
+const (
+	screenWidth       = 320
+	screenHeight      = 240
+	tileSize          = 16
+	screenWidthTiles  = screenWidth / tileSize
+	screenHeightTiles = screenHeight / tileSize
+)
+
+var (
+	TileImages = make(map[int]*ebiten.Image)
+)
+
+type viewport struct {
+	viewX int
+	viewY int
+	view  *ebiten.Image
+}
+
+func (p *viewport) Move(x, y int) {
+	// TODO: stay in bounds
+	p.viewX = x
+	p.viewY = y
+}
+
+// Position returns the pixel X, Y coordinates in the game board of the top-left
+// pixel of the viewport.
+func (p *viewport) Position() (int, int) {
+	return p.viewX, p.viewY
+}
+
+// TilePosition returns the tile coordinates of the top-leftmost visible tile.
+func (p *viewport) TilePosition() (int, int) {
+	tx := p.viewX / tileSize
+	ty := p.viewY / tileSize
+	return tx, ty
+}
+
+func (p *viewport) Draw() {
+	// avoid creating a new image on every Update - use Clear instead
+	if p.view == nil {
+		p.view = ebiten.NewImage(screenWidth+tileSize, screenHeight+tileSize)
+	}
+	p.view.Clear()
+	tileX, tileY := p.TilePosition()
+
+	yTileCount := 0
+	for ty := tileY; ty <= (tileY+screenHeightTiles+1) && ty < len(boards.GameBoard); ty++ {
+		xTileCount := 0
+		for tx := tileX; tx <= (tileX+screenWidthTiles+1) && tx < len(boards.GameBoard[0]); tx++ {
+			tile := boards.GameBoard[ty][tx]
+			if tile != 0 {
+				op := ebiten.DrawImageOptions{}
+				op.GeoM.Translate(float64(xTileCount*tileSize), float64(yTileCount*tileSize))
+				p.view.DrawImage(TileImages[tile], &op)
+			}
+			xTileCount++
+		}
+		yTileCount++
+	}
+}
+
+type Game struct {
+	vp    viewport
+	board [][]int
+}
+
+func (g *Game) Update() error {
+	if ebiten.IsKeyPressed(ebiten.KeyRight) {
+		g.vp.Move(g.vp.viewX+1, g.vp.viewY)
+	} else if ebiten.IsKeyPressed(ebiten.KeyLeft) {
+		g.vp.Move(g.vp.viewX-1, g.vp.viewY)
+	}
+	if ebiten.IsKeyPressed(ebiten.KeyDown) {
+		g.vp.Move(g.vp.viewX, g.vp.viewY+1)
+	} else if ebiten.IsKeyPressed(ebiten.KeyUp) {
+		g.vp.Move(g.vp.viewX, g.vp.viewY-1)
+	}
+
+	// render the image of the current viewport
+	g.vp.Draw()
+
+	// return no errors
+	return nil
+}
+
+func (g *Game) Draw(screen *ebiten.Image) {
+	// render the screen from the viewport
+	// TODO: just for debug mode
+	x, y := g.vp.Position()
+	tx, ty := g.vp.TilePosition()
+
+	ox, oy := x%tileSize, y%tileSize
+	op := ebiten.DrawImageOptions{}
+	screen.DrawImage(g.vp.view.SubImage(image.Rect(ox, oy, ox+screenWidth, oy+screenHeight)).(*ebiten.Image), &op)
+
+	// TODO: just for debug mode
+	debugMsg :=
+		fmt.Sprintf(
+			"TPS: %0.2f Origin X,Y: (%v, %v) Tile X,Y: (%v, %v)\nOffset X,Y (%v, %v)",
+			ebiten.ActualTPS(), x, y, tx, ty, ox, oy)
+	ebitenutil.DebugPrint(screen, debugMsg)
+}
+
+func (g *Game) Layout(outsideWidth int, outsideHeight int) (int, int) {
+	return screenWidth, screenHeight
+}
+
+func main() {
+	assets.Initialize()
+
+	TileImages[1] = assets.GrassLeft
+	TileImages[2] = assets.GrassMiddle
+	TileImages[3] = assets.GrassRight
+	TileImages[4] = assets.DirtMiddle
+
+	ebiten.SetWindowSize(screenWidth*2, screenHeight*2)
+	//ebiten.SetWindowResizable(true)
+	ebiten.SetWindowTitle("Hello, World!")
+
+	g := Game{
+		vp: viewport{
+			viewX: 0,
+			viewY: 0,
+		},
+		board: boards.GameBoard,
+	}
+
+	if err := ebiten.RunGame(&g); err != nil {
+		log.Fatal(err)
+	}
+
+}
