@@ -12,12 +12,13 @@ import (
 )
 
 const (
-	ticksPerSecond    = 120
-	screenWidth       = 320
-	screenHeight      = 240
-	tileSize          = 16
-	screenWidthTiles  = screenWidth / tileSize
-	screenHeightTiles = screenHeight / tileSize
+	ticksPerSecond            = 120
+	screenWidth               = 320
+	screenHeight              = 240
+	tileSize                  = 16
+	screenWidthTiles          = screenWidth / tileSize
+	screenHeightTiles         = screenHeight / tileSize
+	midgroundScrollMultiplier = 0.5
 )
 
 var (
@@ -25,11 +26,14 @@ var (
 )
 
 type viewport struct {
-	viewX    int
-	viewY    int
-	maxViewX int
-	maxViewY int
-	view     *ebiten.Image
+	viewX     int
+	viewY     int
+	maxViewX  int
+	maxViewY  int
+	view      *ebiten.Image
+	midground *ebiten.Image
+	midX      int
+	midY      int
 }
 
 func (p *viewport) Move(x, y int) {
@@ -45,6 +49,8 @@ func (p *viewport) Move(x, y int) {
 	}
 	p.viewX = x
 	p.viewY = y
+	p.midX = int(float64(p.viewX) * midgroundScrollMultiplier)
+	p.midY = int(float64(p.viewY) * midgroundScrollMultiplier)
 }
 
 // Position returns the pixel X, Y coordinates in the game board of the top-left
@@ -60,17 +66,29 @@ func (p *viewport) TilePosition() (int, int) {
 	return tx, ty
 }
 
-// Draw renders the potentially visible part of the game board. When the frame
-// is ready, this is later copied to the screen.
+// Draw renders the foreground (tiles and sprites) within the currently visible section
+// of the game board. When the frame is ready, this is later copied to the screen on top
+// of any background or middle layers for a parallax scrolling affect.
 func (p *viewport) Draw() {
 	// ebiten performance: avoid allocating a new image on every Update, use Clear instead
 	if p.view == nil {
 		p.view = ebiten.NewImage(screenWidth+tileSize, screenHeight+tileSize)
 	}
+	if p.midground == nil {
+		// iterate horizontally in chunks of 160 pixels (width of midground image)
+		// across the entire game board. draw any instances of the image that happen
+		// to be visible within the viewport boundaries. skip any that are not visible.
+		// draw them at constant height
+		p.midground = ebiten.NewImage(int(float64(boards.GameBoardPixelWidth)*midgroundScrollMultiplier), int(float64(boards.GameBoardPixelHeight)*midgroundScrollMultiplier))
+		midY := float64(250)
+		for midX := 0; midX < boards.GameBoardPixelWidth; midX += 160 {
+			op := ebiten.DrawImageOptions{}
+			op.GeoM.Translate(float64(midX), midY)
+			p.midground.DrawImage(assets.HillsMidground, &op)
+		}
+	}
 
 	p.view.Clear()
-
-	// TODO: render the background layers
 
 	// render the tiles
 	tileX, tileY := p.TilePosition()
@@ -102,12 +120,14 @@ type Game struct {
 func (g *Game) Update() error {
 	if ebiten.IsKeyPressed(ebiten.KeyRight) {
 		g.vp.Move(g.vp.viewX+1, g.vp.viewY)
-	} else if ebiten.IsKeyPressed(ebiten.KeyLeft) {
+	}
+	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
 		g.vp.Move(g.vp.viewX-1, g.vp.viewY)
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyDown) {
 		g.vp.Move(g.vp.viewX, g.vp.viewY+1)
-	} else if ebiten.IsKeyPressed(ebiten.KeyUp) {
+	}
+	if ebiten.IsKeyPressed(ebiten.KeyUp) {
 		g.vp.Move(g.vp.viewX, g.vp.viewY-1)
 	}
 
@@ -122,12 +142,19 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	// render the screen from the viewport. calculate the offset coords (ox, oy)
-	// from where we begin the copy from viewport to the screen.
 	x, y := g.vp.Position()
+	noOp := ebiten.DrawImageOptions{}
+
+	// render the static background image
+	screen.DrawImage(assets.SkyBackground, &noOp)
+
+	// render the middle layer
+	screen.DrawImage(g.vp.midground.SubImage(image.Rect(g.vp.midX, g.vp.midY, g.vp.midX+screenWidth, g.vp.midY+screenHeight)).(*ebiten.Image), &noOp)
+
+	// render the front layer (tiles and sprints) from the viewport. calculate the
+	// offset coords (ox, oy) from where we begin the copy from viewport to the screen.
 	ox, oy := x%tileSize, y%tileSize
-	op := ebiten.DrawImageOptions{}
-	screen.DrawImage(g.vp.view.SubImage(image.Rect(ox, oy, ox+screenWidth, oy+screenHeight)).(*ebiten.Image), &op)
+	screen.DrawImage(g.vp.view.SubImage(image.Rect(ox, oy, ox+screenWidth, oy+screenHeight)).(*ebiten.Image), &noOp)
 
 	if g.debug {
 		tx, ty := g.vp.TilePosition()

@@ -21,13 +21,21 @@ var (
 
 	//go:embed environment/dirt_m.png
 	dirtMiddlePng []byte
+
+	//go:embed environment/back.png
+	skyBackgroundPng []byte
+
+	//go:embed environment/middle.png
+	hillsMidgroundPng []byte
 )
 
 var (
-	GrassLeft   *ebiten.Image
-	GrassMiddle *ebiten.Image
-	GrassRight  *ebiten.Image
-	DirtMiddle  *ebiten.Image
+	GrassLeft      *ebiten.Image
+	GrassMiddle    *ebiten.Image
+	GrassRight     *ebiten.Image
+	DirtMiddle     *ebiten.Image
+	SkyBackground  *ebiten.Image
+	HillsMidground *ebiten.Image
 )
 
 func imageFromBytes(pngBytes []byte) *ebiten.Image {
@@ -43,4 +51,6 @@ func Initialize() {
 	GrassMiddle = imageFromBytes(grassMiddlePng)
 	GrassRight = imageFromBytes(grassRightPng)
 	DirtMiddle = imageFromBytes(dirtMiddlePng)
+	SkyBackground = imageFromBytes(skyBackgroundPng)
+	HillsMidground = imageFromBytes(hillsMidgroundPng)
 }
