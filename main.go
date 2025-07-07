@@ -58,14 +58,20 @@ func (p *viewport) TilePosition() (int, int) {
 	return tx, ty
 }
 
+// Draw renders the potentially visible part of the game board. When the frame
+// is ready, this is later copied to the screen.
 func (p *viewport) Draw() {
-	// avoid creating a new image on every Update - use Clear instead
+	// ebiten performance: avoid allocating a new image on every Update, use Clear instead
 	if p.view == nil {
 		p.view = ebiten.NewImage(screenWidth+tileSize, screenHeight+tileSize)
 	}
-	p.view.Clear()
-	tileX, tileY := p.TilePosition()
 
+	p.view.Clear()
+
+	// TODO: render the background layers
+
+	// render the tiles
+	tileX, tileY := p.TilePosition()
 	yTileCount := 0
 	for ty := tileY; ty <= (tileY+screenHeightTiles+1) && ty < len(boards.GameBoard); ty++ {
 		xTileCount := 0
@@ -80,6 +86,8 @@ func (p *viewport) Draw() {
 		}
 		yTileCount++
 	}
+
+	// TODO: render sprites
 }
 
 type Game struct {
@@ -102,7 +110,7 @@ func (g *Game) Update() error {
 	// render the image of the current viewport
 	g.vp.Draw()
 
-	// return no errors
+	// return any errors
 	return nil
 }
 
@@ -131,6 +139,7 @@ func (g *Game) Layout(outsideWidth int, outsideHeight int) (int, int) {
 func main() {
 	assets.Initialize()
 
+	// TODO: refactor
 	TileImages[1] = assets.GrassLeft
 	TileImages[2] = assets.GrassMiddle
 	TileImages[3] = assets.GrassRight
@@ -153,5 +162,4 @@ func main() {
 	if err := ebiten.RunGame(&g); err != nil {
 		log.Fatal(err)
 	}
-
 }
