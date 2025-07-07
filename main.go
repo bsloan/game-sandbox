@@ -80,7 +80,8 @@ func (p *viewport) Draw() {
 		// to be visible within the viewport boundaries. skip any that are not visible.
 		// draw them at constant height
 		p.midground = ebiten.NewImage(int(float64(boards.GameBoardPixelWidth)), int(float64(boards.GameBoardPixelHeight)))
-		midY := float64(300)
+		ht := float64(assets.HillsMidground.Bounds().Dy()) * 1.75
+		midY := float64(boards.GameBoardPixelHeight) - ht
 		for midX := 0; midX < boards.GameBoardPixelWidth; midX += 160 {
 			op := ebiten.DrawImageOptions{}
 			op.GeoM.Translate(float64(midX), midY)
@@ -190,13 +191,14 @@ func main() {
 	g := Game{
 		debug: *debugMode,
 		vp: viewport{
-			viewX:    0,
-			viewY:    0,
 			maxViewX: boards.GameBoardPixelWidth - screenWidth,
 			maxViewY: boards.GameBoardPixelHeight - screenHeight,
 		},
 		board: boards.GameBoard,
 	}
+
+	// set the initial position of the viewport
+	g.vp.Move(0, 500)
 
 	if err := ebiten.RunGame(&g); err != nil {
 		log.Fatal(err)
