@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/bsloan/game-sandbox/assets"
+	"github.com/bsloan/game-sandbox/asset"
 	"github.com/bsloan/game-sandbox/boards"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -80,12 +80,12 @@ func (p *viewport) Draw() {
 		// to be visible within the viewport boundaries. skip any that are not visible.
 		// draw them at constant height
 		p.midground = ebiten.NewImage(int(float64(boards.GameBoardPixelWidth)), int(float64(boards.GameBoardPixelHeight)))
-		ht := float64(assets.HillsMidground.Bounds().Dy()) * 1.75
+		ht := float64(asset.HillsMidground.Bounds().Dy()) * 1.75
 		midY := float64(boards.GameBoardPixelHeight) - ht
 		for midX := 0; midX < boards.GameBoardPixelWidth; midX += 160 {
 			op := ebiten.DrawImageOptions{}
 			op.GeoM.Translate(float64(midX), midY)
-			p.midground.DrawImage(assets.HillsMidground, &op)
+			p.midground.DrawImage(asset.HillsMidground, &op)
 		}
 	}
 
@@ -101,14 +101,14 @@ func (p *viewport) Draw() {
 			if tile != 0 {
 				op := ebiten.DrawImageOptions{}
 				op.GeoM.Translate(float64(xTileCount*tileSize), float64(yTileCount*tileSize))
-				p.view.DrawImage(assets.TileImages[tile], &op)
+				p.view.DrawImage(asset.TileImages[tile], &op)
 			}
 			xTileCount++
 		}
 		yTileCount++
 	}
 
-	// TODO: render sprites
+	// TODO: render sprite
 }
 
 type Game struct {
@@ -147,7 +147,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	noOp := ebiten.DrawImageOptions{}
 
 	// render the static background image
-	screen.DrawImage(assets.SkyBackground, &noOp)
+	screen.DrawImage(asset.SkyBackground, &noOp)
 
 	// render the middle layer
 	screen.DrawImage(g.vp.midground.SubImage(image.Rect(g.vp.midX, g.vp.midY, g.vp.midX+screenWidth, g.vp.midY+screenHeight)).(*ebiten.Image), &noOp)
@@ -175,8 +175,8 @@ func main() {
 	debugMode := flag.Bool("debug", false, "Enable debug features")
 	flag.Parse()
 
-	assets.LoadTiles()
-	assets.LoadSprites()
+	asset.LoadTiles()
+	asset.LoadSprites()
 
 	ebiten.SetWindowSize(screenWidth*2, screenHeight*2)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)

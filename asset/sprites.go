@@ -1,4 +1,4 @@
-package assets
+package asset
 
 import (
 	_ "embed"
@@ -7,61 +7,61 @@ import (
 )
 
 var (
-	//go:embed sprites/player_climb_1.png
+	//go:embed sprite/player_climb_1.png
 	playerClimb1Png []byte
 
-	//go:embed sprites/player_climb_2.png
+	//go:embed sprite/player_climb_2.png
 	playerClimb2Png []byte
 
-	//go:embed sprites/player_climb_3.png
+	//go:embed sprite/player_climb_3.png
 	playerClimb3Png []byte
 
-	//go:embed sprites/player_crouch_1.png
+	//go:embed sprite/player_crouch_1.png
 	playerCrouch1Png []byte
 
-	//go:embed sprites/player_crouch_2.png
+	//go:embed sprite/player_crouch_2.png
 	playerCrouch2Png []byte
 
-	//go:embed sprites/player_hurt_1.png
+	//go:embed sprite/player_hurt_1.png
 	playerHurt1Png []byte
 
-	//go:embed sprites/player_hurt_2.png
+	//go:embed sprite/player_hurt_2.png
 	playerHurt2Png []byte
 
-	//go:embed sprites/player_idle_1.png
+	//go:embed sprite/player_idle_1.png
 	playerIdle1Png []byte
 
-	//go:embed sprites/player_idle_2.png
+	//go:embed sprite/player_idle_2.png
 	playerIdle2Png []byte
 
-	//go:embed sprites/player_idle_3.png
+	//go:embed sprite/player_idle_3.png
 	playerIdle3Png []byte
 
-	//go:embed sprites/player_idle_4.png
+	//go:embed sprite/player_idle_4.png
 	playerIdle4Png []byte
 
-	//go:embed sprites/player_jump_1.png
+	//go:embed sprite/player_jump_1.png
 	playerJump1Png []byte
 
-	//go:embed sprites/player_jump_2.png
+	//go:embed sprite/player_jump_2.png
 	playerJump2Png []byte
 
-	//go:embed sprites/player_run_1.png
+	//go:embed sprite/player_run_1.png
 	playerRun1Png []byte
 
-	//go:embed sprites/player_run_2.png
+	//go:embed sprite/player_run_2.png
 	playerRun2Png []byte
 
-	//go:embed sprites/player_run_3.png
+	//go:embed sprite/player_run_3.png
 	playerRun3Png []byte
 
-	//go:embed sprites/player_run_4.png
+	//go:embed sprite/player_run_4.png
 	playerRun4Png []byte
 
-	//go:embed sprites/player_run_5.png
+	//go:embed sprite/player_run_5.png
 	playerRun5Png []byte
 
-	//go:embed sprites/player_run_6.png
+	//go:embed sprite/player_run_6.png
 	playerRun6Png []byte
 
 	PlayerRun1  *ebiten.Image
