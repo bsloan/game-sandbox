@@ -36,6 +36,10 @@ type viewport struct {
 	midY      int
 }
 
+// Move moves the viewport to pixel coordinates x,y in the game board.
+// If coordinates are out-of-bounds of the map, they are adjusted to be
+// within bounds. The middle layer for parallax scrolling is also updated
+// according to the provided coordinates using the scroll multiplier.
 func (p *viewport) Move(x, y int) {
 	if x < 0 {
 		x = 0
@@ -66,9 +70,9 @@ func (p *viewport) TilePosition() (int, int) {
 	return tx, ty
 }
 
-// Draw renders the foreground (tiles and sprites) within the currently visible section
+// Draw renders the foreground layer (tiles and sprites) within the currently visible section
 // of the game board. When the frame is ready, this is later copied to the screen on top
-// of any background or middle layers for a parallax scrolling affect.
+// of any background and middle layers for a parallax scrolling affect.
 func (p *viewport) Draw() {
 	// ebiten performance: avoid allocating a new image on every Update, use Clear instead
 	if p.view == nil {
@@ -200,6 +204,7 @@ func main() {
 	// set the initial position of the viewport
 	g.vp.Move(0, 500)
 
+	// run the main loop
 	if err := ebiten.RunGame(&g); err != nil {
 		log.Fatal(err)
 	}
