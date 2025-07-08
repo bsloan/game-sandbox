@@ -24,9 +24,7 @@ var (
 
 	//go:embed environment/middle.png
 	hillsMidgroundPng []byte
-)
 
-var (
 	GrassLeft      *ebiten.Image
 	GrassMiddle    *ebiten.Image
 	GrassRight     *ebiten.Image

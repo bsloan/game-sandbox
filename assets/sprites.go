@@ -8,64 +8,62 @@ import (
 
 var (
 	//go:embed sprites/player_climb_1.png
-	playerClimb1 []byte
+	playerClimb1Png []byte
 
 	//go:embed sprites/player_climb_2.png
-	playerClimb2 []byte
+	playerClimb2Png []byte
 
 	//go:embed sprites/player_climb_3.png
-	playerClimb3 []byte
+	playerClimb3Png []byte
 
 	//go:embed sprites/player_crouch_1.png
-	playerCrouch1 []byte
+	playerCrouch1Png []byte
 
 	//go:embed sprites/player_crouch_2.png
-	playerCrouch2 []byte
+	playerCrouch2Png []byte
 
 	//go:embed sprites/player_hurt_1.png
-	playerHurt1 []byte
+	playerHurt1Png []byte
 
 	//go:embed sprites/player_hurt_2.png
-	playerHurt2 []byte
+	playerHurt2Png []byte
 
 	//go:embed sprites/player_idle_1.png
-	playerIdle1 []byte
+	playerIdle1Png []byte
 
 	//go:embed sprites/player_idle_2.png
-	playerIdle2 []byte
+	playerIdle2Png []byte
 
 	//go:embed sprites/player_idle_3.png
-	playerIdle3 []byte
+	playerIdle3Png []byte
 
 	//go:embed sprites/player_idle_4.png
-	playerIdle4 []byte
+	playerIdle4Png []byte
 
 	//go:embed sprites/player_jump_1.png
-	playerJump1 []byte
+	playerJump1Png []byte
 
 	//go:embed sprites/player_jump_2.png
-	playerJump2 []byte
+	playerJump2Png []byte
 
 	//go:embed sprites/player_run_1.png
-	playerRun1 []byte
+	playerRun1Png []byte
 
 	//go:embed sprites/player_run_2.png
-	playerRun2 []byte
+	playerRun2Png []byte
 
 	//go:embed sprites/player_run_3.png
-	playerRun3 []byte
+	playerRun3Png []byte
 
 	//go:embed sprites/player_run_4.png
-	playerRun4 []byte
+	playerRun4Png []byte
 
 	//go:embed sprites/player_run_5.png
-	playerRun5 []byte
+	playerRun5Png []byte
 
 	//go:embed sprites/player_run_6.png
-	playerRun6 []byte
-)
+	playerRun6Png []byte
 
-var (
 	PlayerRun1  *ebiten.Image
 	PlayerRun2  *ebiten.Image
 	PlayerRun3  *ebiten.Image
@@ -77,10 +75,10 @@ var (
 )
 
 func LoadSprites() {
-	GrassLeft = imageFromBytes(grassLeftPng)
-	GrassMiddle = imageFromBytes(grassMiddlePng)
-	GrassRight = imageFromBytes(grassRightPng)
-	DirtMiddle = imageFromBytes(dirtMiddlePng)
-	SkyBackground = imageFromBytes(skyBackgroundPng)
-	HillsMidground = imageFromBytes(hillsMidgroundPng)
+	PlayerRun1 = imageFromBytes(playerRun1Png)
+	PlayerRun2 = imageFromBytes(playerRun2Png)
+	PlayerRun3 = imageFromBytes(playerRun3Png)
+	PlayerRun4 = imageFromBytes(playerRun4Png)
+	PlayerRun5 = imageFromBytes(playerRun5Png)
+	PlayerRun6 = imageFromBytes(playerRun6Png)
 }
