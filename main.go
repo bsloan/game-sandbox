@@ -21,10 +21,6 @@ const (
 	midgroundScrollMultiplier = 0.5
 )
 
-var (
-	TileImages = make(map[int]*ebiten.Image)
-)
-
 type viewport struct {
 	viewX     int
 	viewY     int
@@ -105,7 +101,7 @@ func (p *viewport) Draw() {
 			if tile != 0 {
 				op := ebiten.DrawImageOptions{}
 				op.GeoM.Translate(float64(xTileCount*tileSize), float64(yTileCount*tileSize))
-				p.view.DrawImage(TileImages[tile], &op)
+				p.view.DrawImage(assets.TileImages[tile], &op)
 			}
 			xTileCount++
 		}
@@ -179,13 +175,8 @@ func main() {
 	debugMode := flag.Bool("debug", false, "Enable debug features")
 	flag.Parse()
 
-	assets.Initialize()
-
-	// TODO: refactor
-	TileImages[1] = assets.GrassLeft
-	TileImages[2] = assets.GrassMiddle
-	TileImages[3] = assets.GrassRight
-	TileImages[4] = assets.DirtMiddle
+	assets.LoadTiles()
+	assets.LoadSprites()
 
 	ebiten.SetWindowSize(screenWidth*2, screenHeight*2)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)

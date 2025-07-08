@@ -1,12 +1,9 @@
 package assets
 
 import (
-	"bytes"
 	_ "embed"
 	"github.com/hajimehoshi/ebiten/v2"
-	"image"
 	_ "image/png"
-	"log"
 )
 
 var (
@@ -36,21 +33,18 @@ var (
 	DirtMiddle     *ebiten.Image
 	SkyBackground  *ebiten.Image
 	HillsMidground *ebiten.Image
+	TileImages     = make(map[int]*ebiten.Image)
 )
 
-func imageFromBytes(pngBytes []byte) *ebiten.Image {
-	img, _, err := image.Decode(bytes.NewReader(pngBytes))
-	if err != nil {
-		log.Fatal(err)
-	}
-	return ebiten.NewImageFromImage(img)
-}
-
-func Initialize() {
+func LoadTiles() {
 	GrassLeft = imageFromBytes(grassLeftPng)
 	GrassMiddle = imageFromBytes(grassMiddlePng)
 	GrassRight = imageFromBytes(grassRightPng)
 	DirtMiddle = imageFromBytes(dirtMiddlePng)
 	SkyBackground = imageFromBytes(skyBackgroundPng)
 	HillsMidground = imageFromBytes(hillsMidgroundPng)
+	TileImages[1] = GrassLeft
+	TileImages[2] = GrassMiddle
+	TileImages[3] = GrassRight
+	TileImages[4] = DirtMiddle
 }
