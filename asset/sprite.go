@@ -64,6 +64,8 @@ var (
 	//go:embed sprite/player_run_6.png
 	playerRun6Png []byte
 
+	PlayerIdle1 *ebiten.Image
+	PlayerIdle2 *ebiten.Image
 	PlayerRun1  *ebiten.Image
 	PlayerRun2  *ebiten.Image
 	PlayerRun3  *ebiten.Image
@@ -75,6 +77,8 @@ var (
 )
 
 func LoadSprites() {
+	PlayerIdle1 = imageFromBytes(playerIdle1Png)
+	PlayerIdle2 = imageFromBytes(playerIdle2Png)
 	PlayerRun1 = imageFromBytes(playerRun1Png)
 	PlayerRun2 = imageFromBytes(playerRun2Png)
 	PlayerRun3 = imageFromBytes(playerRun3Png)

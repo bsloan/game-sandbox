@@ -1,6 +1,7 @@
 package entities
 
 import (
+	"github.com/bsloan/game-sandbox/asset"
 	"github.com/hajimehoshi/ebiten/v2"
 	"math"
 )
@@ -32,8 +33,8 @@ type Entity struct {
 	State       EntityState
 	ActiveImage *ebiten.Image
 	Animations  map[EntityState]*Animation
-	XPos        int
-	YPos        int
+	XPos        float64
+	YPos        float64
 	// other metadata: health, attack damage, points, etc
 }
 
@@ -55,7 +56,7 @@ type Animation struct {
 	AnimationSpeed    float64
 }
 
-func (a *Animation) Animate() (*ebiten.Image, error) {
+func (a *Animation) Animate() *ebiten.Image {
 	// advance animation
 	a.Count += a.AnimationSpeed
 	a.CurrentFrameIndex = int(math.Floor(a.Count))
@@ -69,5 +70,36 @@ func (a *Animation) Animate() (*ebiten.Image, error) {
 	}
 
 	// return reference to the next image in animation sequence
-	return a.Frames[a.CurrentFrameIndex], nil
+	return a.Frames[a.CurrentFrameIndex]
+}
+
+func InitializePlayer(x, y float64) *Entity {
+	idle := Animation{
+		Frames: []*ebiten.Image{
+			asset.PlayerIdle1,
+			asset.PlayerIdle2,
+		},
+	}
+	moveRight := Animation{
+		Frames: []*ebiten.Image{
+			asset.PlayerRun1,
+			asset.PlayerRun2,
+			asset.PlayerRun3,
+			asset.PlayerRun4,
+			asset.PlayerRun5,
+			asset.PlayerRun6,
+		},
+	}
+	player := &Entity{
+		Type:  Player,
+		State: Idle,
+		XPos:  x,
+		YPos:  y,
+		Animations: map[EntityState]*Animation{
+			Idle:        &idle,
+			MovingRight: &moveRight,
+		},
+		ActiveImage: asset.PlayerIdle1,
+	}
+	return player
 }

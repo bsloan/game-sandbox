@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/bsloan/game-sandbox/asset"
 	"github.com/bsloan/game-sandbox/boards"
+	"github.com/bsloan/game-sandbox/entities"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"image"
@@ -22,14 +23,16 @@ const (
 )
 
 type viewport struct {
-	viewX     int
-	viewY     int
-	maxViewX  int
-	maxViewY  int
-	view      *ebiten.Image
-	midground *ebiten.Image
-	midX      int
-	midY      int
+	viewX      int
+	viewY      int
+	viewWidth  int
+	viewHeight int
+	maxViewX   int
+	maxViewY   int
+	view       *ebiten.Image
+	midground  *ebiten.Image
+	midX       int
+	midY       int
 }
 
 // Move moves the viewport to pixel coordinates x,y in the game board.
@@ -69,16 +72,17 @@ func (p *viewport) TilePosition() (int, int) {
 // Draw renders the foreground layer (tiles and sprites) within the currently visible section
 // of the game board. When the frame is ready, this is later copied to the screen on top
 // of any background and middle layers for a parallax scrolling affect.
-func (p *viewport) Draw() {
+func (p *viewport) Draw(g *Game) {
 	// ebiten performance: avoid allocating a new image on every Update, use Clear instead
 	if p.view == nil {
-		p.view = ebiten.NewImage(screenWidth+tileSize, screenHeight+tileSize)
+		p.view = ebiten.NewImage(p.viewWidth, p.viewHeight)
 	}
 	if p.midground == nil {
 		// iterate horizontally in chunks of 160 pixels (width of midground image)
 		// across the entire game board. draw any instances of the image that happen
 		// to be visible within the viewport boundaries. skip any that are not visible.
 		// draw them at constant height
+		// TODO: refactor to generate the midground image elsewhere
 		p.midground = ebiten.NewImage(int(float64(boards.GameBoardPixelWidth)), int(float64(boards.GameBoardPixelHeight)))
 		ht := float64(asset.HillsMidground.Bounds().Dy()) * 1.75
 		midY := float64(boards.GameBoardPixelHeight) - ht
@@ -108,14 +112,26 @@ func (p *viewport) Draw() {
 		yTileCount++
 	}
 
-	// TODO: render sprite
+	// render sprites
+	// TODO: refactor to a receiver method on Entity, GetDrawableEntities or similar
+	for _, entity := range g.registry.Entities {
+		if entity.ActiveImage != nil {
+			if int(entity.XPos) >= p.viewX && int(entity.XPos) < p.viewX+p.viewWidth && int(entity.YPos) >= p.viewY && int(entity.YPos) < p.viewY+p.viewHeight {
+				x, y := entity.XPos-float64(p.viewX), entity.YPos-float64(p.viewY)
+				op := ebiten.DrawImageOptions{}
+				op.GeoM.Translate(x, y)
+				p.view.DrawImage(entity.ActiveImage, &op)
+			}
+		}
+	}
 }
 
 type Game struct {
-	vp    viewport
-	board [][]int
-	debug bool
-	ticks uint64
+	vp       viewport
+	board    [][]int
+	debug    bool
+	ticks    uint64
+	registry entities.Registry
 }
 
 func (g *Game) Update() error {
@@ -133,7 +149,15 @@ func (g *Game) Update() error {
 	}
 
 	// render the image of the current viewport
-	g.vp.Draw()
+	g.vp.Draw(g)
+
+	// animate sprites
+	// TODO: refactor
+	for _, entity := range g.registry.Entities {
+		if entity.Animations != nil {
+			entity.ActiveImage = entity.Animations[entity.State].Animate()
+		}
+	}
 
 	// update ticks counter
 	g.ticks++
@@ -183,17 +207,25 @@ func main() {
 	ebiten.SetWindowTitle("Hello, World!")
 	ebiten.SetTPS(ticksPerSecond)
 
+	r := entities.Registry{}
+	player := entities.InitializePlayer(250, 250)
+	r.AddEntity(*player)
+
 	g := Game{
 		debug: *debugMode,
 		vp: viewport{
-			maxViewX: boards.GameBoardPixelWidth - screenWidth,
-			maxViewY: boards.GameBoardPixelHeight - screenHeight,
+			viewWidth:  screenWidth + tileSize,
+			viewHeight: screenHeight + tileSize,
+			maxViewX:   boards.GameBoardPixelWidth - screenWidth,
+			maxViewY:   boards.GameBoardPixelHeight - screenHeight,
 		},
-		board: boards.GameBoard,
+		board:    boards.GameBoard,
+		registry: r,
 	}
 
 	// set the initial position of the viewport
-	g.vp.Move(0, 500)
+	// TODO: refactor to a receiver function on the viewport
+	g.vp.Move(int(player.XPos-screenWidth/2), int(player.YPos-screenHeight/2))
 
 	// run the main loop
 	if err := ebiten.RunGame(&g); err != nil {
