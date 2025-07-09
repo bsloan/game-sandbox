@@ -23,21 +23,21 @@ const (
 )
 
 type viewport struct {
-	viewX     int
-	viewY     int
-	maxViewX  int
-	maxViewY  int
+	viewX     float64
+	viewY     float64
+	maxViewX  float64
+	maxViewY  float64
 	view      *ebiten.Image
 	midground *ebiten.Image
-	midX      int
-	midY      int
+	midX      float64
+	midY      float64
 }
 
 // Move moves the viewport to pixel coordinates x,y in the game board.
 // If coordinates are out-of-bounds of the map, they are adjusted to be
 // within bounds. The middle layer for parallax scrolling is also updated
 // according to the provided coordinates using the scroll multiplier.
-func (p *viewport) Move(x, y int) {
+func (p *viewport) Move(x, y float64) {
 	if x < 0 {
 		x = 0
 	} else if x > p.maxViewX {
@@ -50,20 +50,20 @@ func (p *viewport) Move(x, y int) {
 	}
 	p.viewX = x
 	p.viewY = y
-	p.midX = int(float64(p.viewX) * midgroundScrollMultiplier)
-	p.midY = int(float64(p.viewY) * midgroundScrollMultiplier)
+	p.midX = p.viewX * midgroundScrollMultiplier
+	p.midY = p.viewY * midgroundScrollMultiplier
 }
 
 // Position returns the pixel X, Y coordinates in the game board of the top-left
 // pixel of the viewport.
-func (p *viewport) Position() (int, int) {
+func (p *viewport) Position() (float64, float64) {
 	return p.viewX, p.viewY
 }
 
 // TilePosition returns the tile coordinates of the top-leftmost visible tile.
 func (p *viewport) TilePosition() (int, int) {
-	tx := p.viewX / tileSize
-	ty := p.viewY / tileSize
+	tx := int(p.viewX / tileSize)
+	ty := int(p.viewY / tileSize)
 	return tx, ty
 }
 
@@ -97,7 +97,7 @@ func (p *viewport) Draw(g *Game) {
 	// then calculate the offset in pixels (ox,oy) that we begin drawing from the top-left tile from. the
 	// pixel offset allows for smooth scrolling in smallelr units (pixel) instead of large (tile).
 	tileX, tileY := p.TilePosition()
-	ox, oy := float64(p.viewX%tileSize), float64(p.viewY%tileSize)
+	ox, oy := float64(int(p.viewX)%tileSize), float64(int(p.viewY)%tileSize)
 	yTileCount := 0
 	for ty := tileY; ty <= (tileY+screenHeightTiles) && ty < len(boards.GameBoard); ty++ {
 		xTileCount := 0
@@ -117,7 +117,7 @@ func (p *viewport) Draw(g *Game) {
 	// TODO: refactor to a receiver method on Entity, GetDrawableEntities or similar
 	for _, entity := range g.registry.Entities {
 		if entity.ActiveImage != nil {
-			if int(entity.XPos) >= p.viewX && int(entity.XPos) < p.viewX+screenWidth && int(entity.YPos) >= p.viewY && int(entity.YPos) < p.viewY+screenHeight {
+			if entity.XPos >= p.viewX && entity.XPos < p.viewX+screenWidth && entity.YPos >= p.viewY && entity.YPos < p.viewY+screenHeight {
 				x, y := entity.XPos-float64(p.viewX), entity.YPos-float64(p.viewY)
 				op := ebiten.DrawImageOptions{}
 				op.GeoM.Translate(x, y)
@@ -175,7 +175,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	screen.DrawImage(asset.SkyBackground, &noOp)
 
 	// render the middle layer
-	screen.DrawImage(g.vp.midground.SubImage(image.Rect(g.vp.midX, g.vp.midY, g.vp.midX+screenWidth, g.vp.midY+screenHeight)).(*ebiten.Image), &noOp)
+	screen.DrawImage(g.vp.midground.SubImage(image.Rect(int(g.vp.midX), int(g.vp.midY), int(g.vp.midX+screenWidth), int(g.vp.midY+screenHeight))).(*ebiten.Image), &noOp)
 
 	// render the front layer (tiles and sprints) from the viewport
 	screen.DrawImage(g.vp.view, &noOp)
@@ -210,8 +210,8 @@ func main() {
 	g := Game{
 		debug: *debugMode,
 		vp: viewport{
-			maxViewX: boards.GameBoardPixelWidth - screenWidth,
-			maxViewY: boards.GameBoardPixelHeight - screenHeight,
+			maxViewX: float64(boards.GameBoardPixelWidth - screenWidth),
+			maxViewY: float64(boards.GameBoardPixelHeight - screenHeight),
 		},
 		board:    boards.GameBoard,
 		registry: r,
@@ -219,7 +219,7 @@ func main() {
 
 	// set the initial position of the viewport
 	// TODO: refactor to a receiver function on the viewport
-	g.vp.Move(int(player.XPos-screenWidth/2), int(player.YPos-screenHeight/2))
+	g.vp.Move(player.XPos-screenWidth/2, player.YPos-screenHeight/2)
 
 	// run the main loop
 	if err := ebiten.RunGame(&g); err != nil {
