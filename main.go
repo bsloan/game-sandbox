@@ -23,16 +23,14 @@ const (
 )
 
 type viewport struct {
-	viewX      int
-	viewY      int
-	viewWidth  int
-	viewHeight int
-	maxViewX   int
-	maxViewY   int
-	view       *ebiten.Image
-	midground  *ebiten.Image
-	midX       int
-	midY       int
+	viewX     int
+	viewY     int
+	maxViewX  int
+	maxViewY  int
+	view      *ebiten.Image
+	midground *ebiten.Image
+	midX      int
+	midY      int
 }
 
 // Move moves the viewport to pixel coordinates x,y in the game board.
@@ -75,7 +73,7 @@ func (p *viewport) TilePosition() (int, int) {
 func (p *viewport) Draw(g *Game) {
 	// ebiten performance: avoid allocating a new image on every Update, use Clear instead
 	if p.view == nil {
-		p.view = ebiten.NewImage(p.viewWidth, p.viewHeight)
+		p.view = ebiten.NewImage(screenWidth, screenHeight)
 	}
 	if p.midground == nil {
 		// iterate horizontally in chunks of 160 pixels (width of midground image)
@@ -95,16 +93,19 @@ func (p *viewport) Draw(g *Game) {
 
 	p.view.Clear()
 
-	// render the tiles
+	// render the tiles. calculate the top-left origin of the viewport in units of tiles (tileX,tileY).
+	// then calculate the offset in pixels (ox,oy) that we begin drawing from the top-left tile from. the
+	// pixel offset allows for smooth scrolling in smallelr units (pixel) instead of large (tile).
 	tileX, tileY := p.TilePosition()
+	ox, oy := float64(p.viewX%tileSize), float64(p.viewY%tileSize)
 	yTileCount := 0
-	for ty := tileY; ty <= (tileY+screenHeightTiles+1) && ty < len(boards.GameBoard); ty++ {
+	for ty := tileY; ty <= (tileY+screenHeightTiles) && ty < len(boards.GameBoard); ty++ {
 		xTileCount := 0
-		for tx := tileX; tx <= (tileX+screenWidthTiles+1) && tx < len(boards.GameBoard[0]); tx++ {
+		for tx := tileX; tx <= (tileX+screenWidthTiles) && tx < len(boards.GameBoard[0]); tx++ {
 			tile := boards.GameBoard[ty][tx]
 			if tile != 0 {
 				op := ebiten.DrawImageOptions{}
-				op.GeoM.Translate(float64(xTileCount*tileSize), float64(yTileCount*tileSize))
+				op.GeoM.Translate(float64(xTileCount*tileSize)-ox, float64(yTileCount*tileSize)-oy)
 				p.view.DrawImage(asset.TileImages[tile], &op)
 			}
 			xTileCount++
@@ -116,7 +117,7 @@ func (p *viewport) Draw(g *Game) {
 	// TODO: refactor to a receiver method on Entity, GetDrawableEntities or similar
 	for _, entity := range g.registry.Entities {
 		if entity.ActiveImage != nil {
-			if int(entity.XPos) >= p.viewX && int(entity.XPos) < p.viewX+p.viewWidth && int(entity.YPos) >= p.viewY && int(entity.YPos) < p.viewY+p.viewHeight {
+			if int(entity.XPos) >= p.viewX && int(entity.XPos) < p.viewX+screenWidth && int(entity.YPos) >= p.viewY && int(entity.YPos) < p.viewY+screenHeight {
 				x, y := entity.XPos-float64(p.viewX), entity.YPos-float64(p.viewY)
 				op := ebiten.DrawImageOptions{}
 				op.GeoM.Translate(x, y)
@@ -176,17 +177,12 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	// render the middle layer
 	screen.DrawImage(g.vp.midground.SubImage(image.Rect(g.vp.midX, g.vp.midY, g.vp.midX+screenWidth, g.vp.midY+screenHeight)).(*ebiten.Image), &noOp)
 
-	// render the front layer (tiles and sprints) from the viewport. calculate the
-	// offset coords (ox, oy) from where we begin the copy from viewport to the screen.
-	ox, oy := x%tileSize, y%tileSize
-	screen.DrawImage(g.vp.view.SubImage(image.Rect(ox, oy, ox+screenWidth, oy+screenHeight)).(*ebiten.Image), &noOp)
+	// render the front layer (tiles and sprints) from the viewport
+	screen.DrawImage(g.vp.view, &noOp)
 
 	if g.debug {
 		tx, ty := g.vp.TilePosition()
-		debugMsg :=
-			fmt.Sprintf(
-				"TPS: %0.2f Origin X,Y: (%v, %v) Tile X,Y: (%v, %v)\nOffset X,Y (%v, %v)",
-				ebiten.ActualTPS(), x, y, tx, ty, ox, oy)
+		debugMsg := fmt.Sprintf("TPS: %0.2f Origin X,Y: (%v, %v) Tile X,Y: (%v, %v)", ebiten.ActualTPS(), x, y, tx, ty)
 		ebitenutil.DebugPrint(screen, debugMsg)
 	}
 }
@@ -214,10 +210,8 @@ func main() {
 	g := Game{
 		debug: *debugMode,
 		vp: viewport{
-			viewWidth:  screenWidth + tileSize,
-			viewHeight: screenHeight + tileSize,
-			maxViewX:   boards.GameBoardPixelWidth - screenWidth,
-			maxViewY:   boards.GameBoardPixelHeight - screenHeight,
+			maxViewX: boards.GameBoardPixelWidth - screenWidth,
+			maxViewY: boards.GameBoardPixelHeight - screenHeight,
 		},
 		board:    boards.GameBoard,
 		registry: r,
