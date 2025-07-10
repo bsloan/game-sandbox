@@ -147,8 +147,16 @@ type Game struct {
 	registry entity.Registry
 }
 
+func (g *Game) animateSprites() {
+	for _, entity := range g.registry.Entities {
+		if entity.Animations != nil {
+			entity.Animations[entity.State].Animate()
+		}
+	}
+}
+
 func (g *Game) Update() error {
-	// TODO: refactor
+	// TODO: refactor to separate function handling user input
 	if !input.AnyKeyPressed() {
 		if g.registry.Player().State == entity.MovingRight {
 			g.registry.Player().State = entity.IdleRight
@@ -176,12 +184,7 @@ func (g *Game) Update() error {
 	g.vp.Draw(g)
 
 	// animate sprites
-	// TODO: refactor
-	for _, entity := range g.registry.Entities {
-		if entity.Animations != nil {
-			entity.Animations[entity.State].Animate()
-		}
-	}
+	g.animateSprites()
 
 	// update ticks counter
 	g.ticks++
