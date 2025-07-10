@@ -28,10 +28,10 @@ type viewport struct {
 	viewY     float64
 	maxViewX  float64
 	maxViewY  float64
-	view      *ebiten.Image
-	midground *ebiten.Image
 	midX      float64
 	midY      float64
+	view      *ebiten.Image
+	midground *ebiten.Image
 }
 
 // Move moves the viewport to pixel coordinates x,y in the game board.
@@ -55,6 +55,7 @@ func (p *viewport) Move(x, y float64) {
 	p.midY = p.viewY * midgroundScrollMultiplier
 }
 
+// Center centers the viewport around (x,y) in the game board.
 func (p *viewport) Center(x, y float64) {
 	p.Move(x-screenWidth/2, y-screenHeight/2)
 }
@@ -97,6 +98,12 @@ func (p *viewport) Draw(g *Game) {
 	}
 
 	p.view.Clear()
+
+	// render the static background image
+	p.view.DrawImage(asset.SkyBackground, &ebiten.DrawImageOptions{})
+
+	// render the middle layer
+	p.view.DrawImage(g.vp.midground.SubImage(image.Rect(int(g.vp.midX), int(g.vp.midY), int(g.vp.midX+screenWidth), int(g.vp.midY+screenHeight))).(*ebiten.Image), &ebiten.DrawImageOptions{})
 
 	// render the tiles. calculate the top-left origin of the viewport in units of tiles (tileX,tileY).
 	// then calculate the offset in pixels (ox,oy) that we begin drawing from the top-left tile from. the
@@ -141,6 +148,7 @@ type Game struct {
 }
 
 func (g *Game) Update() error {
+	// TODO: refactor
 	if !input.AnyKeyPressed() {
 		if g.registry.Player().State == entity.MovingRight {
 			g.registry.Player().State = entity.IdleRight
@@ -185,12 +193,6 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 	x, y := g.vp.Position()
 	noOp := ebiten.DrawImageOptions{}
-
-	// render the static background image
-	screen.DrawImage(asset.SkyBackground, &noOp)
-
-	// render the middle layer
-	screen.DrawImage(g.vp.midground.SubImage(image.Rect(int(g.vp.midX), int(g.vp.midY), int(g.vp.midX+screenWidth), int(g.vp.midY+screenHeight))).(*ebiten.Image), &noOp)
 
 	// render the front layer (tiles and sprints) from the viewport
 	screen.DrawImage(g.vp.view, &noOp)
