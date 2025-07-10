@@ -54,6 +54,10 @@ func (p *viewport) Move(x, y float64) {
 	p.midY = p.viewY * midgroundScrollMultiplier
 }
 
+func (p *viewport) Center(x, y float64) {
+	p.Move(x-screenWidth/2, y-screenHeight/2)
+}
+
 // Position returns the pixel X, Y coordinates in the game board of the top-left
 // pixel of the viewport.
 func (p *viewport) Position() (float64, float64) {
@@ -218,8 +222,7 @@ func main() {
 	}
 
 	// set the initial position of the viewport
-	// TODO: refactor to a receiver function on the viewport
-	g.vp.Move(player.XPos-screenWidth/2, player.YPos-screenHeight/2)
+	g.vp.Center(player.XPos, player.YPos)
 
 	// run the main loop
 	if err := ebiten.RunGame(&g); err != nil {
