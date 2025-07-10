@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"github.com/bsloan/game-sandbox/asset"
 	"github.com/hajimehoshi/ebiten/v2"
 	"math"
 )
@@ -90,35 +89,4 @@ func (a *Animation) Animate() {
 		a.Count = 0
 		a.CurrentFrameIndex = 0
 	}
-}
-
-func InitializePlayer(x, y float64) *Entity {
-	idle := Animation{
-		Frames: []*ebiten.Image{
-			asset.PlayerIdle1,
-			asset.PlayerIdle2,
-		},
-		AnimationSpeed: 0.02,
-	}
-	moveRight := Animation{
-		Frames: []*ebiten.Image{
-			asset.PlayerRun1,
-			asset.PlayerRun2,
-			asset.PlayerRun3,
-			asset.PlayerRun4,
-			asset.PlayerRun5,
-			asset.PlayerRun6,
-		},
-	}
-	player := &Entity{
-		Type:  Player,
-		State: Idle,
-		XPos:  x,
-		YPos:  y,
-		Animations: map[EntityState]*Animation{
-			Idle:        &idle,
-			MovingRight: &moveRight,
-		},
-	}
-	return player
 }

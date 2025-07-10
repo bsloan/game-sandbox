@@ -6,6 +6,7 @@ import (
 	"github.com/bsloan/game-sandbox/asset"
 	"github.com/bsloan/game-sandbox/boards"
 	"github.com/bsloan/game-sandbox/entity"
+	"github.com/ebitenui/ebitenui/input"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"image"
@@ -140,7 +141,11 @@ type Game struct {
 }
 
 func (g *Game) Update() error {
+	if !input.AnyKeyPressed() {
+		g.registry.Player().State = entity.Idle
+	}
 	if ebiten.IsKeyPressed(ebiten.KeyRight) {
+		g.registry.Player().State = entity.MovingRight
 		g.registry.Player().XPos += 1
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
