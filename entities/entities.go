@@ -29,12 +29,11 @@ const (
 // https://co0p.github.io/posts/ecs-animation/ provides a good starting point
 
 type Entity struct {
-	Type        EntityType
-	State       EntityState
-	ActiveImage *ebiten.Image
-	Animations  map[EntityState]*Animation
-	XPos        float64
-	YPos        float64
+	Type       EntityType
+	State      EntityState
+	Animations map[EntityState]*Animation
+	XPos       float64
+	YPos       float64
 	// other metadata: health, attack damage, points, etc
 }
 
@@ -56,7 +55,7 @@ type Animation struct {
 	AnimationSpeed    float64
 }
 
-func (a *Animation) Animate() *ebiten.Image {
+func (a *Animation) Animate() {
 	// advance animation
 	a.Count += a.AnimationSpeed
 	a.CurrentFrameIndex = int(math.Floor(a.Count))
@@ -68,9 +67,6 @@ func (a *Animation) Animate() *ebiten.Image {
 		a.Count = 0
 		a.CurrentFrameIndex = 0
 	}
-
-	// return reference to the next image in animation sequence
-	return a.Frames[a.CurrentFrameIndex]
 }
 
 func InitializePlayer(x, y float64) *Entity {
@@ -79,6 +75,7 @@ func InitializePlayer(x, y float64) *Entity {
 			asset.PlayerIdle1,
 			asset.PlayerIdle2,
 		},
+		AnimationSpeed: 0.02,
 	}
 	moveRight := Animation{
 		Frames: []*ebiten.Image{
@@ -99,7 +96,6 @@ func InitializePlayer(x, y float64) *Entity {
 			Idle:        &idle,
 			MovingRight: &moveRight,
 		},
-		ActiveImage: asset.PlayerIdle1,
 	}
 	return player
 }

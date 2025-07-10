@@ -116,12 +116,12 @@ func (p *viewport) Draw(g *Game) {
 	// render sprites
 	// TODO: refactor to a receiver method on Entity, GetDrawableEntities or similar
 	for _, entity := range g.registry.Entities {
-		if entity.ActiveImage != nil {
+		if entity.Animations != nil {
 			if entity.XPos >= p.viewX && entity.XPos < p.viewX+screenWidth && entity.YPos >= p.viewY && entity.YPos < p.viewY+screenHeight {
-				x, y := entity.XPos-float64(p.viewX), entity.YPos-float64(p.viewY)
+				x, y := entity.XPos-p.viewX, entity.YPos-p.viewY
 				op := ebiten.DrawImageOptions{}
 				op.GeoM.Translate(x, y)
-				p.view.DrawImage(entity.ActiveImage, &op)
+				p.view.DrawImage(entity.Animations[entity.State].Frames[entity.Animations[entity.State].CurrentFrameIndex], &op)
 			}
 		}
 	}
@@ -156,7 +156,7 @@ func (g *Game) Update() error {
 	// TODO: refactor
 	for _, entity := range g.registry.Entities {
 		if entity.Animations != nil {
-			entity.ActiveImage = entity.Animations[entity.State].Animate()
+			entity.Animations[entity.State].Animate()
 		}
 	}
 
