@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/bsloan/game-sandbox/asset"
 	"github.com/bsloan/game-sandbox/boards"
-	"github.com/bsloan/game-sandbox/entities"
+	"github.com/bsloan/game-sandbox/entity"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"image"
@@ -132,7 +132,7 @@ type Game struct {
 	board    [][]int
 	debug    bool
 	ticks    uint64
-	registry entities.Registry
+	registry entity.Registry
 }
 
 func (g *Game) Update() error {
@@ -203,8 +203,8 @@ func main() {
 	ebiten.SetWindowTitle("Hello, World!")
 	ebiten.SetTPS(ticksPerSecond)
 
-	r := entities.Registry{}
-	player := entities.InitializePlayer(250, 250)
+	r := entity.Registry{}
+	player := entity.InitializePlayer(250, 250)
 	r.AddEntity(*player)
 
 	g := Game{
