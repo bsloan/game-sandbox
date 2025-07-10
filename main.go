@@ -141,19 +141,20 @@ type Game struct {
 
 func (g *Game) Update() error {
 	if ebiten.IsKeyPressed(ebiten.KeyRight) {
-		g.vp.Move(g.vp.viewX+1, g.vp.viewY)
+		g.registry.Player().XPos += 1
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
-		g.vp.Move(g.vp.viewX-1, g.vp.viewY)
+		g.registry.Player().XPos -= 1
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyDown) {
-		g.vp.Move(g.vp.viewX, g.vp.viewY+1)
+		g.registry.Player().YPos += 1
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyUp) {
-		g.vp.Move(g.vp.viewX, g.vp.viewY-1)
+		g.registry.Player().YPos -= 1
 	}
 
-	// render the image of the current viewport
+	// render the image of the current viewport, centered on player
+	g.vp.Center(g.registry.Player().XPos, g.registry.Player().YPos)
 	g.vp.Draw(g)
 
 	// animate sprites
@@ -186,7 +187,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	if g.debug {
 		tx, ty := g.vp.TilePosition()
-		debugMsg := fmt.Sprintf("TPS: %0.2f Origin X,Y: (%v, %v) Tile X,Y: (%v, %v)", ebiten.ActualTPS(), x, y, tx, ty)
+		debugMsg := fmt.Sprintf("TPS: %0.2f Origin X,Y: (%v, %v) Tile X,Y: (%v, %v)\nPlayer X,Y (%v, %v)", ebiten.ActualTPS(), x, y, tx, ty, g.registry.Player().XPos, g.registry.Player().YPos)
 		ebitenutil.DebugPrint(screen, debugMsg)
 	}
 }
@@ -207,8 +208,8 @@ func main() {
 	ebiten.SetWindowTitle("Hello, World!")
 	ebiten.SetTPS(ticksPerSecond)
 
-	r := entity.Registry{}
 	player := entity.InitializePlayer(250, 250)
+	r := entity.Registry{}
 	r.AddEntity(*player)
 
 	g := Game{

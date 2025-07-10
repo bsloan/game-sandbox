@@ -62,6 +62,15 @@ func (r *Registry) AddEntity(entity Entity) {
 	r.Entities = append(r.Entities, entity)
 }
 
+func (r *Registry) Player() *Entity {
+	for i, entity := range r.Entities {
+		if entity.Type == Player {
+			return &r.Entities[i]
+		}
+	}
+	return nil
+}
+
 type Animation struct {
 	Frames            []*ebiten.Image
 	CurrentFrameIndex int
