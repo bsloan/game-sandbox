@@ -78,7 +78,7 @@ func (r *Registry) Player() *Entity {
 func (r *Registry) DrawableEntities() []*Entity {
 	var result []*Entity
 	for i, entity := range r.Entities {
-		if entity.Animations != nil && entity.State != Dead {
+		if entity.State != Dead && entity.Image() != nil {
 			result = append(result, &r.Entities[i])
 		}
 	}
