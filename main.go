@@ -121,7 +121,7 @@ func (p *viewport) Draw(g *Game) {
 				x, y := entity.XPos-p.viewX, entity.YPos-p.viewY
 				op := ebiten.DrawImageOptions{}
 				op.GeoM.Translate(x, y)
-				p.view.DrawImage(entity.Animations[entity.State].Frames[entity.Animations[entity.State].CurrentFrameIndex], &op)
+				p.view.DrawImage(entity.Image(), &op)
 			}
 		}
 	}

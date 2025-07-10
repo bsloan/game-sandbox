@@ -29,12 +29,26 @@ const (
 // https://co0p.github.io/posts/ecs-animation/ provides a good starting point
 
 type Entity struct {
-	Type       EntityType
-	State      EntityState
-	Animations map[EntityState]*Animation
-	XPos       float64
-	YPos       float64
+	Type        EntityType
+	State       EntityState
+	Animations  map[EntityState]*Animation
+	StaticImage *ebiten.Image
+	XPos        float64
+	YPos        float64
 	// other metadata: health, attack damage, points, etc
+}
+
+// Image returns the active image in the entity's animation sequence for the
+// entity's current state. If the entity is not animated (e.g., Animations is nil)
+// then try to return the entity's static image. If no animations or static image
+// are defined, return nil.
+func (e *Entity) Image() *ebiten.Image {
+	if e.Animations != nil {
+		return e.Animations[e.State].Frames[e.Animations[e.State].CurrentFrameIndex]
+	} else if e.StaticImage != nil {
+		return e.StaticImage
+	}
+	return nil
 }
 
 type Registry struct {
