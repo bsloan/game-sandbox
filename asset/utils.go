@@ -17,12 +17,11 @@ func imageFromBytes(pngBytes []byte) *ebiten.Image {
 }
 
 func flipImageXAxis(image *ebiten.Image) *ebiten.Image {
-	width, height := image.Bounds().Size().X, image.Bounds().Size().Y
+	width, height := image.Bounds().Dx(), image.Bounds().Dy()
 	flipped := ebiten.NewImage(width, height)
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Scale(-1, 1)
 	op.GeoM.Translate(float64(width), 0)
-	image.DrawImage(flipped, op)
-
+	flipped.DrawImage(image, op)
 	return flipped
 }
