@@ -143,7 +143,6 @@ type Game struct {
 	vp       viewport
 	board    [][]int
 	debug    bool
-	ticks    uint64
 	registry entity.Registry
 }
 
@@ -186,22 +185,15 @@ func (g *Game) Update() error {
 	// animate sprites
 	g.animateSprites()
 
-	// update ticks counter
-	g.ticks++
-
 	// return any errors
 	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	x, y := g.vp.Position()
-	noOp := ebiten.DrawImageOptions{}
-
-	// render the front layer (tiles and sprints) from the viewport
-	screen.DrawImage(g.vp.view, &noOp)
-
+	screen.DrawImage(g.vp.view, &ebiten.DrawImageOptions{})
 	if g.debug {
 		tx, ty := g.vp.TilePosition()
+		x, y := g.vp.Position()
 		debugMsg := fmt.Sprintf("TPS: %0.2f Origin X,Y: (%v, %v) Tile X,Y: (%v, %v)\nPlayer X,Y (%v, %v)", ebiten.ActualTPS(), x, y, tx, ty, g.registry.Player().XPos, g.registry.Player().YPos)
 		ebitenutil.DebugPrint(screen, debugMsg)
 	}
