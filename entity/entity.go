@@ -27,6 +27,7 @@ const (
 	FallingRight
 	JumpingLeft
 	FallingLeft
+	Dead
 )
 
 // https://co0p.github.io/posts/ecs-animation/ provides a good starting point
@@ -72,6 +73,16 @@ func (r *Registry) Player() *Entity {
 		}
 	}
 	return nil
+}
+
+func (r *Registry) DrawableEntities() []*Entity {
+	var result []*Entity
+	for i, entity := range r.Entities {
+		if entity.Animations != nil && entity.State != Dead {
+			result = append(result, &r.Entities[i])
+		}
+	}
+	return result
 }
 
 type Animation struct {

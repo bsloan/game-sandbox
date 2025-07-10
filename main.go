@@ -73,6 +73,10 @@ func (p *viewport) TilePosition() (int, int) {
 	return tx, ty
 }
 
+func (p *viewport) InView(e *entity.Entity) bool {
+	return e.XPos >= p.viewX && e.XPos < p.viewX+screenWidth && e.YPos >= p.viewY && e.YPos < p.viewY+screenHeight
+}
+
 // Draw renders the foreground layer (tiles and sprites) within the currently visible section
 // of the game board. When the frame is ready, this is later copied to the screen on top
 // of any background and middle layers for a parallax scrolling affect.
@@ -126,15 +130,12 @@ func (p *viewport) Draw(g *Game) {
 	}
 
 	// render sprites
-	// TODO: refactor to a receiver method on Entity, GetDrawableEntities or similar
-	for _, entity := range g.registry.Entities {
-		if entity.Animations != nil {
-			if entity.XPos >= p.viewX && entity.XPos < p.viewX+screenWidth && entity.YPos >= p.viewY && entity.YPos < p.viewY+screenHeight {
-				x, y := entity.XPos-p.viewX, entity.YPos-p.viewY
-				op := ebiten.DrawImageOptions{}
-				op.GeoM.Translate(x, y)
-				p.view.DrawImage(entity.Image(), &op)
-			}
+	for _, entity := range g.registry.DrawableEntities() {
+		if p.InView(entity) {
+			x, y := entity.XPos-p.viewX, entity.YPos-p.viewY
+			op := ebiten.DrawImageOptions{}
+			op.GeoM.Translate(x, y)
+			p.view.DrawImage(entity.Image(), &op)
 		}
 	}
 }
