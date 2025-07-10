@@ -68,25 +68,52 @@ var (
 	PlayerIdleRight2 *ebiten.Image
 	PlayerIdleRight3 *ebiten.Image
 	PlayerIdleRight4 *ebiten.Image
+	PlayerIdleLeft1  *ebiten.Image
+	PlayerIdleLeft2  *ebiten.Image
+	PlayerIdleLeft3  *ebiten.Image
+	PlayerIdleLeft4  *ebiten.Image
+
 	PlayerMoveRight1 *ebiten.Image
 	PlayerMoveRight2 *ebiten.Image
 	PlayerMoveRight3 *ebiten.Image
 	PlayerMoveRight4 *ebiten.Image
 	PlayerMoveRight5 *ebiten.Image
 	PlayerMoveRight6 *ebiten.Image
+	PlayerMoveLeft1  *ebiten.Image
+	PlayerMoveLeft2  *ebiten.Image
+	PlayerMoveLeft3  *ebiten.Image
+	PlayerMoveLeft4  *ebiten.Image
+	PlayerMoveLeft5  *ebiten.Image
+	PlayerMoveLeft6  *ebiten.Image
+
 	PlayerJumpRight1 *ebiten.Image
 	PlayerJumpRight2 *ebiten.Image
 )
 
 func LoadSprites() {
+
 	PlayerIdleRight1 = imageFromBytes(playerIdleRight1Png)
 	PlayerIdleRight2 = imageFromBytes(playerIdleRight2Png)
 	PlayerIdleRight3 = imageFromBytes(playerIdleRight3Png)
 	PlayerIdleRight4 = imageFromBytes(playerIdleRight4Png)
+
+	PlayerIdleLeft1 = flipImageXAxis(PlayerIdleRight1)
+	PlayerIdleLeft2 = flipImageXAxis(PlayerIdleRight2)
+	PlayerIdleLeft3 = flipImageXAxis(PlayerIdleRight3)
+	PlayerIdleLeft4 = flipImageXAxis(PlayerIdleRight4)
+
 	PlayerMoveRight1 = imageFromBytes(playerMoveRight1Png)
 	PlayerMoveRight2 = imageFromBytes(playerMoveRight2Png)
 	PlayerMoveRight3 = imageFromBytes(playerMoveRight3Png)
 	PlayerMoveRight4 = imageFromBytes(playerMoveRight4Png)
 	PlayerMoveRight5 = imageFromBytes(playerMoveRight5Png)
 	PlayerMoveRight6 = imageFromBytes(playerMoveRight6Png)
+
+	PlayerMoveLeft1 = flipImageXAxis(PlayerMoveRight1)
+	PlayerMoveLeft2 = flipImageXAxis(PlayerMoveRight2)
+	PlayerMoveLeft3 = flipImageXAxis(PlayerMoveRight3)
+	PlayerMoveLeft4 = flipImageXAxis(PlayerMoveRight4)
+	PlayerMoveLeft5 = flipImageXAxis(PlayerMoveRight5)
+	PlayerMoveLeft6 = flipImageXAxis(PlayerMoveRight6)
+
 }

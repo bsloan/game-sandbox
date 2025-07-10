@@ -142,13 +142,18 @@ type Game struct {
 
 func (g *Game) Update() error {
 	if !input.AnyKeyPressed() {
-		g.registry.Player().State = entity.Idle
+		if g.registry.Player().State == entity.MovingRight {
+			g.registry.Player().State = entity.IdleRight
+		} else if g.registry.Player().State == entity.MovingLeft {
+			g.registry.Player().State = entity.IdleLeft
+		}
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyRight) {
 		g.registry.Player().State = entity.MovingRight
 		g.registry.Player().XPos += 1
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
+		g.registry.Player().State = entity.MovingLeft
 		g.registry.Player().XPos -= 1
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyDown) {

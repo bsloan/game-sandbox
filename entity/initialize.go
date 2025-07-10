@@ -6,12 +6,21 @@ import (
 )
 
 func InitializePlayer(x, y float64) *Entity {
-	idle := Animation{
+	idleRight := Animation{
 		Frames: []*ebiten.Image{
 			asset.PlayerIdleRight1,
 			asset.PlayerIdleRight2,
 			asset.PlayerIdleRight3,
 			asset.PlayerIdleRight4,
+		},
+		AnimationSpeed: 0.05,
+	}
+	idleLeft := Animation{
+		Frames: []*ebiten.Image{
+			asset.PlayerIdleLeft1,
+			asset.PlayerIdleLeft2,
+			asset.PlayerIdleLeft3,
+			asset.PlayerIdleLeft4,
 		},
 		AnimationSpeed: 0.05,
 	}
@@ -26,14 +35,28 @@ func InitializePlayer(x, y float64) *Entity {
 		},
 		AnimationSpeed: 0.1,
 	}
+	moveLeft := Animation{
+		Frames: []*ebiten.Image{
+			asset.PlayerMoveLeft1,
+			asset.PlayerMoveLeft2,
+			asset.PlayerMoveLeft3,
+			asset.PlayerMoveLeft4,
+			asset.PlayerMoveLeft5,
+			asset.PlayerMoveLeft6,
+		},
+		AnimationSpeed: 0.1,
+	}
 	player := &Entity{
 		Type:  Player,
 		State: Idle,
 		XPos:  x,
 		YPos:  y,
 		Animations: map[EntityState]*Animation{
-			Idle:        &idle,
+			Idle:        &idleRight,
+			IdleRight:   &idleRight,
+			IdleLeft:    &idleLeft,
 			MovingRight: &moveRight,
+			MovingLeft:  &moveLeft,
 		},
 	}
 	return player

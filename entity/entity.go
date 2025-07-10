@@ -17,12 +17,16 @@ type EntityState int
 
 const (
 	Idle EntityState = iota
+	IdleLeft
+	IdleRight
 	MovingLeft
 	MovingRight
 	MovingUp
 	MovingDown
-	JumpingUp
-	Falling
+	JumpingRight
+	FallingRight
+	JumpingLeft
+	FallingLeft
 )
 
 // https://co0p.github.io/posts/ecs-animation/ provides a good starting point
