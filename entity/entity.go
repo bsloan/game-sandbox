@@ -24,10 +24,19 @@ const (
 	MovingUp
 	MovingDown
 	JumpingRight
-	FallingRight
 	JumpingLeft
+	FallingRight
 	FallingLeft
 	Dead
+)
+
+type Direction int
+
+const (
+	Left Direction = iota
+	Right
+	Up
+	Down
 )
 
 // https://co0p.github.io/posts/ecs-animation/ provides a good starting point
@@ -35,6 +44,7 @@ const (
 type Entity struct {
 	Type        EntityType
 	State       EntityState
+	Facing      Direction
 	Animations  map[EntityState]*Animation
 	StaticImage *ebiten.Image
 	XPos        float64

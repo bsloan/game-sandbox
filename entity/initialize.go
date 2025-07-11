@@ -46,17 +46,42 @@ func InitializePlayer(x, y float64) *Entity {
 		},
 		AnimationSpeed: 0.1,
 	}
+	jumpRight := Animation{
+		Frames: []*ebiten.Image{
+			asset.PlayerJumpRight1,
+		},
+	}
+	jumpLeft := Animation{
+		Frames: []*ebiten.Image{
+			asset.PlayerJumpLeft1,
+		},
+	}
+	fallRight := Animation{
+		Frames: []*ebiten.Image{
+			asset.PlayerFallRight1,
+		},
+	}
+	fallLeft := Animation{
+		Frames: []*ebiten.Image{
+			asset.PlayerFallLeft1,
+		},
+	}
 	player := &Entity{
-		Type:  Player,
-		State: Idle,
-		XPos:  x,
-		YPos:  y,
+		Type:   Player,
+		State:  Idle,
+		XPos:   x,
+		YPos:   y,
+		Facing: Right,
 		Animations: map[EntityState]*Animation{
-			Idle:        &idleRight,
-			IdleRight:   &idleRight,
-			IdleLeft:    &idleLeft,
-			MovingRight: &moveRight,
-			MovingLeft:  &moveLeft,
+			Idle:         &idleRight,
+			IdleRight:    &idleRight,
+			IdleLeft:     &idleLeft,
+			MovingRight:  &moveRight,
+			MovingLeft:   &moveLeft,
+			JumpingRight: &jumpRight,
+			JumpingLeft:  &jumpLeft,
+			FallingRight: &fallRight,
+			FallingLeft:  &fallLeft,
 		},
 	}
 	return player

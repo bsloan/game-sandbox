@@ -158,24 +158,36 @@ func (g *Game) animateSprites() {
 func (g *Game) Update() error {
 	// TODO: refactor to separate function handling user input
 	if !input.AnyKeyPressed() {
-		if g.registry.Player().State == entity.MovingRight {
+		if g.registry.Player().Facing == entity.Right {
 			g.registry.Player().State = entity.IdleRight
-		} else if g.registry.Player().State == entity.MovingLeft {
+		} else if g.registry.Player().Facing == entity.Left {
 			g.registry.Player().State = entity.IdleLeft
 		}
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyRight) {
+		g.registry.Player().Facing = entity.Right
 		g.registry.Player().State = entity.MovingRight
 		g.registry.Player().XPos += 1
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
+		g.registry.Player().Facing = entity.Left
 		g.registry.Player().State = entity.MovingLeft
 		g.registry.Player().XPos -= 1
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyDown) {
+		if g.registry.Player().Facing == entity.Left {
+			g.registry.Player().State = entity.FallingLeft
+		} else {
+			g.registry.Player().State = entity.FallingRight
+		}
 		g.registry.Player().YPos += 1
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyUp) {
+		if g.registry.Player().Facing == entity.Left {
+			g.registry.Player().State = entity.JumpingLeft
+		} else {
+			g.registry.Player().State = entity.JumpingRight
+		}
 		g.registry.Player().YPos -= 1
 	}
 
