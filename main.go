@@ -158,8 +158,7 @@ func (g *Game) animateSprites() {
 	}
 }
 
-func (g *Game) Update() error {
-	// TODO: refactor to separate function handling user input
+func (g *Game) MovePlayer() {
 	var p = g.registry.Player()
 
 	if !input.AnyKeyPressed() {
@@ -211,6 +210,11 @@ func (g *Game) Update() error {
 			p.YPos += p.Speed
 		}
 	}
+}
+
+func (g *Game) Update() error {
+	// get user input and move the player entity
+	g.MovePlayer()
 
 	// render the image of the current viewport, centered on player
 	g.vp.Center(g.registry.Player().XPos, g.registry.Player().YPos)

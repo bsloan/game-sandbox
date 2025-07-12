@@ -83,6 +83,19 @@ func (e *Entity) TileCollisions(gameboard [][]int) []int {
 	tileY1 := y1 / 16
 	tileX2 := x2 / 16
 	tileY2 := y2 / 16
+	// TODO: validate entity's position before getting to this point
+	if tileX1 < 0 {
+		tileX1 = 0
+	}
+	if tileY1 < 0 {
+		tileY1 = 0
+	}
+	if tileX2 < 0 {
+		tileX2 = 0
+	}
+	if tileY2 < 0 {
+		tileY2 = 0
+	}
 
 	// store the tile types that collide with entity in this slice
 	collisions := make([]int, 0)
