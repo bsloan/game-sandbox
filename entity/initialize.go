@@ -67,11 +67,16 @@ func InitializePlayer(x, y float64) *Entity {
 		},
 	}
 	player := &Entity{
-		Type:   Player,
-		State:  Idle,
-		XPos:   x,
-		YPos:   y,
-		Facing: Right,
+		Type:            Player,
+		State:           Idle,
+		XPos:            x,
+		YPos:            y,
+		BoundingOffsetX: 12,
+		BoundingOffsetY: 9,
+		BoundingWidth:   12,
+		BoundingHeight:  19,
+		Facing:          Right,
+		Speed:           1.0,
 		Animations: map[EntityState]*Animation{
 			Idle:         &idleRight,
 			IdleRight:    &idleRight,

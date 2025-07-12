@@ -42,13 +42,18 @@ const (
 // https://co0p.github.io/posts/ecs-animation/ provides a good starting point
 
 type Entity struct {
-	Type        EntityType
-	State       EntityState
-	Facing      Direction
-	Animations  map[EntityState]*Animation
-	StaticImage *ebiten.Image
-	XPos        float64
-	YPos        float64
+	Type            EntityType
+	State           EntityState
+	Facing          Direction
+	Animations      map[EntityState]*Animation
+	StaticImage     *ebiten.Image
+	XPos            float64
+	YPos            float64
+	BoundingOffsetX int
+	BoundingOffsetY int
+	BoundingWidth   int
+	BoundingHeight  int
+	Speed           float64
 	// other metadata: health, attack damage, points, etc
 }
 
@@ -63,6 +68,49 @@ func (e *Entity) Image() *ebiten.Image {
 		return e.StaticImage
 	}
 	return nil
+}
+
+func (e *Entity) TileCollisions(gameboard [][]int) []int {
+	// get the 4 corners of the entity's bounding box
+	x1 := int(e.XPos) + e.BoundingOffsetX
+	y1 := int(e.YPos) + e.BoundingOffsetY
+	x2 := x1 + e.BoundingWidth
+	y2 := y1 + e.BoundingHeight
+
+	// get the tile coordinates of the top left and lower right tiles that
+	// are overlapped by the entity's bounding box
+	tileX1 := x1 / 16
+	tileY1 := y1 / 16
+	tileX2 := x2 / 16
+	tileY2 := y2 / 16
+
+	// store the tile types that collide with entity in this slice
+	collisions := make([]int, 0)
+
+	if e.State == MovingRight {
+		for ty := tileY1; ty <= tileY2; ty++ {
+			tile := gameboard[ty][tileX2]
+			collisions = append(collisions, tile)
+		}
+	} else if e.State == MovingLeft {
+		for ty := tileY1; ty <= tileY2; ty++ {
+			tile := gameboard[ty][tileX1]
+			collisions = append(collisions, tile)
+		}
+	} else if e.State == FallingRight || e.State == FallingLeft {
+		for tx := tileX1; tx <= tileX2; tx++ {
+			tile := gameboard[tileY2][tx]
+			collisions = append(collisions, tile)
+		}
+	} else if e.State == JumpingLeft || e.State == JumpingRight {
+		for tx := tileX1; tx <= tileX2; tx++ {
+			tile := gameboard[tileY1][tx]
+			collisions = append(collisions, tile)
+		}
+	}
+
+	// return collisions and let the caller handle them
+	return collisions
 }
 
 type Registry struct {

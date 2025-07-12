@@ -74,7 +74,10 @@ func (p *viewport) TilePosition() (int, int) {
 }
 
 func (p *viewport) InView(e *entity.Entity) bool {
-	return e.XPos >= p.viewX && e.XPos < p.viewX+screenWidth && e.YPos >= p.viewY && e.YPos < p.viewY+screenHeight
+	return e.XPos >= p.viewX-float64(e.Image().Bounds().Dx()) &&
+		e.XPos < p.viewX+screenWidth &&
+		e.YPos >= p.viewY-float64(e.Image().Bounds().Dy()) &&
+		e.YPos < p.viewY+screenHeight
 }
 
 // Draw renders the foreground layer (tiles and sprites) within the currently visible section
@@ -157,38 +160,56 @@ func (g *Game) animateSprites() {
 
 func (g *Game) Update() error {
 	// TODO: refactor to separate function handling user input
+	var p = g.registry.Player()
+
 	if !input.AnyKeyPressed() {
-		if g.registry.Player().Facing == entity.Right {
-			g.registry.Player().State = entity.IdleRight
-		} else if g.registry.Player().Facing == entity.Left {
-			g.registry.Player().State = entity.IdleLeft
+		if p.Facing == entity.Right {
+			p.State = entity.IdleRight
+		} else if p.Facing == entity.Left {
+			p.State = entity.IdleLeft
 		}
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyRight) {
-		g.registry.Player().Facing = entity.Right
-		g.registry.Player().State = entity.MovingRight
-		g.registry.Player().XPos += 1
+		p.Facing = entity.Right
+		p.State = entity.MovingRight
+		p.XPos += p.Speed
+		collisions := p.TileCollisions(g.board)
+		if boards.IsBlocking(collisions) {
+			p.XPos -= p.Speed
+		}
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
-		g.registry.Player().Facing = entity.Left
-		g.registry.Player().State = entity.MovingLeft
-		g.registry.Player().XPos -= 1
+		p.Facing = entity.Left
+		p.State = entity.MovingLeft
+		p.XPos -= p.Speed
+		collisions := p.TileCollisions(g.board)
+		if boards.IsBlocking(collisions) {
+			p.XPos += p.Speed
+		}
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyDown) {
-		if g.registry.Player().Facing == entity.Left {
-			g.registry.Player().State = entity.FallingLeft
+		if p.Facing == entity.Left {
+			p.State = entity.FallingLeft
 		} else {
-			g.registry.Player().State = entity.FallingRight
+			p.State = entity.FallingRight
 		}
-		g.registry.Player().YPos += 1
+		p.YPos += p.Speed
+		collisions := p.TileCollisions(g.board)
+		if boards.IsBlocking(collisions) {
+			p.YPos -= p.Speed
+		}
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyUp) {
-		if g.registry.Player().Facing == entity.Left {
-			g.registry.Player().State = entity.JumpingLeft
+		if p.Facing == entity.Left {
+			p.State = entity.JumpingLeft
 		} else {
-			g.registry.Player().State = entity.JumpingRight
+			p.State = entity.JumpingRight
 		}
-		g.registry.Player().YPos -= 1
+		p.YPos -= p.Speed
+		collisions := p.TileCollisions(g.board)
+		if boards.IsBlocking(collisions) {
+			p.YPos += p.Speed
+		}
 	}
 
 	// render the image of the current viewport, centered on player
@@ -207,7 +228,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	if g.debug {
 		tx, ty := g.vp.TilePosition()
 		x, y := g.vp.Position()
-		debugMsg := fmt.Sprintf("TPS: %0.2f Origin X,Y: (%v, %v) Tile X,Y: (%v, %v)\nPlayer X,Y (%v, %v)", ebiten.ActualTPS(), x, y, tx, ty, g.registry.Player().XPos, g.registry.Player().YPos)
+		debugMsg := fmt.Sprintf(
+			"TPS: %0.2f Origin X,Y: (%v, %v) Tile X,Y: (%v, %v)\nPlayer X,Y (%v, %v)",
+			ebiten.ActualTPS(), x, y, tx, ty, g.registry.Player().XPos, g.registry.Player().YPos)
 		ebitenutil.DebugPrint(screen, debugMsg)
 	}
 }
@@ -228,7 +251,7 @@ func main() {
 	ebiten.SetWindowTitle("Hello, World!")
 	ebiten.SetTPS(ticksPerSecond)
 
-	player := entity.InitializePlayer(250, 250)
+	player := entity.InitializePlayer(250, 190)
 	r := entity.Registry{}
 	r.AddEntity(*player)
 
