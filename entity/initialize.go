@@ -3,9 +3,10 @@ package entity
 import (
 	"github.com/bsloan/game-sandbox/asset"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/jakecoffman/cp"
 )
 
-func InitializePlayer(x, y float64) *Entity {
+func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 	idleRight := Animation{
 		Frames: []*ebiten.Image{
 			asset.PlayerIdleRight1,
@@ -69,8 +70,6 @@ func InitializePlayer(x, y float64) *Entity {
 	player := &Entity{
 		Type:            Player,
 		State:           Idle,
-		XPos:            x,
-		YPos:            y,
 		BoundingOffsetX: 12,
 		BoundingOffsetY: 9,
 		BoundingWidth:   12,
@@ -88,6 +87,14 @@ func InitializePlayer(x, y float64) *Entity {
 			FallingRight: &fallRight,
 			FallingLeft:  &fallLeft,
 		},
+		Body: cp.NewBody(1, cp.INFINITY),
 	}
+	space.AddBody(player.Body)
+	player.Body.SetPosition(cp.Vector{X: x, Y: y})
+	// TODO: player.Body.SetVelocityUpdateFunc(playerUpdateVelocity)
+	playerShape := space.AddShape(cp.NewBox2(player.Body, cp.BB{L: -6, B: -10, R: 6, T: 10}, 10)) // r: is radius
+	playerShape.SetElasticity(0)
+	playerShape.SetFriction(0)
+	playerShape.SetCollisionType(1) // TODO: research collision types
 	return player
 }

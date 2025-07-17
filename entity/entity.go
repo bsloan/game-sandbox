@@ -2,6 +2,7 @@ package entity
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/jakecoffman/cp"
 	"math"
 )
 
@@ -42,19 +43,23 @@ const (
 // https://co0p.github.io/posts/ecs-animation/ provides a good starting point
 
 type Entity struct {
-	Type            EntityType
-	State           EntityState
-	Facing          Direction
-	Animations      map[EntityState]*Animation
-	StaticImage     *ebiten.Image
-	XPos            float64
-	YPos            float64
+	Type        EntityType
+	State       EntityState
+	Facing      Direction
+	Animations  map[EntityState]*Animation
+	StaticImage *ebiten.Image
+	// TODO: bounding box and speed attributes can be removed in favor of chipmunk physics attrs
 	BoundingOffsetX int
 	BoundingOffsetY int
 	BoundingWidth   int
 	BoundingHeight  int
 	Speed           float64
+	Body            *cp.Body
 	// other metadata: health, attack damage, points, etc
+}
+
+func (e *Entity) Position() (float64, float64) {
+	return e.Body.Position().X, e.Body.Position().Y
 }
 
 // Image returns the active image in the entity's animation sequence for the
@@ -70,10 +75,12 @@ func (e *Entity) Image() *ebiten.Image {
 	return nil
 }
 
+// TODO: this function can be removed, use chipmunk collisions instead
 func (e *Entity) TileCollisions(gameboard [][]int) []int {
 	// get the 4 corners of the entity's bounding box
-	x1 := int(e.XPos) + e.BoundingOffsetX
-	y1 := int(e.YPos) + e.BoundingOffsetY
+	entityX, entityY := e.Position()
+	x1 := int(entityX) + e.BoundingOffsetX
+	y1 := int(entityY) + e.BoundingOffsetY
 	x2 := x1 + e.BoundingWidth
 	y2 := y1 + e.BoundingHeight
 

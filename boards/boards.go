@@ -1,6 +1,9 @@
 package boards
 
-import "slices"
+import (
+	"github.com/jakecoffman/cp"
+	"slices"
+)
 
 var BlockingTiles = []int{1, 2, 3, 4}
 
@@ -80,4 +83,32 @@ func IsBlocking(tiles []int) bool {
 		}
 	}
 	return false
+}
+
+func InitializeTiles(space *cp.Space, gameboard [][]int) {
+	width := GameBoardTileWidth
+	height := GameBoardTileHeight
+	for ty := 0; ty < height; ty++ {
+		for tx := 0; tx < width; tx++ {
+			if gameboard[ty][tx] > 0 {
+				tileBody := cp.NewStaticBody()
+				space.AddBody(tileBody)
+
+				// Create a box shape for the tile
+				tileBounds := []cp.Vector{
+					{X: float64(tx * 16), Y: float64(ty * 16)},             // top left
+					{X: float64((tx + 1) * 16), Y: float64(ty * 16)},       // top right
+					{X: float64((tx + 1) * 16), Y: float64((ty + 1) * 16)}, // bottom right
+					{X: float64(tx * 16), Y: float64((ty + 1) * 16)},       // bottom left
+				}
+
+				// 8 is the radius: tileSize/2
+				tileShape := cp.NewPolyShape(tileBody, len(tileBounds), tileBounds, cp.NewTransformIdentity(), 8)
+
+				space.AddShape(tileShape)
+				tileShape.SetElasticity(0)
+				tileShape.SetFriction(0.7) // FIXME: friction does not seem to be applied
+			}
+		}
+	}
 }
