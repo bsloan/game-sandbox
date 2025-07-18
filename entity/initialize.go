@@ -68,14 +68,9 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 		},
 	}
 	player := &Entity{
-		Type:            Player,
-		State:           Idle,
-		BoundingOffsetX: 12,
-		BoundingOffsetY: 9,
-		BoundingWidth:   12,
-		BoundingHeight:  19,
-		Facing:          Right,
-		Speed:           1.0,
+		Type:   Player,
+		State:  Idle,
+		Facing: Right,
 		Animations: map[EntityState]*Animation{
 			Idle:         &idleRight,
 			IdleRight:    &idleRight,
@@ -89,12 +84,15 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 		},
 		Body: cp.NewBody(1, cp.INFINITY),
 	}
+
 	space.AddBody(player.Body)
 	player.Body.SetPosition(cp.Vector{X: x, Y: y})
-	// TODO: player.Body.SetVelocityUpdateFunc(playerUpdateVelocity)
-	playerShape := space.AddShape(cp.NewBox2(player.Body, cp.BB{L: -6, B: -10, R: 6, T: 10}, 10)) // r: is radius
+	playerShape := space.AddShape(cp.NewBox(player.Body, 9, 10, 7))
+	//playerShape := space.AddShape(cp.NewCircle(player.Body, 8, cp.Vector{X: 0, Y: 0}))
+
 	playerShape.SetElasticity(0)
-	playerShape.SetFriction(0)
-	playerShape.SetCollisionType(1) // TODO: research collision types
+	playerShape.SetFriction(0.75) // TODO: friction in air (not grounded) should be 0, friction on ground is different
+	// TODO: research collision types further - these are used as identifiers in CollisionHandler callback
+	playerShape.SetCollisionType(1)
 	return player
 }

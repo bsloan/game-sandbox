@@ -12,18 +12,23 @@ import (
 	"github.com/jakecoffman/cp"
 	"image"
 	"log"
+	"math"
 )
 
 // TODO: move to a global settings package
 const (
-	ticksPerSecond            = 120
+	ticksPerSecond            = 60
 	screenWidth               = 320
 	screenHeight              = 240
 	tileSize                  = 16
 	screenWidthTiles          = screenWidth / tileSize
 	screenHeightTiles         = screenHeight / tileSize
 	midgroundScrollMultiplier = 0.5
-	GRAVITY                   = 800.0
+
+	GRAVITY               = 400.0
+	PLAYER_MAX_X_VELOCITY = 100
+	PLAYER_MAX_Y_VELOCITY = 300
+	PLAYER_X_ACCELERATION = 10
 )
 
 type viewport struct {
@@ -178,16 +183,20 @@ func (g *Game) MovePlayer() {
 	if ebiten.IsKeyPressed(ebiten.KeyRight) {
 		p.Facing = entity.Right
 		p.State = entity.MovingRight
-		if p.Body.Velocity().X < 300 {
-			p.Body.ApplyForceAtLocalPoint(cp.Vector{X: 100.0, Y: 0}, cp.Vector{X: 0, Y: 0}) // 0,0 is the body's center of gravity.
+		vx, vy := p.Body.Velocity().X, p.Body.Velocity().Y
+		if vx < 0 {
+			vx = math.Ceil(vx / 1.5)
 		}
+		p.Body.SetVelocity(vx+PLAYER_X_ACCELERATION, vy)
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
 		p.Facing = entity.Left
 		p.State = entity.MovingLeft
-		if p.Body.Velocity().X > -300 {
-			p.Body.ApplyForceAtLocalPoint(cp.Vector{X: -100.0, Y: 0}, cp.Vector{X: 0, Y: 0}) // 0,0 is the body's center of gravity.
+		vx, vy := p.Body.Velocity().X, p.Body.Velocity().Y
+		if vx > 0 {
+			vx = math.Floor(vx / 1.5)
 		}
+		p.Body.SetVelocity(vx-PLAYER_X_ACCELERATION, vy)
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyDown) {
 		if p.Facing == entity.Left {
@@ -214,9 +223,17 @@ func (g *Game) MovePlayer() {
 		//}
 	}
 
-	// TODO: use velocity update function for this instead
-	if p.Body.Velocity().Y > 500 {
-		p.Body.SetVelocity(p.Body.Velocity().X, 500)
+	// TODO: determine if player is grounded, change friction and sprite animation accordingly
+
+	// enforce maximum velocity in each direction
+	if p.Body.Velocity().X > PLAYER_MAX_X_VELOCITY {
+		p.Body.SetVelocity(PLAYER_MAX_X_VELOCITY, p.Body.Velocity().Y)
+	}
+	if p.Body.Velocity().X < -PLAYER_MAX_X_VELOCITY {
+		p.Body.SetVelocity(-PLAYER_MAX_X_VELOCITY, p.Body.Velocity().Y)
+	}
+	if p.Body.Velocity().Y > PLAYER_MAX_Y_VELOCITY {
+		p.Body.SetVelocity(p.Body.Velocity().X, PLAYER_MAX_Y_VELOCITY)
 	}
 }
 
@@ -243,10 +260,11 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	if g.debug {
 		tx, ty := g.vp.TilePosition()
 		px, py := g.registry.Player().Body.Position().X, g.registry.Player().Body.Position().Y
+		vx, vy := g.registry.Player().Body.Velocity().X, g.registry.Player().Body.Velocity().Y
 		x, y := g.vp.Position()
 		debugMsg := fmt.Sprintf(
-			"TPS: %0.2f Origin X,Y: (%v, %v) Tile X,Y: (%v, %v)\nPlayer X,Y (%v, %v)",
-			ebiten.ActualTPS(), x, y, tx, ty, px, py)
+			"TPS: %0.2f Origin X,Y: (%0.2f, %0.2f) Tile X,Y: (%v, %v)\nPlayer X,Y (%0.2f, %0.2f) Velocity X,Y (%0.2f, %0.2f)",
+			ebiten.ActualTPS(), x, y, tx, ty, px, py, vx, vy)
 		ebitenutil.DebugPrint(screen, debugMsg)
 	}
 }
@@ -270,7 +288,7 @@ func main() {
 	space := cp.NewSpace()
 	space.SetGravity(cp.Vector{0, GRAVITY})
 
-	player := entity.InitializePlayer(space, 0, 0)
+	player := entity.InitializePlayer(space, 108, 60)
 	r := entity.Registry{}
 	r.AddEntity(*player)
 
