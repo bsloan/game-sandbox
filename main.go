@@ -288,7 +288,7 @@ func main() {
 	space := cp.NewSpace()
 	space.SetGravity(cp.Vector{0, GRAVITY})
 
-	player := entity.InitializePlayer(space, 108, 60)
+	player := entity.InitializePlayer(space, 0, 0)
 	r := entity.Registry{}
 	r.AddEntity(*player)
 
