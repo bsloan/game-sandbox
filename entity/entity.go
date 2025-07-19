@@ -46,10 +46,11 @@ type Entity struct {
 	Type        EntityType
 	State       EntityState
 	Facing      Direction
+	Grounded    bool
 	Animations  map[EntityState]*Animation
 	StaticImage *ebiten.Image
-	// TODO: bounding box and speed attributes can be removed in favor of chipmunk physics attrs
-	Body *cp.Body
+	Body        *cp.Body
+	Shape       *cp.Shape
 	// other metadata: health, attack damage, points, etc
 }
 
@@ -71,20 +72,20 @@ func (e *Entity) Image() *ebiten.Image {
 }
 
 type Registry struct {
-	Entities []Entity
+	Entities []*Entity
 }
 
 // AddEntity adds a new Entity to the Registry of entities.
 // Current implementation is very simple, revisit later to update
 // this API appropriately according to performance and/or querying needs.
-func (r *Registry) AddEntity(entity Entity) {
+func (r *Registry) AddEntity(entity *Entity) {
 	r.Entities = append(r.Entities, entity)
 }
 
 func (r *Registry) Player() *Entity {
 	for i, entity := range r.Entities {
 		if entity.Type == Player {
-			return &r.Entities[i]
+			return r.Entities[i]
 		}
 	}
 	return nil
@@ -94,7 +95,7 @@ func (r *Registry) DrawableEntities() []*Entity {
 	var result []*Entity
 	for i, entity := range r.Entities {
 		if entity.State != Dead && entity.Image() != nil {
-			result = append(result, &r.Entities[i])
+			result = append(result, r.Entities[i])
 		}
 	}
 	return result

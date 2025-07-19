@@ -1,6 +1,7 @@
 package boards
 
 import (
+	"github.com/bsloan/game-sandbox/entity"
 	"github.com/jakecoffman/cp"
 )
 
@@ -84,6 +85,7 @@ func InitializeTiles(space *cp.Space, gameboard [][]int) {
 				tileShape := cp.NewBox(tileBody, 16, 16, 0)
 				tileShape.SetElasticity(0)
 				tileShape.SetFriction(1)
+				tileShape.SetCollisionType(entity.BlockCollisionType)
 				space.AddBody(tileBody)
 				space.AddShape(tileShape)
 			}

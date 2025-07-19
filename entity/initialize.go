@@ -14,7 +14,7 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 			asset.PlayerIdleRight3,
 			asset.PlayerIdleRight4,
 		},
-		AnimationSpeed: 0.05,
+		AnimationSpeed: 0.1,
 	}
 	idleLeft := Animation{
 		Frames: []*ebiten.Image{
@@ -23,7 +23,7 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 			asset.PlayerIdleLeft3,
 			asset.PlayerIdleLeft4,
 		},
-		AnimationSpeed: 0.05,
+		AnimationSpeed: 0.1,
 	}
 	moveRight := Animation{
 		Frames: []*ebiten.Image{
@@ -34,7 +34,7 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 			asset.PlayerMoveRight5,
 			asset.PlayerMoveRight6,
 		},
-		AnimationSpeed: 0.1,
+		AnimationSpeed: 0.2,
 	}
 	moveLeft := Animation{
 		Frames: []*ebiten.Image{
@@ -45,7 +45,7 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 			asset.PlayerMoveLeft5,
 			asset.PlayerMoveLeft6,
 		},
-		AnimationSpeed: 0.1,
+		AnimationSpeed: 0.2,
 	}
 	jumpRight := Animation{
 		Frames: []*ebiten.Image{
@@ -67,7 +67,7 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 			asset.PlayerFallLeft1,
 		},
 	}
-	player := &Entity{
+	player := Entity{
 		Type:   Player,
 		State:  Idle,
 		Facing: Right,
@@ -85,14 +85,16 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 		Body: cp.NewBody(1, cp.INFINITY),
 	}
 
+	player.Body.UserData = &player
 	space.AddBody(player.Body)
 	player.Body.SetPosition(cp.Vector{X: x, Y: y})
 	playerShape := space.AddShape(cp.NewBox(player.Body, 9, 10, 7))
-	//playerShape := space.AddShape(cp.NewCircle(player.Body, 8, cp.Vector{X: 0, Y: 0}))
+	//playerShape := space.AddShape(cp.NewCircle(player.Body, 10, cp.Vector{X: 0, Y: 0}))
 
 	playerShape.SetElasticity(0)
 	playerShape.SetFriction(0.75) // TODO: friction in air (not grounded) should be 0, friction on ground is different
-	// TODO: research collision types further - these are used as identifiers in CollisionHandler callback
-	playerShape.SetCollisionType(1)
-	return player
+	playerShape.SetCollisionType(PlayerCollisionType)
+	player.Shape = playerShape
+	GenericGroundedHandler(space, PlayerCollisionType)
+	return &player
 }
