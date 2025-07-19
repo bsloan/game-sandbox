@@ -283,8 +283,10 @@ func main() {
 
 	space := cp.NewSpace()
 	space.SetGravity(cp.Vector{0, Gravity})
+	// allow no overlap between shapes in the space, to reduce prevalence of tile overlap/collision bug
+	space.SetCollisionSlop(0.00)
 
-	player := entity.InitializePlayer(space, 0, 0)
+	player := entity.InitializePlayer(space, 0, 300)
 	r := entity.Registry{}
 	r.AddEntity(player)
 
