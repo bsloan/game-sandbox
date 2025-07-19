@@ -208,7 +208,7 @@ func (g *Game) MovePlayer() {
 	// TODO: jump
 
 	// determine if player is falling, change friction and sprite animation accordingly
-	if p.Body.Velocity().Y > 1 {
+	if p.Body.Velocity().Y > 50 {
 		if p.Facing == entity.Right {
 			p.State = entity.FallingRight
 		}
@@ -286,7 +286,7 @@ func main() {
 	// allow no overlap between shapes in the space, to reduce prevalence of tile overlap/collision bug
 	space.SetCollisionSlop(0.00)
 
-	player := entity.InitializePlayer(space, 0, 300)
+	player := entity.InitializePlayer(space, 0, 0)
 	r := entity.Registry{}
 	r.AddEntity(player)
 
