@@ -82,7 +82,8 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 			FallingRight: &fallRight,
 			FallingLeft:  &fallLeft,
 		},
-		Body: cp.NewBody(1, cp.INFINITY),
+		Body:  cp.NewBody(1, cp.INFINITY),
+		Boost: 0,
 	}
 
 	player.Body.UserData = &player
@@ -92,7 +93,7 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 	//playerShape := space.AddShape(cp.NewCircle(player.Body, 8, cp.Vector{X: 0, Y: 0}))
 
 	playerShape.SetElasticity(0)
-	playerShape.SetFriction(0.75) // TODO: friction in air (not grounded) should be 0, friction on ground is different
+	playerShape.SetFriction(0.75)
 	playerShape.SetCollisionType(PlayerCollisionType)
 	player.Shape = playerShape
 	GenericGroundedHandler(space, PlayerCollisionType)

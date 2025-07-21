@@ -17,17 +17,20 @@ import (
 
 // TODO: move to a global settings package
 const (
-	ticksPerSecond            = 60
-	screenWidth               = 320
-	screenHeight              = 240
-	tileSize                  = 16
-	screenWidthTiles          = screenWidth / tileSize
-	screenHeightTiles         = screenHeight / tileSize
-	midgroundScrollMultiplier = 0.5
-	Gravity                   = 450.0
-	PlayerMaxVelocityX        = 100
-	PlayerMaxVelocityY        = 300
-	PlayerAccelerationStepX   = 10
+	ticksPerSecond             = 60
+	screenWidth                = 320
+	screenHeight               = 240
+	tileSize                   = 16
+	screenWidthTiles           = screenWidth / tileSize
+	screenHeightTiles          = screenHeight / tileSize
+	midgroundScrollMultiplier  = 0.5
+	Gravity                    = 450.0
+	PlayerMaxVelocityX         = 100
+	PlayerMaxVelocityY         = 300
+	PlayerAccelerationStepX    = 10
+	PlayerJumpBoostHeight      = 20
+	PlayerJumpInitialVelocity  = 90
+	PlayerJumpContinueVelocity = 110
 )
 
 type viewport struct {
@@ -174,38 +177,70 @@ func (g *Game) MovePlayer() {
 
 	var p = g.registry.Player()
 
-	if !input.AnyKeyPressed() {
+	if !input.AnyKeyPressed() && p.Grounded {
 		if p.Facing == entity.Right {
 			p.State = entity.IdleRight
 		} else if p.Facing == entity.Left {
 			p.State = entity.IdleLeft
 		}
 	}
-	if ebiten.IsKeyPressed(ebiten.KeyRight) {
+	if ebiten.IsKeyPressed(ebiten.KeyRight) || ebiten.IsKeyPressed(ebiten.KeyD) {
 		p.Facing = entity.Right
-		p.State = entity.MovingRight
+		if p.Grounded {
+			p.State = entity.MovingRight
+		} else if p.State == entity.JumpingLeft {
+			p.State = entity.JumpingRight
+		}
 		vx, vy := p.Body.Velocity().X, p.Body.Velocity().Y
 		if vx < 0 {
 			vx = math.Ceil(vx / 1.5)
 		}
 		p.Body.SetVelocity(vx+PlayerAccelerationStepX, vy)
 	}
-	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
+	if ebiten.IsKeyPressed(ebiten.KeyLeft) || ebiten.IsKeyPressed(ebiten.KeyA) {
 		p.Facing = entity.Left
-		p.State = entity.MovingLeft
+		if p.Grounded {
+			p.State = entity.MovingLeft
+		} else if p.State == entity.JumpingRight {
+			p.State = entity.JumpingLeft
+		}
 		vx, vy := p.Body.Velocity().X, p.Body.Velocity().Y
 		if vx > 0 {
 			vx = math.Floor(vx / 1.5)
 		}
 		p.Body.SetVelocity(vx-PlayerAccelerationStepX, vy)
 	}
+
 	if ebiten.IsKeyPressed(ebiten.KeyDown) {
 		// TODO: crouch
 	}
-	if ebiten.IsKeyPressed(ebiten.KeyUp) {
-		// TODO: climb
+
+	if ebiten.IsKeyPressed(ebiten.KeySpace) && p.State != entity.FallingRight && p.State != entity.FallingLeft {
+		if p.State == entity.JumpingRight || p.State == entity.JumpingLeft {
+			// player is already in a jump, diminish boost
+			p.Boost--
+			p.Body.SetVelocity(p.Body.Velocity().X, -PlayerJumpContinueVelocity)
+		} else {
+			// player is in some other state, so must be initiating the jump
+			if p.Facing == entity.Left {
+				p.State = entity.JumpingLeft
+			} else {
+				p.State = entity.JumpingRight
+			}
+			p.Boost = PlayerJumpBoostHeight
+			p.Body.SetVelocity(p.Body.Velocity().X, -PlayerJumpInitialVelocity)
+			p.Grounded = false
+			p.Shape.SetFriction(0)
+		}
+		if p.Boost <= 0 {
+			p.Boost = 0
+			if p.Facing == entity.Left {
+				p.State = entity.FallingLeft
+			} else {
+				p.State = entity.FallingRight
+			}
+		}
 	}
-	// TODO: jump
 
 	// determine if player is falling, change friction and sprite animation accordingly
 	if p.Body.Velocity().Y > 50 {
@@ -259,8 +294,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		vx, vy := g.registry.Player().Body.Velocity().X, g.registry.Player().Body.Velocity().Y
 		x, y := g.vp.Position()
 		debugMsg := fmt.Sprintf(
-			"TPS: %0.2f Origin X,Y: (%0.2f, %0.2f) Tile X,Y: (%v, %v)\nPlayer X,Y (%0.2f, %0.2f) Velocity X,Y (%0.2f, %0.2f)\nGrounded: %v",
-			ebiten.ActualTPS(), x, y, tx, ty, px, py, vx, vy, g.registry.Player().Grounded)
+			"TPS: %0.2f Origin X,Y: (%0.2f, %0.2f) Tile X,Y: (%v, %v)\nPlayer X,Y (%0.2f, %0.2f) Velocity X,Y (%0.2f, %0.2f)\nGrounded: %v Boost: %v",
+			ebiten.ActualTPS(), x, y, tx, ty, px, py, vx, vy, g.registry.Player().Grounded, g.registry.Player().Boost)
 		ebitenutil.DebugPrint(screen, debugMsg)
 	}
 }

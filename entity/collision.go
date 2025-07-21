@@ -12,12 +12,8 @@ const (
 func GenericGroundedHandler(space *cp.Space, collisionType cp.CollisionType) {
 	handler := space.NewCollisionHandler(collisionType, BlockCollisionType)
 	handler.BeginFunc = func(arb *cp.Arbiter, space *cp.Space, data interface{}) bool {
-		groundNormal := cp.Vector{}
 		n := arb.Normal()
-		if n.Y > groundNormal.Y {
-			groundNormal = n
-		}
-		grounded := groundNormal.Y > 0
+		grounded := n.Y > 0
 		if grounded {
 			body1, body2 := arb.Bodies()
 			if body1.UserData != nil {
