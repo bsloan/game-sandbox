@@ -28,9 +28,9 @@ const (
 	PlayerMaxVelocityX         = 100
 	PlayerMaxVelocityY         = 300
 	PlayerAccelerationStepX    = 10
-	PlayerJumpBoostHeight      = 20
-	PlayerJumpInitialVelocity  = 90
-	PlayerJumpContinueVelocity = 110
+	PlayerJumpBoostHeight      = 30
+	PlayerJumpInitialVelocity  = 6000
+	PlayerJumpContinueVelocity = 400
 )
 
 type viewport struct {
@@ -242,7 +242,7 @@ func (g *Game) MovePlayer() {
 		if p.State == entity.JumpingRight || p.State == entity.JumpingLeft {
 			// player is already in a jump, diminish boost
 			p.Boost--
-			p.Body.SetVelocity(p.Body.Velocity().X, -PlayerJumpContinueVelocity)
+			p.Body.ApplyForceAtWorldPoint(cp.Vector{0, -PlayerJumpContinueVelocity}, p.Body.Position())
 		} else {
 			// player is in some other state, so must be initiating the jump
 			if p.Facing == entity.Left {
@@ -250,7 +250,7 @@ func (g *Game) MovePlayer() {
 			} else {
 				p.State = entity.JumpingRight
 			}
-			p.Body.SetVelocity(p.Body.Velocity().X, -PlayerJumpInitialVelocity)
+			p.Body.ApplyForceAtWorldPoint(cp.Vector{0, -PlayerJumpInitialVelocity}, p.Body.Position())
 			p.Grounded = false
 			p.Shape.SetFriction(0)
 		}
