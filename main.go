@@ -125,17 +125,20 @@ func (p *viewport) Draw(g *Game) {
 
 	// render the tiles. calculate the top-left origin of the viewport in units of tiles (tileX,tileY).
 	// then calculate the offset in pixels (ox,oy) that we begin drawing from the top-left tile from. the
-	// pixel offset allows for smooth scrolling in smallelr units (pixel) instead of large (tile).
+	// pixel offset allows for smooth scrolling in smaller units (pixel) instead of large (tile).
 	tileX, tileY := p.TilePosition()
 	ox, oy := float64(int(p.viewX)%tileSize), float64(int(p.viewY)%tileSize)
 	yTileCount := 0
-	for ty := tileY; ty <= (tileY+screenHeightTiles) && ty < len(boards.GameBoard); ty++ {
+	for ty := tileY; ty <= (tileY+screenHeightTiles+1) && ty < len(boards.GameBoard); ty++ {
 		xTileCount := 0
-		for tx := tileX; tx <= (tileX+screenWidthTiles) && tx < len(boards.GameBoard[0]); tx++ {
+		for tx := tileX; tx <= (tileX+screenWidthTiles+1) && tx < len(boards.GameBoard[0]); tx++ {
 			tile := boards.GameBoard[ty][tx]
 			if tile != 0 {
+				// adjust the x,y position where the tile is rendered from to be its top-left corner.
+				// the tile's x,y coordinates in chipmunk 2d space are at it's center, so need to pull it
+				// back and to the left by tileSize/2, and adjust by (ox,oy) to get the correct pixel offset
 				op := ebiten.DrawImageOptions{}
-				op.GeoM.Translate(float64(xTileCount*tileSize)-ox, float64(yTileCount*tileSize)-oy)
+				op.GeoM.Translate(float64(xTileCount*tileSize)-ox-(tileSize/2), float64(yTileCount*tileSize)-oy-(tileSize/2))
 				p.view.DrawImage(asset.TileImages[tile], &op)
 			}
 			xTileCount++
@@ -146,9 +149,19 @@ func (p *viewport) Draw(g *Game) {
 	// render sprites
 	for _, entity := range g.registry.DrawableEntities() {
 		if p.InView(entity) {
+			// The entity's position in chipmunk 2d space is its center of gravity.
+			// Use these coordinates as starting point for translating to view coordinates (in pixels)
 			x, y := entity.Position()
+
+			// Find the top-left corner of the entity's shape and pull its position back to top-left corner.
+			x -= (entity.Shape.BB().R - entity.Shape.BB().L) / 2
+			y -= (entity.Shape.BB().T - entity.Shape.BB().B) / 2
+
+			// Adjust to get the correct pixel offset within the view
 			x -= p.viewX
 			y -= p.viewY
+
+			// draw the entity
 			op := ebiten.DrawImageOptions{}
 			op.GeoM.Translate(x, y)
 			p.view.DrawImage(entity.Image(), &op)
@@ -321,7 +334,7 @@ func main() {
 	// allow no overlap between shapes in the space, to reduce prevalence of tile overlap/collision bug
 	space.SetCollisionSlop(0.00)
 
-	player := entity.InitializePlayer(space, 0, 0)
+	player := entity.InitializePlayer(space, 50, 50)
 	r := entity.Registry{}
 	r.AddEntity(player)
 
