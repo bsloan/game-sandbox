@@ -197,6 +197,15 @@ func (g *Game) MovePlayer() {
 			p.State = entity.IdleLeft
 		}
 	}
+
+	if !ebiten.IsKeyPressed(ebiten.KeySpace) {
+		if p.Grounded {
+			p.Boost = PlayerJumpBoostHeight
+		} else {
+			p.Boost = 0
+		}
+	}
+
 	if ebiten.IsKeyPressed(ebiten.KeyRight) || ebiten.IsKeyPressed(ebiten.KeyD) {
 		p.Facing = entity.Right
 		if p.Grounded {
@@ -210,6 +219,7 @@ func (g *Game) MovePlayer() {
 		}
 		p.Body.SetVelocity(vx+PlayerAccelerationStepX, vy)
 	}
+
 	if ebiten.IsKeyPressed(ebiten.KeyLeft) || ebiten.IsKeyPressed(ebiten.KeyA) {
 		p.Facing = entity.Left
 		if p.Grounded {
@@ -228,7 +238,7 @@ func (g *Game) MovePlayer() {
 		// TODO: crouch
 	}
 
-	if ebiten.IsKeyPressed(ebiten.KeySpace) && p.State != entity.FallingRight && p.State != entity.FallingLeft {
+	if ebiten.IsKeyPressed(ebiten.KeySpace) && p.Boost > 0 {
 		if p.State == entity.JumpingRight || p.State == entity.JumpingLeft {
 			// player is already in a jump, diminish boost
 			p.Boost--
@@ -240,7 +250,6 @@ func (g *Game) MovePlayer() {
 			} else {
 				p.State = entity.JumpingRight
 			}
-			p.Boost = PlayerJumpBoostHeight
 			p.Body.SetVelocity(p.Body.Velocity().X, -PlayerJumpInitialVelocity)
 			p.Grounded = false
 			p.Shape.SetFriction(0)
