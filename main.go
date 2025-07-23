@@ -12,7 +12,6 @@ import (
 	"github.com/jakecoffman/cp"
 	"image"
 	"log"
-	"math"
 )
 
 // TODO: move to a global settings package
@@ -27,7 +26,8 @@ const (
 	Gravity                    = 450.0
 	PlayerMaxVelocityX         = 100
 	PlayerMaxVelocityY         = 300
-	PlayerAccelerationStepX    = 10
+	PlayerJumpVelocityLimit    = 100
+	PlayerAccelerationStepX    = 1000
 	PlayerJumpBoostHeight      = 30
 	PlayerJumpInitialVelocity  = 6000
 	PlayerJumpContinueVelocity = 400
@@ -213,11 +213,9 @@ func (g *Game) MovePlayer() {
 		} else if p.State == entity.JumpingLeft {
 			p.State = entity.JumpingRight
 		}
-		vx, vy := p.Body.Velocity().X, p.Body.Velocity().Y
-		if vx < 0 {
-			vx = math.Ceil(vx / 1.5)
-		}
-		p.Body.SetVelocity(vx+PlayerAccelerationStepX, vy)
+		vx, vy := p.Body.Velocity().X, 0.0 // p.Body.Velocity().Y
+		vx += PlayerAccelerationStepX
+		p.Body.ApplyForceAtWorldPoint(cp.Vector{vx, vy}, p.Body.Position())
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyLeft) || ebiten.IsKeyPressed(ebiten.KeyA) {
@@ -227,11 +225,9 @@ func (g *Game) MovePlayer() {
 		} else if p.State == entity.JumpingRight {
 			p.State = entity.JumpingLeft
 		}
-		vx, vy := p.Body.Velocity().X, p.Body.Velocity().Y
-		if vx > 0 {
-			vx = math.Floor(vx / 1.5)
-		}
-		p.Body.SetVelocity(vx-PlayerAccelerationStepX, vy)
+		vx, vy := p.Body.Velocity().X, 0.0 //p.Body.Velocity().Y
+		vx -= PlayerAccelerationStepX
+		p.Body.ApplyForceAtWorldPoint(cp.Vector{vx, vy}, p.Body.Position())
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyDown) {
@@ -288,6 +284,9 @@ func (g *Game) MovePlayer() {
 	if p.Body.Velocity().Y > PlayerMaxVelocityY {
 		p.Body.SetVelocity(p.Body.Velocity().X, PlayerMaxVelocityY)
 	}
+	if p.Body.Velocity().Y < -PlayerJumpVelocityLimit {
+		p.Body.SetVelocity(p.Body.Velocity().X, -PlayerJumpVelocityLimit)
+	}
 }
 
 func (g *Game) Update() error {
@@ -316,7 +315,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		vx, vy := g.registry.Player().Body.Velocity().X, g.registry.Player().Body.Velocity().Y
 		x, y := g.vp.Position()
 		debugMsg := fmt.Sprintf(
-			"TPS: %0.2f Origin X,Y: (%0.2f, %0.2f) Tile X,Y: (%v, %v)\nPlayer X,Y (%0.2f, %0.2f) Velocity X,Y (%0.2f, %0.2f)\nGrounded: %v Boost: %v",
+			"TPS: %0.2f Origin X,Y: (%0.2f, %0.2f) Tile X,Y: (%v, %v)\nPlayer X,Y (%0.2f, %0.2f)\nVelocity X,Y (%0.2f, %0.2f)\nGrounded: %v Boost: %v",
 			ebiten.ActualTPS(), x, y, tx, ty, px, py, vx, vy, g.registry.Player().Grounded, g.registry.Player().Boost)
 		ebitenutil.DebugPrint(screen, debugMsg)
 	}
