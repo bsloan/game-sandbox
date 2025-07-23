@@ -262,12 +262,19 @@ func (g *Game) MovePlayer() {
 
 	// determine if player is falling, change friction and sprite animation accordingly
 	if p.Body.Velocity().Y > 50 {
+		// player has steady downward velocity and is falling
 		if p.Facing == entity.Right {
 			p.State = entity.FallingRight
 		}
 		if p.Facing == entity.Left {
 			p.State = entity.FallingLeft
 		}
+		p.Grounded = false
+		p.Shape.SetFriction(0)
+	} else if p.Body.Velocity().Y >= 0.01 {
+		// player has a little bit of downward velocity but may not be falling
+		// this helps prevent player from becoming "grounded" a.k.a. stuck on
+		// vertically stacked tiles
 		p.Grounded = false
 		p.Shape.SetFriction(0)
 	} else if p.Grounded {
