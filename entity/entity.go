@@ -47,6 +47,7 @@ type Entity struct {
 	State       EntityState
 	Facing      Direction
 	Grounded    bool
+	OnSlope     bool
 	Boost       float64
 	Animations  map[EntityState]*Animation
 	StaticImage *ebiten.Image

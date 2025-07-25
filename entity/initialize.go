@@ -90,12 +90,13 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 	space.AddBody(player.Body)
 	player.Body.SetPosition(cp.Vector{X: x, Y: y})
 	playerShape := space.AddShape(cp.NewBox(player.Body, 8, 7, 8))
-	//playerShape := space.AddShape(cp.NewCircle(player.Body, 8, cp.Vector{X: 0, Y: 0}))
+	//playerShape := space.AddShape(cp.NewCircle(player.Body, 10, cp.Vector{X: 0, Y: 0}))
 
 	playerShape.SetElasticity(0)
 	playerShape.SetFriction(0.75)
 	playerShape.SetCollisionType(PlayerCollisionType)
 	player.Shape = playerShape
 	GenericGroundedHandler(space, PlayerCollisionType)
+	SlopeHandler(space, PlayerCollisionType)
 	return &player
 }

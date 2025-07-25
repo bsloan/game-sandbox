@@ -213,7 +213,7 @@ func (g *Game) MovePlayer() {
 		} else if p.State == entity.JumpingLeft {
 			p.State = entity.JumpingRight
 		}
-		vx, vy := p.Body.Velocity().X, 0.0 // p.Body.Velocity().Y
+		vx, vy := p.Body.Velocity().X, 0.0
 		vx += PlayerAccelerationStepX
 		p.Body.ApplyForceAtWorldPoint(cp.Vector{vx, vy}, p.Body.Position())
 	}
@@ -225,7 +225,7 @@ func (g *Game) MovePlayer() {
 		} else if p.State == entity.JumpingRight {
 			p.State = entity.JumpingLeft
 		}
-		vx, vy := p.Body.Velocity().X, 0.0 //p.Body.Velocity().Y
+		vx, vy := p.Body.Velocity().X, 0.0
 		vx -= PlayerAccelerationStepX
 		p.Body.ApplyForceAtWorldPoint(cp.Vector{vx, vy}, p.Body.Position())
 	}
@@ -261,7 +261,7 @@ func (g *Game) MovePlayer() {
 	}
 
 	// determine if player is falling, change friction and sprite animation accordingly
-	if p.Body.Velocity().Y > 50 {
+	if p.Body.Velocity().Y > 50 && !p.OnSlope {
 		// player has steady downward velocity and is falling
 		if p.Facing == entity.Right {
 			p.State = entity.FallingRight
@@ -271,14 +271,21 @@ func (g *Game) MovePlayer() {
 		}
 		p.Grounded = false
 		p.Shape.SetFriction(0)
-	} else if p.Body.Velocity().Y >= 0.01 {
+	} else if p.Body.Velocity().Y >= 0.01 && !p.OnSlope {
 		// player has a little bit of downward velocity but may not be falling
 		// this helps prevent player from becoming "grounded" a.k.a. stuck on
 		// vertically stacked tiles
 		p.Grounded = false
 		p.Shape.SetFriction(0)
-	} else if p.Grounded {
+	}
+	if p.Grounded && !p.OnSlope {
+		// reset the player to normal friction and y velocity for being on solid ground
 		p.Shape.SetFriction(0.75)
+		p.Body.SetVelocity(p.Body.Velocity().X, 0)
+	}
+	if p.Grounded && p.OnSlope && p.Body.Velocity().Y > 2 {
+		// if the player is sliding down a slope, add extra friction to control it
+		p.Shape.SetFriction(4.0)
 	}
 
 	// enforce maximum velocity in each direction
@@ -349,7 +356,7 @@ func main() {
 	// allow no overlap between shapes in the space, to reduce prevalence of tile overlap/collision bug
 	//space.SetCollisionSlop(0.00)
 
-	player := entity.InitializePlayer(space, 50, 50)
+	player := entity.InitializePlayer(space, 50, 850)
 	r := entity.Registry{}
 	r.AddEntity(player)
 
