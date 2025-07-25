@@ -106,8 +106,8 @@ func (p *viewport) Draw(g *Game) {
 		// draw them at constant height
 		// TODO: refactor to generate the midground image elsewhere
 		p.midground = ebiten.NewImage(int(float64(g.board.PixelWidth)), int(float64(g.board.PixelHeight)))
-		ht := float64(asset.HillsMidground.Bounds().Dy()) * 1.75
-		midY := float64(g.board.PixelHeight) - ht
+		ht := float64(asset.HillsMidground.Bounds().Dy())
+		midY := float64(g.board.PixelHeight) - (ht + 100)
 		for midX := 0; midX < g.board.PixelWidth; midX += 160 {
 			op := ebiten.DrawImageOptions{}
 			op.GeoM.Translate(float64(midX), midY)
@@ -366,8 +366,8 @@ func main() {
 	g := Game{
 		debug: *debugMode,
 		vp: viewport{
-			maxViewX: float64(gameboard.PixelWidth - screenWidth),
-			maxViewY: float64(gameboard.PixelHeight - screenHeight),
+			maxViewX: float64(gameboard.PixelWidth - screenWidth - tileSize),
+			maxViewY: float64(gameboard.PixelHeight - screenHeight - tileSize),
 		},
 		board:    gameboard,
 		registry: r,
