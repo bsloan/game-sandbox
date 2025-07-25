@@ -261,7 +261,7 @@ func (g *Game) MovePlayer() {
 	}
 
 	// determine if player is falling, change friction and sprite animation accordingly
-	if p.Body.Velocity().Y > 50 && !p.OnSlope {
+	if p.Body.Velocity().Y > 60 && !p.OnSlope {
 		// player has steady downward velocity and is falling
 		if p.Facing == entity.Right {
 			p.State = entity.FallingRight
