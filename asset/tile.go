@@ -37,14 +37,19 @@ var (
 	//go:embed environment/middle.png
 	hillsMidgroundPng []byte
 
-	GrassLeft      *ebiten.Image
-	GrassMiddle    *ebiten.Image
-	GrassRight     *ebiten.Image
-	DirtMiddle     *ebiten.Image
-	GrassSlopeR1   *ebiten.Image
-	GrassSlopeR2   *ebiten.Image
-	GrassSlopeR3   *ebiten.Image
-	GrassSlopeR4   *ebiten.Image
+	GrassLeft    *ebiten.Image
+	GrassMiddle  *ebiten.Image
+	GrassRight   *ebiten.Image
+	DirtMiddle   *ebiten.Image
+	GrassSlopeR1 *ebiten.Image
+	GrassSlopeR2 *ebiten.Image
+	GrassSlopeR3 *ebiten.Image
+	GrassSlopeR4 *ebiten.Image
+	GrassSlopeL1 *ebiten.Image
+	GrassSlopeL2 *ebiten.Image
+	GrassSlopeL3 *ebiten.Image
+	GrassSlopeL4 *ebiten.Image
+
 	SkyBackground  *ebiten.Image
 	HillsMidground *ebiten.Image
 	TileImages     = make(map[int]*ebiten.Image)
@@ -59,15 +64,29 @@ func LoadTiles() {
 	GrassSlopeR2 = imageFromBytes(grassSlopeR2Png)
 	GrassSlopeR3 = imageFromBytes(grassSlopeR3Png)
 	GrassSlopeR4 = imageFromBytes(grassSlopeR4Png)
+	GrassSlopeL1 = flipImageXAxis(GrassSlopeR1)
+	GrassSlopeL2 = flipImageXAxis(GrassSlopeR2)
+	GrassSlopeL3 = flipImageXAxis(GrassSlopeR3)
+	GrassSlopeL4 = flipImageXAxis(GrassSlopeR4)
 	SkyBackground = imageFromBytes(skyBackgroundPng)
 	HillsMidground = imageFromBytes(hillsMidgroundPng)
+
+	// assign tile images to values
 	TileImages[1] = GrassLeft
 	TileImages[2] = GrassMiddle
 	TileImages[3] = GrassRight
 	TileImages[4] = DirtMiddle
+
 	TileImages[5] = GrassSlopeR1
 	TileImages[6] = GrassSlopeR2
 	TileImages[7] = GrassSlopeR3
 	TileImages[8] = GrassSlopeR4
 	TileImages[9] = GrassSlopeR1 // Magic root tile for ~26 degree positive slope (grass)
+
+	TileImages[10] = GrassSlopeL1
+	TileImages[11] = GrassSlopeL2
+	TileImages[12] = GrassSlopeL3
+	TileImages[13] = GrassSlopeL4
+	TileImages[14] = GrassSlopeL1 // Magic root tile for ~26 degree negative slope (grass)
+
 }
