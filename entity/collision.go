@@ -2,6 +2,7 @@ package entity
 
 import (
 	"github.com/jakecoffman/cp"
+	"math"
 )
 
 const (
@@ -15,7 +16,7 @@ func GenericGroundedHandler(space *cp.Space, collisionType cp.CollisionType) {
 
 	handler.BeginFunc = func(arb *cp.Arbiter, space *cp.Space, data interface{}) bool {
 		n := arb.Normal()
-		grounded := n.Y > 0
+		grounded := n.Y > 0 && math.Abs(n.X) < 0.5
 		if grounded {
 			body1, body2 := arb.Bodies()
 			if body1.UserData != nil {

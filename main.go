@@ -329,8 +329,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		vx, vy := g.registry.Player().Body.Velocity().X, g.registry.Player().Body.Velocity().Y
 		x, y := g.vp.Position()
 		debugMsg := fmt.Sprintf(
-			"TPS: %0.2f Origin X,Y: (%0.2f, %0.2f) Tile X,Y: (%v, %v)\nPlayer X,Y (%0.2f, %0.2f)\nVelocity X,Y (%0.2f, %0.2f)\nGrounded: %v Boost: %v",
-			ebiten.ActualTPS(), x, y, tx, ty, px, py, vx, vy, g.registry.Player().Grounded, g.registry.Player().Boost)
+			"TPS: %0.2f Origin X,Y: (%0.2f, %0.2f) Tile X,Y: (%v, %v)\nPlayer X,Y (%0.2f, %0.2f)\nVelocity X,Y (%0.2f, %0.2f)\nGrounded: %v\nSlope: %v\nBoost: %v",
+			ebiten.ActualTPS(), x, y, tx, ty, px, py, vx, vy, g.registry.Player().Grounded, g.registry.Player().OnSlope, g.registry.Player().Boost)
 		ebitenutil.DebugPrint(screen, debugMsg)
 	}
 }
