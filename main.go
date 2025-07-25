@@ -105,10 +105,10 @@ func (p *viewport) Draw(g *Game) {
 		// to be visible within the viewport boundaries. skip any that are not visible.
 		// draw them at constant height
 		// TODO: refactor to generate the midground image elsewhere
-		p.midground = ebiten.NewImage(int(float64(boards.GameBoardPixelWidth)), int(float64(boards.GameBoardPixelHeight)))
+		p.midground = ebiten.NewImage(int(float64(g.board.PixelWidth)), int(float64(g.board.PixelHeight)))
 		ht := float64(asset.HillsMidground.Bounds().Dy()) * 1.75
-		midY := float64(boards.GameBoardPixelHeight) - ht
-		for midX := 0; midX < boards.GameBoardPixelWidth; midX += 160 {
+		midY := float64(g.board.PixelHeight) - ht
+		for midX := 0; midX < g.board.PixelWidth; midX += 160 {
 			op := ebiten.DrawImageOptions{}
 			op.GeoM.Translate(float64(midX), midY)
 			p.midground.DrawImage(asset.HillsMidground, &op)
@@ -129,10 +129,10 @@ func (p *viewport) Draw(g *Game) {
 	tileX, tileY := p.TilePosition()
 	ox, oy := float64(int(p.viewX)%tileSize), float64(int(p.viewY)%tileSize)
 	yTileCount := 0
-	for ty := tileY; ty <= (tileY+screenHeightTiles+1) && ty < len(boards.GameBoard); ty++ {
+	for ty := tileY; ty <= (tileY+screenHeightTiles+1) && ty < g.board.TileHeight; ty++ {
 		xTileCount := 0
-		for tx := tileX; tx <= (tileX+screenWidthTiles+1) && tx < len(boards.GameBoard[0]); tx++ {
-			tile := boards.GameBoard[ty][tx]
+		for tx := tileX; tx <= (tileX+screenWidthTiles+1) && tx < g.board.TileWidth; tx++ {
+			tile := g.board.Map[ty][tx]
 			if tile != 0 {
 				// adjust the x,y position where the tile is rendered from to be its top-left corner.
 				// the tile's x,y coordinates in chipmunk 2d space are at it's center, so need to pull it
@@ -171,7 +171,7 @@ func (p *viewport) Draw(g *Game) {
 
 type Game struct {
 	vp       viewport
-	board    [][]int
+	board    boards.Gameboard
 	debug    bool
 	registry entity.Registry
 	space    *cp.Space
@@ -261,7 +261,7 @@ func (g *Game) MovePlayer() {
 	}
 
 	// determine if player is falling, change friction and sprite animation accordingly
-	if p.Body.Velocity().Y > 60 && !p.OnSlope {
+	if p.Body.Velocity().Y > 70 && !p.OnSlope {
 		// player has steady downward velocity and is falling
 		if p.Facing == entity.Right {
 			p.State = entity.FallingRight
@@ -356,23 +356,26 @@ func main() {
 	// allow no overlap between shapes in the space, to reduce prevalence of tile overlap/collision bug
 	//space.SetCollisionSlop(0.00)
 
-	player := entity.InitializePlayer(space, 50, 850)
+	player := entity.InitializePlayer(space, 0, 0)
 	r := entity.Registry{}
 	r.AddEntity(player)
+
+	gameboard := boards.Gameboard{}
+	gameboard.LoadGameboard(boards.Level1Map, space)
 
 	g := Game{
 		debug: *debugMode,
 		vp: viewport{
-			maxViewX: float64(boards.GameBoardPixelWidth - screenWidth),
-			maxViewY: float64(boards.GameBoardPixelHeight - screenHeight),
+			maxViewX: float64(gameboard.PixelWidth - screenWidth),
+			maxViewY: float64(gameboard.PixelHeight - screenHeight),
 		},
-		board:    boards.GameBoard,
+		board:    gameboard,
 		registry: r,
 		space:    space,
 	}
 
 	// initialize all the tiles in this board into the game physics space
-	boards.InitializeTiles(space, boards.GameBoard)
+	//boards.InitializeTiles(space, boards.GameBoard)
 
 	// set the initial position of the viewport
 	g.vp.Center(player.Position())
