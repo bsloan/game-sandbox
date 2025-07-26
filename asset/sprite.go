@@ -64,6 +64,24 @@ var (
 	//go:embed sprite/player_run_6.png
 	playerMoveRight6Png []byte
 
+	//go:embed sprite/white_slash1.png
+	whiteSlashRight1Png []byte
+
+	//go:embed sprite/white_slash2.png
+	whiteSlashRight2Png []byte
+
+	//go:embed sprite/white_slash3.png
+	whiteSlashRight3Png []byte
+
+	//go:embed sprite/white_slash4.png
+	whiteSlashRight4Png []byte
+
+	//go:embed sprite/white_slash5.png
+	whiteSlashRight5Png []byte
+
+	//go:embed sprite/white_slash6.png
+	whiteSlashRight6Png []byte
+
 	PlayerIdleRight1 *ebiten.Image
 	PlayerIdleRight2 *ebiten.Image
 	PlayerIdleRight3 *ebiten.Image
@@ -90,6 +108,20 @@ var (
 	PlayerJumpLeft1  *ebiten.Image
 	PlayerFallRight1 *ebiten.Image
 	PlayerFallLeft1  *ebiten.Image
+
+	WhiteSlashRight1 *ebiten.Image
+	WhiteSlashRight2 *ebiten.Image
+	WhiteSlashRight3 *ebiten.Image
+	WhiteSlashRight4 *ebiten.Image
+	WhiteSlashRight5 *ebiten.Image
+	WhiteSlashRight6 *ebiten.Image
+
+	WhiteSlashLeft1 *ebiten.Image
+	WhiteSlashLeft2 *ebiten.Image
+	WhiteSlashLeft3 *ebiten.Image
+	WhiteSlashLeft4 *ebiten.Image
+	WhiteSlashLeft5 *ebiten.Image
+	WhiteSlashLeft6 *ebiten.Image
 )
 
 func LoadSprites() {
@@ -125,4 +157,18 @@ func LoadSprites() {
 	PlayerFallRight1 = imageFromBytes(playerFallRight1Png)
 
 	PlayerFallLeft1 = flipImageXAxis(PlayerFallRight1)
+
+	WhiteSlashRight1 = imageFromBytes(whiteSlashRight1Png)
+	WhiteSlashRight2 = imageFromBytes(whiteSlashRight2Png)
+	WhiteSlashRight3 = imageFromBytes(whiteSlashRight3Png)
+	WhiteSlashRight4 = imageFromBytes(whiteSlashRight4Png)
+	WhiteSlashRight5 = imageFromBytes(whiteSlashRight5Png)
+	WhiteSlashRight6 = imageFromBytes(whiteSlashRight6Png)
+
+	WhiteSlashLeft1 = flipImageXAxis(WhiteSlashRight1)
+	WhiteSlashLeft2 = flipImageXAxis(WhiteSlashRight2)
+	WhiteSlashLeft3 = flipImageXAxis(WhiteSlashRight3)
+	WhiteSlashLeft4 = flipImageXAxis(WhiteSlashRight4)
+	WhiteSlashLeft5 = flipImageXAxis(WhiteSlashRight5)
+	WhiteSlashLeft6 = flipImageXAxis(WhiteSlashRight6)
 }

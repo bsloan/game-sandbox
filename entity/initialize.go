@@ -100,3 +100,46 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 	SlopeHandler(space, PlayerCollisionType)
 	return &player
 }
+
+func InitializePlayerSword(space *cp.Space, x, y float64) *Entity {
+	slashRight := Animation{
+		Frames: []*ebiten.Image{
+			asset.WhiteSlashRight1,
+			asset.WhiteSlashRight2,
+			asset.WhiteSlashRight3,
+			asset.WhiteSlashRight4,
+			asset.WhiteSlashRight5,
+			asset.WhiteSlashRight6,
+		},
+		AnimationSpeed:        0.4,
+		EntityStateTransition: Idle,
+	}
+	slashLeft := Animation{
+		Frames: []*ebiten.Image{
+			asset.WhiteSlashLeft1,
+			asset.WhiteSlashLeft2,
+			asset.WhiteSlashLeft3,
+			asset.WhiteSlashLeft4,
+			asset.WhiteSlashLeft5,
+			asset.WhiteSlashLeft6,
+		},
+		AnimationSpeed:        0.4,
+		EntityStateTransition: Idle,
+	}
+	sword := Entity{
+		Type:   PlayerWeapon,
+		State:  Idle,
+		Facing: Right,
+		Animations: map[EntityState]*Animation{
+			Idle:        nil,
+			ActiveRight: &slashRight,
+			ActiveLeft:  &slashLeft,
+		},
+		Body: cp.NewBody(0.001, cp.INFINITY),
+	} // mass is set to near-zero to ignore gravity. setting mass to true 0 causes weird physics bugs
+
+	sword.Body.UserData = &sword
+	space.AddBody(sword.Body)
+	sword.Body.SetPosition(cp.Vector{X: x, Y: y})
+	return &sword
+}

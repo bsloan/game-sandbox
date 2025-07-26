@@ -10,6 +10,7 @@ type EntityType int
 
 const (
 	Player EntityType = iota
+	PlayerWeapon
 	Bird
 	Frog
 )
@@ -17,7 +18,8 @@ const (
 type EntityState int
 
 const (
-	Idle EntityState = iota
+	Default EntityState = iota
+	Idle
 	IdleLeft
 	IdleRight
 	MovingLeft
@@ -28,6 +30,8 @@ const (
 	JumpingLeft
 	FallingRight
 	FallingLeft
+	ActiveRight
+	ActiveLeft
 	Dead
 )
 
@@ -65,7 +69,7 @@ func (e *Entity) Position() (float64, float64) {
 // then try to return the entity's static image. If no animations or static image
 // are defined, return nil.
 func (e *Entity) Image() *ebiten.Image {
-	if e.Animations != nil {
+	if e.Animations != nil && e.Animations[e.State] != nil {
 		return e.Animations[e.State].Frames[e.Animations[e.State].CurrentFrameIndex]
 	} else if e.StaticImage != nil {
 		return e.StaticImage
@@ -93,6 +97,16 @@ func (r *Registry) Player() *Entity {
 	return nil
 }
 
+// TODO: refactor, provide a Query function that looks up whatever
+func (r *Registry) PlayerWeapon() *Entity {
+	for i, entity := range r.Entities {
+		if entity.Type == PlayerWeapon {
+			return r.Entities[i]
+		}
+	}
+	return nil
+}
+
 func (r *Registry) DrawableEntities() []*Entity {
 	var result []*Entity
 	for i, entity := range r.Entities {
@@ -104,22 +118,27 @@ func (r *Registry) DrawableEntities() []*Entity {
 }
 
 type Animation struct {
-	Frames            []*ebiten.Image
-	CurrentFrameIndex int
-	Count             float64
-	AnimationSpeed    float64
+	Frames                []*ebiten.Image
+	CurrentFrameIndex     int
+	Count                 float64
+	AnimationSpeed        float64
+	EntityStateTransition EntityState
 }
 
-func (a *Animation) Animate() {
+func (a *Animation) Animate() EntityState {
 	// advance animation
 	a.Count += a.AnimationSpeed
 	a.CurrentFrameIndex = int(math.Floor(a.Count))
 
-	// restart the animation
-	// TODO: not all animations cycle indefinitely, some may end and then
-	//  trigger a side effect (e.g., change state of its owning Entity).
+	// animation cycle is complete. if this Animation has any state transition
+	// other than Default, return it to the caller so the owning Entity's state
+	// can be updated. Otherwise, repeat the animation indefinitely
 	if a.CurrentFrameIndex >= len(a.Frames) {
 		a.Count = 0
 		a.CurrentFrameIndex = 0
+		if a.EntityStateTransition != Default {
+			return a.EntityStateTransition
+		}
 	}
+	return Default
 }

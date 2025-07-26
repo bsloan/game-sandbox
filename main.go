@@ -148,7 +148,7 @@ func (p *viewport) Draw(g *Game) {
 
 	// render sprites
 	for _, entity := range g.registry.DrawableEntities() {
-		if p.InView(entity) {
+		if p.InView(entity) && entity.Shape != nil {
 			// The entity's position in chipmunk 2d space is its center of gravity.
 			// Use these coordinates as starting point for translating to view coordinates (in pixels)
 			x, y := entity.Position()
@@ -162,9 +162,12 @@ func (p *viewport) Draw(g *Game) {
 			y -= p.viewY
 
 			// draw the entity
-			op := ebiten.DrawImageOptions{}
-			op.GeoM.Translate(x, y)
-			p.view.DrawImage(entity.Image(), &op)
+			entityImage := entity.Image()
+			if entityImage != nil {
+				op := ebiten.DrawImageOptions{}
+				op.GeoM.Translate(x, y)
+				p.view.DrawImage(entityImage, &op)
+			}
 		}
 	}
 }
@@ -178,9 +181,12 @@ type Game struct {
 }
 
 func (g *Game) animateSprites() {
-	for _, entity := range g.registry.Entities {
-		if entity.Animations != nil {
-			entity.Animations[entity.State].Animate()
+	for _, e := range g.registry.Entities {
+		if e.Animations != nil && e.Animations[e.State] != nil {
+			newEntityState := e.Animations[e.State].Animate()
+			if newEntityState != entity.Default {
+				e.State = newEntityState
+			}
 		}
 	}
 }
@@ -189,6 +195,7 @@ func (g *Game) MovePlayer() {
 	// TODO: maybe refactor movement to an interface on the Entity struct
 
 	var p = g.registry.Player()
+	var pWeapon = g.registry.PlayerWeapon()
 
 	if !input.AnyKeyPressed() && p.Grounded {
 		if p.Facing == entity.Right {
@@ -260,6 +267,31 @@ func (g *Game) MovePlayer() {
 		}
 	}
 
+	if (ebiten.IsKeyPressed(ebiten.KeyK) || ebiten.IsKeyPressed(ebiten.KeyAlt)) && pWeapon.State != entity.ActiveRight && pWeapon.State != entity.ActiveLeft {
+		// create a special Shape for the slash, and show/animate it
+		if p.Facing == entity.Right {
+			pWeapon.State = entity.ActiveRight
+			pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X + 20, p.Body.Position().Y + 10})
+		} else {
+			pWeapon.State = entity.ActiveLeft
+			pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X - 5, p.Body.Position().Y + 10})
+		}
+		weaponShape := g.space.AddShape(cp.NewBox(pWeapon.Body, 64, 47, 10))
+		weaponShape.SetSensor(true)
+		pWeapon.Shape = weaponShape
+
+		// TODO: add a Shape to sword's Body representing the slash
+
+		// TODO: collision detection for the slash
+	}
+
+	// make sure player's weapon position tracks player's body position each frame
+	if p.Facing == entity.Right {
+		pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X + 20, p.Body.Position().Y + 10})
+	} else {
+		pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X - 5, p.Body.Position().Y + 10})
+	}
+
 	// determine if player is falling, change friction and sprite animation accordingly
 	if p.Body.Velocity().Y > 70 && !p.OnSlope {
 		// player has steady downward velocity and is falling
@@ -317,6 +349,9 @@ func (g *Game) Update() error {
 	// update physics space
 	g.space.Step(1.0 / float64(ebiten.TPS()))
 
+	// TODO: maybe try space cleanup here, post-step
+	
+
 	// return any errors
 	return nil
 }
@@ -359,6 +394,9 @@ func main() {
 	player := entity.InitializePlayer(space, 0, 0)
 	r := entity.Registry{}
 	r.AddEntity(player)
+
+	sword := entity.InitializePlayerSword(space, 0, 0)
+	r.AddEntity(sword)
 
 	gameboard := boards.Gameboard{}
 	gameboard.LoadGameboard(boards.Level1Map, space)
