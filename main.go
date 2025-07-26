@@ -195,7 +195,7 @@ func (g *Game) MovePlayer() {
 	// TODO: maybe refactor movement to an interface on the Entity struct
 
 	var p = g.registry.Player()
-	var pWeapon = g.registry.PlayerWeapon()
+	var pWeapon = g.registry.Query(entity.PlayerWeapon)
 
 	if !input.AnyKeyPressed() && p.Grounded {
 		if p.Facing == entity.Right {
@@ -350,7 +350,6 @@ func (g *Game) Update() error {
 	g.space.Step(1.0 / float64(ebiten.TPS()))
 
 	// TODO: maybe try space cleanup here, post-step
-	
 
 	// return any errors
 	return nil

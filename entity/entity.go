@@ -89,18 +89,12 @@ func (r *Registry) AddEntity(entity *Entity) {
 }
 
 func (r *Registry) Player() *Entity {
-	for i, entity := range r.Entities {
-		if entity.Type == Player {
-			return r.Entities[i]
-		}
-	}
-	return nil
+	return r.Query(Player)
 }
 
-// TODO: refactor, provide a Query function that looks up whatever
-func (r *Registry) PlayerWeapon() *Entity {
+func (r *Registry) Query(entityType EntityType) *Entity {
 	for i, entity := range r.Entities {
-		if entity.Type == PlayerWeapon {
+		if entity.Type == entityType {
 			return r.Entities[i]
 		}
 	}
