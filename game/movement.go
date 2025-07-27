@@ -3,36 +3,41 @@ package game
 import (
 	"github.com/bsloan/game-sandbox/entity"
 	"github.com/bsloan/game-sandbox/settings"
-	"github.com/ebitenui/ebitenui/input"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/jakecoffman/cp"
 )
 
-func inputAny() bool {
-	return input.AnyKeyPressed()
+func (g *Game) gamepadAvailable() bool {
+	return len(g.gamepadIds) > 0
 }
 
-func inputJump() bool {
-	return ebiten.IsKeyPressed(ebiten.KeySpace)
+func (g *Game) inputAny() bool {
+	return g.inputJump() || g.inputLeft() || g.inputRight() || g.inputAttack()
 }
 
-func inputLeft() bool {
-	return ebiten.IsKeyPressed(ebiten.KeyLeft) || ebiten.IsKeyPressed(ebiten.KeyA)
+func (g *Game) inputJump() bool {
+	return ebiten.IsKeyPressed(ebiten.KeySpace) || (g.gamepadAvailable() && ebiten.IsGamepadButtonPressed(g.gamepadIds[0], 0))
 }
 
-func inputRight() bool {
-	return ebiten.IsKeyPressed(ebiten.KeyRight) || ebiten.IsKeyPressed(ebiten.KeyD)
+func (g *Game) inputLeft() bool {
+	return ebiten.IsKeyPressed(ebiten.KeyLeft) || ebiten.IsKeyPressed(ebiten.KeyA) || (g.gamepadAvailable() && ebiten.IsGamepadButtonPressed(g.gamepadIds[0], 18))
 }
 
-func inputAttack() bool {
-	return ebiten.IsKeyPressed(ebiten.KeyK) || ebiten.IsKeyPressed(ebiten.KeyAlt)
+func (g *Game) inputRight() bool {
+	return ebiten.IsKeyPressed(ebiten.KeyRight) || ebiten.IsKeyPressed(ebiten.KeyD) || (g.gamepadAvailable() && ebiten.IsGamepadButtonPressed(g.gamepadIds[0], 16))
+}
+
+func (g *Game) inputAttack() bool {
+	return ebiten.IsKeyPressed(ebiten.KeyK) || ebiten.IsKeyPressed(ebiten.KeyAlt) || (g.gamepadAvailable() && ebiten.IsGamepadButtonPressed(g.gamepadIds[0], 3))
 }
 
 func (g *Game) MovePlayer() {
 	var p = g.registry.Player()
 	var pWeapon = g.registry.Query(entity.PlayerWeapon)
 
-	if !inputAny() && p.Grounded {
+	g.gamepadIds = ebiten.AppendGamepadIDs(g.gamepadIds[:0])
+
+	if !g.inputAny() && p.Grounded {
 		if p.Facing == entity.Right {
 			p.State = entity.IdleRight
 		} else if p.Facing == entity.Left {
@@ -40,7 +45,7 @@ func (g *Game) MovePlayer() {
 		}
 	}
 
-	if !inputJump() {
+	if !g.inputJump() {
 		if p.Grounded {
 			p.Boost = settings.PlayerJumpBoostHeight
 		} else {
@@ -48,7 +53,7 @@ func (g *Game) MovePlayer() {
 		}
 	}
 
-	if inputRight() {
+	if g.inputRight() {
 		p.Facing = entity.Right
 		if p.Grounded {
 			p.State = entity.MovingRight
@@ -60,7 +65,7 @@ func (g *Game) MovePlayer() {
 		p.Body.ApplyForceAtWorldPoint(cp.Vector{vx, vy}, p.Body.Position())
 	}
 
-	if inputLeft() {
+	if g.inputLeft() {
 		p.Facing = entity.Left
 		if p.Grounded {
 			p.State = entity.MovingLeft
@@ -76,7 +81,7 @@ func (g *Game) MovePlayer() {
 		// TODO: crouch
 	}
 
-	if inputJump() && p.Boost > 0 {
+	if g.inputJump() && p.Boost > 0 {
 		if p.State == entity.JumpingRight || p.State == entity.JumpingLeft {
 			// player is already in a jump, diminish boost
 			p.Boost--
@@ -102,7 +107,7 @@ func (g *Game) MovePlayer() {
 		}
 	}
 
-	if inputAttack() && pWeapon.State != entity.ActiveRight && pWeapon.State != entity.ActiveLeft {
+	if g.inputAttack() && pWeapon.State != entity.ActiveRight && pWeapon.State != entity.ActiveLeft {
 		// create a special Shape for the slash, and show/animate it
 		if p.Facing == entity.Right {
 			pWeapon.State = entity.ActiveRight

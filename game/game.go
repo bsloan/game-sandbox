@@ -152,20 +152,22 @@ func (p *Viewport) Draw(g *Game) {
 }
 
 type Game struct {
-	vp       Viewport
-	board    boards.Gameboard
-	debug    bool
-	registry entity.Registry
-	space    *cp.Space
+	vp         Viewport
+	board      boards.Gameboard
+	debug      bool
+	registry   entity.Registry
+	space      *cp.Space
+	gamepadIds []ebiten.GamepadID
 }
 
 func NewGame(viewport Viewport, gameboard boards.Gameboard, debug bool, registry entity.Registry, space *cp.Space) *Game {
 	game := Game{
-		vp:       viewport,
-		board:    gameboard,
-		debug:    debug,
-		registry: registry,
-		space:    space,
+		vp:         viewport,
+		board:      gameboard,
+		debug:      debug,
+		registry:   registry,
+		space:      space,
+		gamepadIds: []ebiten.GamepadID{},
 	}
 	return &game
 }
