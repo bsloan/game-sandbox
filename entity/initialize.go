@@ -67,6 +67,30 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 			asset.PlayerFallLeft1,
 		},
 	}
+	activeRight := Animation{
+		Frames: []*ebiten.Image{
+			asset.PlayerMoveRight4,
+			asset.PlayerMoveRight5,
+			asset.PlayerMoveRight6,
+			asset.PlayerMoveRight6,
+			asset.PlayerMoveRight2,
+			asset.PlayerMoveRight2,
+		},
+		AnimationSpeed:        0.4,
+		EntityStateTransition: Idle,
+	}
+	activeLeft := Animation{
+		Frames: []*ebiten.Image{
+			asset.PlayerMoveLeft4,
+			asset.PlayerMoveLeft5,
+			asset.PlayerMoveLeft6,
+			asset.PlayerMoveLeft6,
+			asset.PlayerMoveLeft2,
+			asset.PlayerMoveLeft2,
+		},
+		AnimationSpeed:        0.4,
+		EntityStateTransition: Idle,
+	}
 	player := Entity{
 		Type:   Player,
 		State:  Idle,
@@ -81,6 +105,8 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 			JumpingLeft:  &jumpLeft,
 			FallingRight: &fallRight,
 			FallingLeft:  &fallLeft,
+			ActiveRight:  &activeRight,
+			ActiveLeft:   &activeLeft,
 		},
 		Body:  cp.NewBody(1, cp.INFINITY),
 		Boost: 0,
@@ -112,7 +138,7 @@ func InitializePlayerSword(space *cp.Space, x, y float64) *Entity {
 			asset.WhiteSlashRight6,
 		},
 		AnimationSpeed:        0.4,
-		EntityStateTransition: Idle,
+		EntityStateTransition: IdleRight,
 	}
 	slashLeft := Animation{
 		Frames: []*ebiten.Image{
@@ -124,7 +150,7 @@ func InitializePlayerSword(space *cp.Space, x, y float64) *Entity {
 			asset.WhiteSlashLeft6,
 		},
 		AnimationSpeed:        0.4,
-		EntityStateTransition: Dead,
+		EntityStateTransition: IdleLeft,
 	}
 	sword := Entity{
 		Type:   PlayerWeapon,

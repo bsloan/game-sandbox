@@ -44,7 +44,7 @@ func (g *Game) MovePlayer() {
 
 	g.gamepadIds = ebiten.AppendGamepadIDs(g.gamepadIds[:0])
 
-	if !g.inputAny() && p.Grounded {
+	if !g.inputRight() && !g.inputLeft() && p.State != entity.ActiveRight && p.State != entity.ActiveLeft && p.Grounded {
 		if p.Facing == entity.Right {
 			p.State = entity.IdleRight
 		} else if p.Facing == entity.Left {
@@ -112,9 +112,6 @@ func (g *Game) MovePlayer() {
 			p.Grounded = false
 			p.Shape.SetFriction(0)
 		}
-		if p.Boost <= 0 {
-			p.Boost = 0
-		}
 	}
 
 	if g.inputAttack() && pWeapon.State != entity.ActiveRight && pWeapon.State != entity.ActiveLeft && p.WeaponAvailable {
@@ -122,9 +119,11 @@ func (g *Game) MovePlayer() {
 		if p.Facing == entity.Right {
 			pWeapon.State = entity.ActiveRight
 			pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X + 20, p.Body.Position().Y + 10})
+			p.State = entity.ActiveRight
 		} else {
 			pWeapon.State = entity.ActiveLeft
 			pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X - 5, p.Body.Position().Y + 10})
+			p.State = entity.ActiveLeft
 		}
 		weaponShape := g.space.AddShape(cp.NewBox(pWeapon.Body, 64, 47, 10))
 		weaponShape.SetSensor(true)
