@@ -61,8 +61,12 @@ func (g *Game) MovePlayer() {
 			p.State = entity.JumpingRight
 		}
 		vx, vy := p.Body.Velocity().X, 0.0
-		vx += settings.PlayerAccelerationStepX
-		p.Body.ApplyForceAtWorldPoint(cp.Vector{vx, vy}, p.Body.Position())
+		if p.Running {
+			vx += settings.PlayerRunningAccelerationStep
+		} else {
+			vx += settings.PlayerAccelerationStep
+		}
+		p.Body.ApplyForceAtWorldPoint(cp.Vector{X: vx, Y: vy}, p.Body.Position())
 	}
 
 	if g.inputLeft() {
@@ -73,8 +77,12 @@ func (g *Game) MovePlayer() {
 			p.State = entity.JumpingLeft
 		}
 		vx, vy := p.Body.Velocity().X, 0.0
-		vx -= settings.PlayerAccelerationStepX
-		p.Body.ApplyForceAtWorldPoint(cp.Vector{vx, vy}, p.Body.Position())
+		if p.Running {
+			vx -= settings.PlayerRunningAccelerationStep
+		} else {
+			vx -= settings.PlayerAccelerationStep
+		}
+		p.Body.ApplyForceAtWorldPoint(cp.Vector{X: vx, Y: vy}, p.Body.Position())
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyDown) {
@@ -99,11 +107,6 @@ func (g *Game) MovePlayer() {
 		}
 		if p.Boost <= 0 {
 			p.Boost = 0
-			if p.Facing == entity.Left {
-				p.State = entity.FallingLeft
-			} else {
-				p.State = entity.FallingRight
-			}
 		}
 	}
 
@@ -123,7 +126,9 @@ func (g *Game) MovePlayer() {
 		// TODO: collision detection for the slash Shape
 	} else if g.inputAttack() {
 		// attack and horizontal boost are the same button
-		p.Running = true
+		if p.Grounded {
+			p.Running = true
+		}
 	} else if !g.inputAttack() {
 		p.WeaponAvailable = true
 		p.Running = false
@@ -165,10 +170,14 @@ func (g *Game) MovePlayer() {
 	}
 
 	// enforce maximum velocity in each direction
-	if p.Body.Velocity().X > settings.PlayerMaxVelocityX {
+	if p.Running && p.Body.Velocity().X > settings.PlayerMaxRunningVelocityX {
+		p.Body.SetVelocity(settings.PlayerMaxRunningVelocityX, p.Body.Velocity().Y)
+	} else if !p.Running && p.Body.Velocity().X > settings.PlayerMaxVelocityX {
 		p.Body.SetVelocity(settings.PlayerMaxVelocityX, p.Body.Velocity().Y)
 	}
-	if p.Body.Velocity().X < -settings.PlayerMaxVelocityX {
+	if p.Running && p.Body.Velocity().X < -settings.PlayerMaxRunningVelocityX {
+		p.Body.SetVelocity(-settings.PlayerMaxRunningVelocityX, p.Body.Velocity().Y)
+	} else if !p.Running && p.Body.Velocity().X < -settings.PlayerMaxVelocityX {
 		p.Body.SetVelocity(-settings.PlayerMaxVelocityX, p.Body.Velocity().Y)
 	}
 	if p.Body.Velocity().Y > settings.PlayerMaxVelocityY {
