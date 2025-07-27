@@ -111,6 +111,17 @@ func (r *Registry) DrawableEntities() []*Entity {
 	return result
 }
 
+func (r *Registry) RemoveDead(space *cp.Space) {
+	for _, entity := range r.Entities {
+		if entity.State == Dead {
+			entity.Body.EachShape(func(shape *cp.Shape) {
+				entity.Body.RemoveShape(shape)
+				space.RemoveShape(shape)
+			})
+		}
+	}
+}
+
 type Animation struct {
 	Frames                []*ebiten.Image
 	CurrentFrameIndex     int

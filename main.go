@@ -280,9 +280,7 @@ func (g *Game) MovePlayer() {
 		weaponShape.SetSensor(true)
 		pWeapon.Shape = weaponShape
 
-		// TODO: add a Shape to sword's Body representing the slash
-
-		// TODO: collision detection for the slash
+		// TODO: collision detection for the slash Shape
 	}
 
 	// make sure player's weapon position tracks player's body position each frame
@@ -335,6 +333,10 @@ func (g *Game) MovePlayer() {
 	}
 }
 
+func (g *Game) Cleanup() {
+	g.registry.RemoveDead(g.space)
+}
+
 func (g *Game) Update() error {
 	// get user input and move the player entity
 	g.MovePlayer()
@@ -349,7 +351,8 @@ func (g *Game) Update() error {
 	// update physics space
 	g.space.Step(1.0 / float64(ebiten.TPS()))
 
-	// TODO: maybe try space cleanup here, post-step
+	// remove Dead entities from the space
+	g.Cleanup()
 
 	// return any errors
 	return nil

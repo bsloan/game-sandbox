@@ -124,7 +124,7 @@ func InitializePlayerSword(space *cp.Space, x, y float64) *Entity {
 			asset.WhiteSlashLeft6,
 		},
 		AnimationSpeed:        0.4,
-		EntityStateTransition: Idle,
+		EntityStateTransition: Dead,
 	}
 	sword := Entity{
 		Type:   PlayerWeapon,
