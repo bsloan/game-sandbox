@@ -6,6 +6,7 @@ import (
 	"github.com/bsloan/game-sandbox/asset"
 	"github.com/bsloan/game-sandbox/boards"
 	"github.com/bsloan/game-sandbox/entity"
+	"github.com/bsloan/game-sandbox/settings"
 	"github.com/ebitenui/ebitenui/input"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -14,26 +15,7 @@ import (
 	"log"
 )
 
-// TODO: move to a global settings package
-const (
-	ticksPerSecond             = 60
-	screenWidth                = 320
-	screenHeight               = 240
-	tileSize                   = 16
-	screenWidthTiles           = screenWidth / tileSize
-	screenHeightTiles          = screenHeight / tileSize
-	midgroundScrollMultiplier  = 0.5
-	Gravity                    = 450.0
-	PlayerMaxVelocityX         = 100
-	PlayerMaxVelocityY         = 300
-	PlayerJumpVelocityLimit    = 100
-	PlayerAccelerationStepX    = 1000
-	PlayerJumpBoostHeight      = 30
-	PlayerJumpInitialVelocity  = 6000
-	PlayerJumpContinueVelocity = 400
-)
-
-type viewport struct {
+type Viewport struct {
 	viewX     float64
 	viewY     float64
 	maxViewX  float64
@@ -48,7 +30,7 @@ type viewport struct {
 // If coordinates are out-of-bounds of the map, they are adjusted to be
 // within bounds. The middle layer for parallax scrolling is also updated
 // according to the provided coordinates using the scroll multiplier.
-func (p *viewport) Move(x, y float64) {
+func (p *Viewport) Move(x, y float64) {
 	if x < 0 {
 		x = 0
 	} else if x > p.maxViewX {
@@ -61,43 +43,43 @@ func (p *viewport) Move(x, y float64) {
 	}
 	p.viewX = x
 	p.viewY = y
-	p.midX = p.viewX * midgroundScrollMultiplier
-	p.midY = p.viewY * midgroundScrollMultiplier
+	p.midX = p.viewX * settings.MidgroundScrollMultiplier
+	p.midY = p.viewY * settings.MidgroundScrollMultiplier
 }
 
 // Center centers the viewport around (x,y) in the game board.
-func (p *viewport) Center(x, y float64) {
-	p.Move(x-screenWidth/2, y-screenHeight/2)
+func (p *Viewport) Center(x, y float64) {
+	p.Move(x-settings.ScreenWidth/2, y-settings.ScreenHeight/2)
 }
 
 // Position returns the pixel X, Y coordinates in the game board of the top-left
 // pixel of the viewport.
-func (p *viewport) Position() (float64, float64) {
+func (p *Viewport) Position() (float64, float64) {
 	return p.viewX, p.viewY
 }
 
 // TilePosition returns the tile coordinates of the top-leftmost visible tile.
-func (p *viewport) TilePosition() (int, int) {
-	tx := int(p.viewX / tileSize)
-	ty := int(p.viewY / tileSize)
+func (p *Viewport) TilePosition() (int, int) {
+	tx := int(p.viewX / settings.TileSize)
+	ty := int(p.viewY / settings.TileSize)
 	return tx, ty
 }
 
-func (p *viewport) InView(e *entity.Entity) bool {
+func (p *Viewport) InView(e *entity.Entity) bool {
 	x, y := e.Position()
 	return x >= p.viewX-float64(e.Image().Bounds().Dx()) &&
-		x < p.viewX+screenWidth &&
+		x < p.viewX+settings.ScreenWidth &&
 		y >= p.viewY-float64(e.Image().Bounds().Dy()) &&
-		y < p.viewY+screenHeight
+		y < p.viewY+settings.ScreenHeight
 }
 
 // Draw renders the foreground layer (tiles and sprites) within the currently visible section
 // of the game board. When the frame is ready, this is later copied to the screen on top
 // of any background and middle layers for a parallax scrolling affect.
-func (p *viewport) Draw(g *Game) {
+func (p *Viewport) Draw(g *Game) {
 	// ebiten performance: avoid allocating a new image on every Update, use Clear instead
 	if p.view == nil {
-		p.view = ebiten.NewImage(screenWidth, screenHeight)
+		p.view = ebiten.NewImage(settings.ScreenWidth, settings.ScreenHeight)
 	}
 	if p.midground == nil {
 		// iterate horizontally in chunks of 160 pixels (width of midground image)
@@ -121,24 +103,24 @@ func (p *viewport) Draw(g *Game) {
 	p.view.DrawImage(asset.SkyBackground, &ebiten.DrawImageOptions{})
 
 	// render the middle layer
-	p.view.DrawImage(g.vp.midground.SubImage(image.Rect(int(g.vp.midX), int(g.vp.midY), int(g.vp.midX+screenWidth), int(g.vp.midY+screenHeight))).(*ebiten.Image), &ebiten.DrawImageOptions{})
+	p.view.DrawImage(g.vp.midground.SubImage(image.Rect(int(g.vp.midX), int(g.vp.midY), int(g.vp.midX+settings.ScreenWidth), int(g.vp.midY+settings.ScreenHeight))).(*ebiten.Image), &ebiten.DrawImageOptions{})
 
 	// render the tiles. calculate the top-left origin of the viewport in units of tiles (tileX,tileY).
 	// then calculate the offset in pixels (ox,oy) that we begin drawing from the top-left tile from. the
 	// pixel offset allows for smooth scrolling in smaller units (pixel) instead of large (tile).
 	tileX, tileY := p.TilePosition()
-	ox, oy := float64(int(p.viewX)%tileSize), float64(int(p.viewY)%tileSize)
+	ox, oy := float64(int(p.viewX)%settings.TileSize), float64(int(p.viewY)%settings.TileSize)
 	yTileCount := 0
-	for ty := tileY; ty <= (tileY+screenHeightTiles+1) && ty < g.board.TileHeight; ty++ {
+	for ty := tileY; ty <= (tileY+settings.ScreenHeightTiles+1) && ty < g.board.TileHeight; ty++ {
 		xTileCount := 0
-		for tx := tileX; tx <= (tileX+screenWidthTiles+1) && tx < g.board.TileWidth; tx++ {
+		for tx := tileX; tx <= (tileX+settings.ScreenWidthTiles+1) && tx < g.board.TileWidth; tx++ {
 			tile := g.board.Map[ty][tx]
 			if tile != 0 {
 				// adjust the x,y position where the tile is rendered from to be its top-left corner.
 				// the tile's x,y coordinates in chipmunk 2d space are at it's center, so need to pull it
 				// back and to the left by tileSize/2, and adjust by (ox,oy) to get the correct pixel offset
 				op := ebiten.DrawImageOptions{}
-				op.GeoM.Translate(float64(xTileCount*tileSize)-ox-(tileSize/2), float64(yTileCount*tileSize)-oy-(tileSize/2))
+				op.GeoM.Translate(float64(xTileCount*settings.TileSize)-ox-(settings.TileSize/2), float64(yTileCount*settings.TileSize)-oy-(settings.TileSize/2))
 				p.view.DrawImage(asset.TileImages[tile], &op)
 			}
 			xTileCount++
@@ -173,7 +155,7 @@ func (p *viewport) Draw(g *Game) {
 }
 
 type Game struct {
-	vp       viewport
+	vp       Viewport
 	board    boards.Gameboard
 	debug    bool
 	registry entity.Registry
@@ -207,7 +189,7 @@ func (g *Game) MovePlayer() {
 
 	if !ebiten.IsKeyPressed(ebiten.KeySpace) {
 		if p.Grounded {
-			p.Boost = PlayerJumpBoostHeight
+			p.Boost = settings.PlayerJumpBoostHeight
 		} else {
 			p.Boost = 0
 		}
@@ -221,7 +203,7 @@ func (g *Game) MovePlayer() {
 			p.State = entity.JumpingRight
 		}
 		vx, vy := p.Body.Velocity().X, 0.0
-		vx += PlayerAccelerationStepX
+		vx += settings.PlayerAccelerationStepX
 		p.Body.ApplyForceAtWorldPoint(cp.Vector{vx, vy}, p.Body.Position())
 	}
 
@@ -233,7 +215,7 @@ func (g *Game) MovePlayer() {
 			p.State = entity.JumpingLeft
 		}
 		vx, vy := p.Body.Velocity().X, 0.0
-		vx -= PlayerAccelerationStepX
+		vx -= settings.PlayerAccelerationStepX
 		p.Body.ApplyForceAtWorldPoint(cp.Vector{vx, vy}, p.Body.Position())
 	}
 
@@ -245,7 +227,7 @@ func (g *Game) MovePlayer() {
 		if p.State == entity.JumpingRight || p.State == entity.JumpingLeft {
 			// player is already in a jump, diminish boost
 			p.Boost--
-			p.Body.ApplyForceAtWorldPoint(cp.Vector{0, -PlayerJumpContinueVelocity}, p.Body.Position())
+			p.Body.ApplyForceAtWorldPoint(cp.Vector{0, -settings.PlayerJumpContinueVelocity}, p.Body.Position())
 		} else {
 			// player is in some other state, so must be initiating the jump
 			if p.Facing == entity.Left {
@@ -253,7 +235,7 @@ func (g *Game) MovePlayer() {
 			} else {
 				p.State = entity.JumpingRight
 			}
-			p.Body.ApplyForceAtWorldPoint(cp.Vector{0, -PlayerJumpInitialVelocity}, p.Body.Position())
+			p.Body.ApplyForceAtWorldPoint(cp.Vector{0, -settings.PlayerJumpInitialVelocity}, p.Body.Position())
 			p.Grounded = false
 			p.Shape.SetFriction(0)
 		}
@@ -319,17 +301,17 @@ func (g *Game) MovePlayer() {
 	}
 
 	// enforce maximum velocity in each direction
-	if p.Body.Velocity().X > PlayerMaxVelocityX {
-		p.Body.SetVelocity(PlayerMaxVelocityX, p.Body.Velocity().Y)
+	if p.Body.Velocity().X > settings.PlayerMaxVelocityX {
+		p.Body.SetVelocity(settings.PlayerMaxVelocityX, p.Body.Velocity().Y)
 	}
-	if p.Body.Velocity().X < -PlayerMaxVelocityX {
-		p.Body.SetVelocity(-PlayerMaxVelocityX, p.Body.Velocity().Y)
+	if p.Body.Velocity().X < -settings.PlayerMaxVelocityX {
+		p.Body.SetVelocity(-settings.PlayerMaxVelocityX, p.Body.Velocity().Y)
 	}
-	if p.Body.Velocity().Y > PlayerMaxVelocityY {
-		p.Body.SetVelocity(p.Body.Velocity().X, PlayerMaxVelocityY)
+	if p.Body.Velocity().Y > settings.PlayerMaxVelocityY {
+		p.Body.SetVelocity(p.Body.Velocity().X, settings.PlayerMaxVelocityY)
 	}
-	if p.Body.Velocity().Y < -PlayerJumpVelocityLimit {
-		p.Body.SetVelocity(p.Body.Velocity().X, -PlayerJumpVelocityLimit)
+	if p.Body.Velocity().Y < -settings.PlayerJumpVelocityLimit {
+		p.Body.SetVelocity(p.Body.Velocity().X, -settings.PlayerJumpVelocityLimit)
 	}
 }
 
@@ -373,7 +355,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 }
 
 func (g *Game) Layout(outsideWidth int, outsideHeight int) (int, int) {
-	return screenWidth, screenHeight
+	return settings.ScreenWidth, settings.ScreenHeight
 }
 
 func main() {
@@ -383,13 +365,13 @@ func main() {
 	asset.LoadTiles()
 	asset.LoadSprites()
 
-	ebiten.SetWindowSize(screenWidth*2, screenHeight*2)
+	ebiten.SetWindowSize(settings.ScreenWidth*2, settings.ScreenHeight*2)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowTitle("Hello, World!")
-	ebiten.SetTPS(ticksPerSecond)
+	ebiten.SetTPS(settings.TicksPerSecond)
 
 	space := cp.NewSpace()
-	space.SetGravity(cp.Vector{0, Gravity})
+	space.SetGravity(cp.Vector{0, settings.Gravity})
 	// allow no overlap between shapes in the space, to reduce prevalence of tile overlap/collision bug
 	//space.SetCollisionSlop(0.00)
 
@@ -405,9 +387,9 @@ func main() {
 
 	g := Game{
 		debug: *debugMode,
-		vp: viewport{
-			maxViewX: float64(gameboard.PixelWidth - screenWidth - tileSize),
-			maxViewY: float64(gameboard.PixelHeight - screenHeight - tileSize),
+		vp: Viewport{
+			maxViewX: float64(gameboard.PixelWidth - settings.ScreenWidth - settings.TileSize),
+			maxViewY: float64(gameboard.PixelHeight - settings.ScreenHeight - settings.TileSize),
 		},
 		board:    gameboard,
 		registry: r,
