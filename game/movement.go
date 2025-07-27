@@ -107,7 +107,7 @@ func (g *Game) MovePlayer() {
 		}
 	}
 
-	if g.inputAttack() && pWeapon.State != entity.ActiveRight && pWeapon.State != entity.ActiveLeft {
+	if g.inputAttack() && pWeapon.State != entity.ActiveRight && pWeapon.State != entity.ActiveLeft && p.WeaponAvailable {
 		// create a special Shape for the slash, and show/animate it
 		if p.Facing == entity.Right {
 			pWeapon.State = entity.ActiveRight
@@ -119,8 +119,14 @@ func (g *Game) MovePlayer() {
 		weaponShape := g.space.AddShape(cp.NewBox(pWeapon.Body, 64, 47, 10))
 		weaponShape.SetSensor(true)
 		pWeapon.Shape = weaponShape
-
+		p.WeaponAvailable = false // disable next attack until after the button is released
 		// TODO: collision detection for the slash Shape
+	} else if g.inputAttack() {
+		// attack and horizontal boost are the same button
+		p.Running = true
+	} else if !g.inputAttack() {
+		p.WeaponAvailable = true
+		p.Running = false
 	}
 
 	// make sure player's weapon position tracks player's body position each frame

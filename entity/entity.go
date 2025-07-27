@@ -47,16 +47,18 @@ const (
 // https://co0p.github.io/posts/ecs-animation/ provides a good starting point
 
 type Entity struct {
-	Type        EntityType
-	State       EntityState
-	Facing      Direction
-	Grounded    bool
-	OnSlope     bool
-	Boost       float64
-	Animations  map[EntityState]*Animation
-	StaticImage *ebiten.Image
-	Body        *cp.Body
-	Shape       *cp.Shape
+	Type            EntityType
+	State           EntityState
+	Facing          Direction
+	Grounded        bool
+	OnSlope         bool
+	WeaponAvailable bool
+	Running         bool
+	Boost           float64
+	Animations      map[EntityState]*Animation
+	StaticImage     *ebiten.Image
+	Body            *cp.Body
+	Shape           *cp.Shape
 	// other metadata: health, attack damage, points, etc
 }
 
