@@ -82,6 +82,24 @@ var (
 	//go:embed sprite/white_slash6.png
 	whiteSlashRight6Png []byte
 
+	//go:embed sprite/sword_dog_idle1.png
+	swordDogIdleRight1Png []byte
+
+	//go:embed sprite/sword_dog_idle2.png
+	swordDogIdleRight2Png []byte
+
+	//go:embed sprite/sword_dog_idle3.png
+	swordDogIdleRight3Png []byte
+
+	//go:embed sprite/sword_dog_idle4.png
+	swordDogIdleRight4Png []byte
+
+	//go:embed sprite/sword_dog_idle5.png
+	swordDogIdleRight5Png []byte
+
+	//go:embed sprite/sword_dog_idle6.png
+	swordDogIdleRight6Png []byte
+
 	PlayerIdleRight1 *ebiten.Image
 	PlayerIdleRight2 *ebiten.Image
 	PlayerIdleRight3 *ebiten.Image
@@ -122,10 +140,23 @@ var (
 	WhiteSlashLeft4 *ebiten.Image
 	WhiteSlashLeft5 *ebiten.Image
 	WhiteSlashLeft6 *ebiten.Image
+
+	SwordDogIdleRight1 *ebiten.Image
+	SwordDogIdleRight2 *ebiten.Image
+	SwordDogIdleRight3 *ebiten.Image
+	SwordDogIdleRight4 *ebiten.Image
+	SwordDogIdleRight5 *ebiten.Image
+	SwordDogIdleRight6 *ebiten.Image
+
+	SwordDogIdleLeft1 *ebiten.Image
+	SwordDogIdleLeft2 *ebiten.Image
+	SwordDogIdleLeft3 *ebiten.Image
+	SwordDogIdleLeft4 *ebiten.Image
+	SwordDogIdleLeft5 *ebiten.Image
+	SwordDogIdleLeft6 *ebiten.Image
 )
 
 func LoadSprites() {
-
 	PlayerIdleRight1 = imageFromBytes(playerIdleRight1Png)
 	PlayerIdleRight2 = imageFromBytes(playerIdleRight2Png)
 	PlayerIdleRight3 = imageFromBytes(playerIdleRight3Png)
@@ -151,11 +182,8 @@ func LoadSprites() {
 	PlayerMoveLeft6 = flipImageXAxis(PlayerMoveRight6)
 
 	PlayerJumpRight1 = imageFromBytes(playerJumpRight1Png)
-
 	PlayerJumpLeft1 = flipImageXAxis(PlayerJumpRight1)
-
 	PlayerFallRight1 = imageFromBytes(playerFallRight1Png)
-
 	PlayerFallLeft1 = flipImageXAxis(PlayerFallRight1)
 
 	WhiteSlashRight1 = imageFromBytes(whiteSlashRight1Png)
@@ -171,4 +199,18 @@ func LoadSprites() {
 	WhiteSlashLeft4 = flipImageXAxis(WhiteSlashRight4)
 	WhiteSlashLeft5 = flipImageXAxis(WhiteSlashRight5)
 	WhiteSlashLeft6 = flipImageXAxis(WhiteSlashRight6)
+
+	SwordDogIdleRight1 = imageFromBytes(swordDogIdleRight1Png)
+	SwordDogIdleRight2 = imageFromBytes(swordDogIdleRight2Png)
+	SwordDogIdleRight3 = imageFromBytes(swordDogIdleRight3Png)
+	SwordDogIdleRight4 = imageFromBytes(swordDogIdleRight4Png)
+	SwordDogIdleRight5 = imageFromBytes(swordDogIdleRight5Png)
+	SwordDogIdleRight6 = imageFromBytes(swordDogIdleRight6Png)
+
+	SwordDogIdleLeft1 = flipImageXAxis(SwordDogIdleRight1)
+	SwordDogIdleLeft2 = flipImageXAxis(SwordDogIdleRight2)
+	SwordDogIdleLeft3 = flipImageXAxis(SwordDogIdleRight3)
+	SwordDogIdleLeft4 = flipImageXAxis(SwordDogIdleRight4)
+	SwordDogIdleLeft5 = flipImageXAxis(SwordDogIdleRight5)
+	SwordDogIdleLeft6 = flipImageXAxis(SwordDogIdleRight6)
 }

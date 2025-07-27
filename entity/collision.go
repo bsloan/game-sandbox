@@ -9,6 +9,7 @@ const (
 	PlayerCollisionType cp.CollisionType = iota
 	BlockCollisionType
 	SlopeCollisionType
+	SwordDogCollisionType
 )
 
 func GenericGroundedHandler(space *cp.Space, collisionType cp.CollisionType) {

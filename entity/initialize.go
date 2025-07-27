@@ -169,3 +169,49 @@ func InitializePlayerSword(space *cp.Space, x, y float64) *Entity {
 	sword.Body.SetPosition(cp.Vector{X: x, Y: y})
 	return &sword
 }
+
+func InitializeSwordDog(space *cp.Space, x, y float64) *Entity {
+	idleRight := Animation{
+		Frames: []*ebiten.Image{
+			asset.SwordDogIdleRight1,
+			asset.SwordDogIdleRight2,
+			asset.SwordDogIdleRight3,
+			asset.SwordDogIdleRight4,
+			asset.SwordDogIdleRight5,
+			asset.SwordDogIdleRight6,
+		},
+		AnimationSpeed: 0.1,
+	}
+	idleLeft := Animation{
+		Frames: []*ebiten.Image{
+			asset.SwordDogIdleLeft1,
+			asset.SwordDogIdleLeft2,
+			asset.SwordDogIdleLeft3,
+			asset.SwordDogIdleLeft4,
+			asset.SwordDogIdleLeft5,
+			asset.SwordDogIdleLeft6,
+		},
+		AnimationSpeed: 0.1,
+	}
+	swordDog := Entity{
+		Type:   SwordDog,
+		State:  IdleLeft,
+		Facing: Left,
+		Animations: map[EntityState]*Animation{
+			IdleRight: &idleRight,
+			IdleLeft:  &idleLeft,
+		},
+		Body: cp.NewBody(1, cp.INFINITY),
+	}
+	swordDog.Body.UserData = &swordDog
+	space.AddBody(swordDog.Body)
+	swordDog.Body.SetPosition(cp.Vector{X: x, Y: y})
+	swordDogShape := space.AddShape(cp.NewCircle(swordDog.Body, 11, cp.Vector{X: 0, Y: 0}))
+	swordDogShape.SetElasticity(0)
+	swordDogShape.SetFriction(0.75)
+	swordDogShape.SetCollisionType(SwordDogCollisionType)
+	swordDog.Shape = swordDogShape
+	GenericGroundedHandler(space, SwordDogCollisionType)
+	SlopeHandler(space, SwordDogCollisionType)
+	return &swordDog
+}

@@ -11,7 +11,7 @@ type EntityType int
 const (
 	Player EntityType = iota
 	PlayerWeapon
-	Bird
+	SwordDog
 	Frog
 )
 
