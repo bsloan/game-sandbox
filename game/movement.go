@@ -8,11 +8,31 @@ import (
 	"github.com/jakecoffman/cp"
 )
 
+func inputAny() bool {
+	return input.AnyKeyPressed()
+}
+
+func inputJump() bool {
+	return ebiten.IsKeyPressed(ebiten.KeySpace)
+}
+
+func inputLeft() bool {
+	return ebiten.IsKeyPressed(ebiten.KeyLeft) || ebiten.IsKeyPressed(ebiten.KeyA)
+}
+
+func inputRight() bool {
+	return ebiten.IsKeyPressed(ebiten.KeyRight) || ebiten.IsKeyPressed(ebiten.KeyD)
+}
+
+func inputAttack() bool {
+	return ebiten.IsKeyPressed(ebiten.KeyK) || ebiten.IsKeyPressed(ebiten.KeyAlt)
+}
+
 func (g *Game) MovePlayer() {
 	var p = g.registry.Player()
 	var pWeapon = g.registry.Query(entity.PlayerWeapon)
 
-	if !input.AnyKeyPressed() && p.Grounded {
+	if !inputAny() && p.Grounded {
 		if p.Facing == entity.Right {
 			p.State = entity.IdleRight
 		} else if p.Facing == entity.Left {
@@ -20,7 +40,7 @@ func (g *Game) MovePlayer() {
 		}
 	}
 
-	if !ebiten.IsKeyPressed(ebiten.KeySpace) {
+	if !inputJump() {
 		if p.Grounded {
 			p.Boost = settings.PlayerJumpBoostHeight
 		} else {
@@ -28,7 +48,7 @@ func (g *Game) MovePlayer() {
 		}
 	}
 
-	if ebiten.IsKeyPressed(ebiten.KeyRight) || ebiten.IsKeyPressed(ebiten.KeyD) {
+	if inputRight() {
 		p.Facing = entity.Right
 		if p.Grounded {
 			p.State = entity.MovingRight
@@ -40,7 +60,7 @@ func (g *Game) MovePlayer() {
 		p.Body.ApplyForceAtWorldPoint(cp.Vector{vx, vy}, p.Body.Position())
 	}
 
-	if ebiten.IsKeyPressed(ebiten.KeyLeft) || ebiten.IsKeyPressed(ebiten.KeyA) {
+	if inputLeft() {
 		p.Facing = entity.Left
 		if p.Grounded {
 			p.State = entity.MovingLeft
@@ -56,7 +76,7 @@ func (g *Game) MovePlayer() {
 		// TODO: crouch
 	}
 
-	if ebiten.IsKeyPressed(ebiten.KeySpace) && p.Boost > 0 {
+	if inputJump() && p.Boost > 0 {
 		if p.State == entity.JumpingRight || p.State == entity.JumpingLeft {
 			// player is already in a jump, diminish boost
 			p.Boost--
@@ -82,7 +102,7 @@ func (g *Game) MovePlayer() {
 		}
 	}
 
-	if (ebiten.IsKeyPressed(ebiten.KeyK) || ebiten.IsKeyPressed(ebiten.KeyAlt)) && pWeapon.State != entity.ActiveRight && pWeapon.State != entity.ActiveLeft {
+	if inputAttack() && pWeapon.State != entity.ActiveRight && pWeapon.State != entity.ActiveLeft {
 		// create a special Shape for the slash, and show/animate it
 		if p.Facing == entity.Right {
 			pWeapon.State = entity.ActiveRight
