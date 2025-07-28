@@ -68,3 +68,25 @@ func SlopeHandler(space *cp.Space, collisionType cp.CollisionType) {
 		}
 	}
 }
+
+func EntityObstructedHandler(space *cp.Space, collisionType cp.CollisionType) {
+	handler := space.NewCollisionHandler(collisionType, BlockCollisionType)
+	handler.BeginFunc = func(arb *cp.Arbiter, space *cp.Space, data interface{}) bool {
+		n := arb.Normal()
+		body1, body2 := arb.Bodies()
+		var dynamicEntity *Entity
+		if body1.UserData != nil {
+			dynamicEntity = body1.UserData.(*Entity)
+		} else {
+			dynamicEntity = body2.UserData.(*Entity)
+		}
+		if n.X > 0.5 {
+			dynamicEntity.Facing = Left
+			dynamicEntity.State = MovingLeft
+		} else if n.X < -0.5 {
+			dynamicEntity.Facing = Right
+			dynamicEntity.State = MovingRight
+		}
+		return true
+	}
+}

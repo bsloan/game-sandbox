@@ -29,7 +29,7 @@ func main() {
 	// allow no overlap between shapes in the space, to reduce prevalence of tile overlap/collision bug
 	//space.SetCollisionSlop(0.00)
 
-	player := entity.InitializePlayer(space, 0, 0)
+	player := entity.InitializePlayer(space, 35, 494)
 	r := entity.Registry{}
 	r.AddEntity(player)
 

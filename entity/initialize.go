@@ -193,13 +193,37 @@ func InitializeSwordDog(space *cp.Space, x, y float64) *Entity {
 		},
 		AnimationSpeed: 0.1,
 	}
+	runRight := Animation{
+		Frames: []*ebiten.Image{
+			asset.SwordDogRunRight1,
+			asset.SwordDogRunRight2,
+			asset.SwordDogRunRight3,
+			asset.SwordDogRunRight4,
+			asset.SwordDogRunRight5,
+			asset.SwordDogRunRight6,
+		},
+		AnimationSpeed: 0.2,
+	}
+	runLeft := Animation{
+		Frames: []*ebiten.Image{
+			asset.SwordDogRunLeft1,
+			asset.SwordDogRunLeft2,
+			asset.SwordDogRunLeft3,
+			asset.SwordDogRunLeft4,
+			asset.SwordDogRunLeft5,
+			asset.SwordDogRunLeft6,
+		},
+		AnimationSpeed: 0.2,
+	}
 	swordDog := Entity{
 		Type:   SwordDog,
 		State:  IdleLeft,
 		Facing: Left,
 		Animations: map[EntityState]*Animation{
-			IdleRight: &idleRight,
-			IdleLeft:  &idleLeft,
+			IdleRight:   &idleRight,
+			IdleLeft:    &idleLeft,
+			MovingRight: &runRight,
+			MovingLeft:  &runLeft,
 		},
 		Body: cp.NewBody(1, cp.INFINITY),
 	}
@@ -213,5 +237,6 @@ func InitializeSwordDog(space *cp.Space, x, y float64) *Entity {
 	swordDog.Shape = swordDogShape
 	GenericGroundedHandler(space, SwordDogCollisionType)
 	SlopeHandler(space, SwordDogCollisionType)
+	EntityObstructedHandler(space, SwordDogCollisionType)
 	return &swordDog
 }

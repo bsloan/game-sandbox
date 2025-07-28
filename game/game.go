@@ -195,6 +195,12 @@ func (g *Game) Update() error {
 	// get user input and move the player entity
 	g.MovePlayer()
 
+	// TODO: iterate all entities in the registry, get the relevant Move* function
+	//  based on entity type, and run the move function.
+	//  For now, just query for sword directly.
+	swordDog := g.registry.Query(entity.SwordDog)
+	g.MoveSwordDog(swordDog)
+
 	// render the image of the current viewport, centered on player
 	g.vp.Center(g.registry.Player().Body.Position().X, g.registry.Player().Body.Position().Y)
 	g.vp.Draw(g)

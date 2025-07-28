@@ -100,6 +100,24 @@ var (
 	//go:embed sprite/sword_dog_idle6.png
 	swordDogIdleRight6Png []byte
 
+	//go:embed sprite/sword_dog_run1.png
+	swordDogRunRight1Png []byte
+
+	//go:embed sprite/sword_dog_run2.png
+	swordDogRunRight2Png []byte
+
+	//go:embed sprite/sword_dog_run3.png
+	swordDogRunRight3Png []byte
+
+	//go:embed sprite/sword_dog_run4.png
+	swordDogRunRight4Png []byte
+
+	//go:embed sprite/sword_dog_run5.png
+	swordDogRunRight5Png []byte
+
+	//go:embed sprite/sword_dog_run6.png
+	swordDogRunRight6Png []byte
+
 	PlayerIdleRight1 *ebiten.Image
 	PlayerIdleRight2 *ebiten.Image
 	PlayerIdleRight3 *ebiten.Image
@@ -154,6 +172,20 @@ var (
 	SwordDogIdleLeft4 *ebiten.Image
 	SwordDogIdleLeft5 *ebiten.Image
 	SwordDogIdleLeft6 *ebiten.Image
+
+	SwordDogRunRight1 *ebiten.Image
+	SwordDogRunRight2 *ebiten.Image
+	SwordDogRunRight3 *ebiten.Image
+	SwordDogRunRight4 *ebiten.Image
+	SwordDogRunRight5 *ebiten.Image
+	SwordDogRunRight6 *ebiten.Image
+
+	SwordDogRunLeft1 *ebiten.Image
+	SwordDogRunLeft2 *ebiten.Image
+	SwordDogRunLeft3 *ebiten.Image
+	SwordDogRunLeft4 *ebiten.Image
+	SwordDogRunLeft5 *ebiten.Image
+	SwordDogRunLeft6 *ebiten.Image
 )
 
 func LoadSprites() {
@@ -213,4 +245,18 @@ func LoadSprites() {
 	SwordDogIdleLeft4 = flipImageXAxis(SwordDogIdleRight4)
 	SwordDogIdleLeft5 = flipImageXAxis(SwordDogIdleRight5)
 	SwordDogIdleLeft6 = flipImageXAxis(SwordDogIdleRight6)
+
+	SwordDogRunRight1 = imageFromBytes(swordDogRunRight6Png)
+	SwordDogRunRight2 = imageFromBytes(swordDogRunRight5Png)
+	SwordDogRunRight3 = imageFromBytes(swordDogRunRight4Png)
+	SwordDogRunRight4 = imageFromBytes(swordDogRunRight3Png)
+	SwordDogRunRight5 = imageFromBytes(swordDogRunRight2Png)
+	SwordDogRunRight6 = imageFromBytes(swordDogRunRight1Png)
+
+	SwordDogRunLeft1 = flipImageXAxis(SwordDogRunRight1)
+	SwordDogRunLeft2 = flipImageXAxis(SwordDogRunRight2)
+	SwordDogRunLeft3 = flipImageXAxis(SwordDogRunRight3)
+	SwordDogRunLeft4 = flipImageXAxis(SwordDogRunRight4)
+	SwordDogRunLeft5 = flipImageXAxis(SwordDogRunRight5)
+	SwordDogRunLeft6 = flipImageXAxis(SwordDogRunRight6)
 }

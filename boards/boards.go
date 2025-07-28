@@ -70,6 +70,7 @@ func (gb *Gameboard) initializeTiles(space *cp.Space) {
 				tileBody := cp.NewStaticBody()
 				tileBody.SetPosition(cp.Vector{X: x, Y: y})
 				var tileShape *cp.Shape
+				// FIXME: differentiating edge vs middle blocks is not really needed any more - remove all this
 				if tile == GRASS_MIDDLE || tile == DIRT_CENTER || tile == GRASS_SLOPE_R_BASE_1 || tile == GRASS_SLOPE_R_BASE_2 || tile == GRASS_SLOPE_L_BASE_1 || tile == GRASS_SLOPE_L_BASE_2 {
 					// these are center blocks - make the collision shape a normal 16x16 square
 					tileShape = cp.NewBox(tileBody, 16, 16, 0)
@@ -77,7 +78,7 @@ func (gb *Gameboard) initializeTiles(space *cp.Space) {
 					tileShape.SetCollisionType(entity.BlockCollisionType)
 				} else if tile == GRASS_LEFT_EDGE || tile == GRASS_RIGHT_EDGE {
 					// these are edge blocks - collision shape is narrower
-					tileShape = cp.NewBox(tileBody, 8, 16, 0)
+					tileShape = cp.NewBox(tileBody, 16, 16, 0) // FIXME see above - this used to be 8x16
 					tileShape.SetFriction(1)
 					tileShape.SetCollisionType(entity.BlockCollisionType)
 				} else if tile == GRASS_SLOPE_R_MAGIC_ROOT {

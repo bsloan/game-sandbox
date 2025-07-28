@@ -5,6 +5,7 @@ import (
 	"github.com/bsloan/game-sandbox/settings"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/jakecoffman/cp"
+	"math"
 )
 
 const (
@@ -191,5 +192,50 @@ func (g *Game) MovePlayer() {
 	}
 	if p.Body.Velocity().Y < -settings.PlayerJumpVelocityLimit {
 		p.Body.SetVelocity(p.Body.Velocity().X, -settings.PlayerJumpVelocityLimit)
+	}
+}
+
+func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
+	// find proximity to player
+	var swordDogX = swordDog.Body.Position().X
+	var swordDogY = swordDog.Body.Position().Y
+	var playerX = g.registry.Player().Body.Position().X
+	var playerY = g.registry.Player().Body.Position().Y
+	xDistance := math.Abs(swordDogX - playerX)
+	yDistance := math.Abs(swordDogY - playerY)
+
+	// chase the player if we're close
+	if xDistance < 32 {
+		if playerX > swordDogX {
+			swordDog.Facing = entity.Right
+			swordDog.State = entity.MovingRight
+		} else {
+			swordDog.Facing = entity.Left
+			swordDog.State = entity.MovingLeft
+		}
+	}
+
+	// attack the player if we're really close
+	if xDistance < 16 && yDistance < 16 {
+		// TODO: swing sword
+	}
+
+	// move the dog
+	if swordDog.State == entity.MovingLeft {
+		vx, vy := swordDog.Body.Velocity().X, 0.0
+		vx -= settings.SwordDogAccelerationStep
+		swordDog.Body.ApplyForceAtWorldPoint(cp.Vector{X: vx, Y: vy}, swordDog.Body.Position())
+	} else if swordDog.State == entity.MovingRight {
+		vx, vy := swordDog.Body.Velocity().X, 0.0
+		vx += settings.SwordDogAccelerationStep
+		swordDog.Body.ApplyForceAtWorldPoint(cp.Vector{X: vx, Y: vy}, swordDog.Body.Position())
+	}
+
+	// enforce velocity constraints
+	if swordDog.Body.Velocity().X < -settings.SwordDogMaxVelocityX {
+		swordDog.Body.SetVelocity(-settings.SwordDogMaxVelocityX, swordDog.Body.Velocity().Y)
+	}
+	if swordDog.Body.Velocity().X > settings.SwordDogMaxVelocityX {
+		swordDog.Body.SetVelocity(settings.SwordDogMaxVelocityX, swordDog.Body.Velocity().Y)
 	}
 }
