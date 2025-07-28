@@ -118,6 +118,24 @@ var (
 	//go:embed sprite/sword_dog_run6.png
 	swordDogRunRight6Png []byte
 
+	//go:embed sprite/sword_dog_slash1.png
+	swordDogBigSlashRight1Png []byte
+
+	//go:embed sprite/sword_dog_slash2.png
+	swordDogBigSlashRight2Png []byte
+
+	//go:embed sprite/sword_dog_slash3.png
+	swordDogBigSlashRight3Png []byte
+
+	//go:embed sprite/sword_dog_slash4.png
+	swordDogBigSlashRight4Png []byte
+
+	//go:embed sprite/sword_dog_slash5.png
+	swordDogBigSlashRight5Png []byte
+
+	//go:embed sprite/sword_dog_slash6.png
+	swordDogBigSlashRight6Png []byte
+
 	PlayerIdleRight1 *ebiten.Image
 	PlayerIdleRight2 *ebiten.Image
 	PlayerIdleRight3 *ebiten.Image
@@ -186,6 +204,20 @@ var (
 	SwordDogRunLeft4 *ebiten.Image
 	SwordDogRunLeft5 *ebiten.Image
 	SwordDogRunLeft6 *ebiten.Image
+
+	SwordDogBigSlashRight1 *ebiten.Image
+	SwordDogBigSlashRight2 *ebiten.Image
+	SwordDogBigSlashRight3 *ebiten.Image
+	SwordDogBigSlashRight4 *ebiten.Image
+	SwordDogBigSlashRight5 *ebiten.Image
+	SwordDogBigSlashRight6 *ebiten.Image
+
+	SwordDogBigSlashLeft1 *ebiten.Image
+	SwordDogBigSlashLeft2 *ebiten.Image
+	SwordDogBigSlashLeft3 *ebiten.Image
+	SwordDogBigSlashLeft4 *ebiten.Image
+	SwordDogBigSlashLeft5 *ebiten.Image
+	SwordDogBigSlashLeft6 *ebiten.Image
 )
 
 func LoadSprites() {
@@ -259,4 +291,18 @@ func LoadSprites() {
 	SwordDogRunLeft4 = flipImageXAxis(SwordDogRunRight4)
 	SwordDogRunLeft5 = flipImageXAxis(SwordDogRunRight5)
 	SwordDogRunLeft6 = flipImageXAxis(SwordDogRunRight6)
+
+	SwordDogBigSlashRight1 = imageFromBytes(swordDogBigSlashRight1Png)
+	SwordDogBigSlashRight2 = imageFromBytes(swordDogBigSlashRight2Png)
+	SwordDogBigSlashRight3 = imageFromBytes(swordDogBigSlashRight3Png)
+	SwordDogBigSlashRight4 = imageFromBytes(swordDogBigSlashRight4Png)
+	SwordDogBigSlashRight5 = imageFromBytes(swordDogBigSlashRight5Png)
+	SwordDogBigSlashRight6 = imageFromBytes(swordDogBigSlashRight6Png)
+
+	SwordDogBigSlashLeft1 = flipImageXAxis(SwordDogBigSlashRight1)
+	SwordDogBigSlashLeft2 = flipImageXAxis(SwordDogBigSlashRight2)
+	SwordDogBigSlashLeft3 = flipImageXAxis(SwordDogBigSlashRight3)
+	SwordDogBigSlashLeft4 = flipImageXAxis(SwordDogBigSlashRight4)
+	SwordDogBigSlashLeft5 = flipImageXAxis(SwordDogBigSlashRight5)
+	SwordDogBigSlashLeft6 = flipImageXAxis(SwordDogBigSlashRight6)
 }

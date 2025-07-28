@@ -205,7 +205,7 @@ func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
 	yDistance := math.Abs(swordDogY - playerY)
 
 	// chase the player if we're close
-	if xDistance < 32 {
+	if xDistance < 32 && swordDog.State != entity.ActiveRight && swordDog.State != entity.ActiveLeft {
 		if playerX > swordDogX {
 			swordDog.Facing = entity.Right
 			swordDog.State = entity.MovingRight
@@ -216,8 +216,12 @@ func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
 	}
 
 	// attack the player if we're really close
-	if xDistance < 16 && yDistance < 16 {
-		// TODO: swing sword
+	if xDistance < 22 && yDistance < 20 && swordDog.State != entity.ActiveRight && swordDog.State != entity.ActiveLeft {
+		if swordDog.Facing == entity.Right {
+			swordDog.State = entity.ActiveRight
+		} else {
+			swordDog.State = entity.ActiveLeft
+		}
 	}
 
 	// move the dog

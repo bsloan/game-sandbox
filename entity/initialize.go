@@ -215,6 +215,30 @@ func InitializeSwordDog(space *cp.Space, x, y float64) *Entity {
 		},
 		AnimationSpeed: 0.2,
 	}
+	bigSlashRight := Animation{
+		Frames: []*ebiten.Image{
+			asset.SwordDogBigSlashRight1,
+			asset.SwordDogBigSlashRight2,
+			asset.SwordDogBigSlashRight3,
+			asset.SwordDogBigSlashRight4,
+			asset.SwordDogBigSlashRight5,
+			asset.SwordDogBigSlashRight6,
+		},
+		AnimationSpeed:        0.2,
+		EntityStateTransition: MovingRight,
+	}
+	bigSlashLeft := Animation{
+		Frames: []*ebiten.Image{
+			asset.SwordDogBigSlashLeft1,
+			asset.SwordDogBigSlashLeft2,
+			asset.SwordDogBigSlashLeft3,
+			asset.SwordDogBigSlashLeft4,
+			asset.SwordDogBigSlashLeft5,
+			asset.SwordDogBigSlashLeft6,
+		},
+		AnimationSpeed:        0.3,
+		EntityStateTransition: MovingLeft,
+	}
 	swordDog := Entity{
 		Type:   SwordDog,
 		State:  IdleLeft,
@@ -224,6 +248,8 @@ func InitializeSwordDog(space *cp.Space, x, y float64) *Entity {
 			IdleLeft:    &idleLeft,
 			MovingRight: &runRight,
 			MovingLeft:  &runLeft,
+			ActiveRight: &bigSlashRight,
+			ActiveLeft:  &bigSlashLeft,
 		},
 		Body: cp.NewBody(1, cp.INFINITY),
 	}
