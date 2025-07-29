@@ -32,6 +32,8 @@ const (
 	FallingLeft
 	ActiveRight
 	ActiveLeft
+	ActiveRight2
+	ActiveLeft2
 	Dead
 )
 
@@ -49,6 +51,7 @@ const (
 type Entity struct {
 	Type            EntityType
 	State           EntityState
+	RememberState   EntityState
 	Facing          Direction
 	Grounded        bool
 	OnSlope         bool

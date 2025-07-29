@@ -239,17 +239,42 @@ func InitializeSwordDog(space *cp.Space, x, y float64) *Entity {
 		AnimationSpeed:        0.3,
 		EntityStateTransition: MovingLeft,
 	}
+	downSlashRight := Animation{
+		Frames: []*ebiten.Image{
+			asset.SwordDogDownSlashRight1,
+			asset.SwordDogDownSlashRight2,
+			asset.SwordDogDownSlashRight3,
+			asset.SwordDogDownSlashRight4,
+			asset.SwordDogDownSlashRight5,
+		},
+		AnimationSpeed:        0.3,
+		EntityStateTransition: MovingRight,
+	}
+	downSlashLeft := Animation{
+		Frames: []*ebiten.Image{
+			asset.SwordDogDownSlashLeft1,
+			asset.SwordDogDownSlashLeft2,
+			asset.SwordDogDownSlashLeft3,
+			asset.SwordDogDownSlashLeft4,
+			asset.SwordDogDownSlashLeft5,
+		},
+		AnimationSpeed:        0.3,
+		EntityStateTransition: MovingLeft,
+	}
 	swordDog := Entity{
-		Type:   SwordDog,
-		State:  IdleLeft,
-		Facing: Left,
+		Type:          SwordDog,
+		State:         IdleLeft,
+		RememberState: ActiveLeft,
+		Facing:        Left,
 		Animations: map[EntityState]*Animation{
-			IdleRight:   &idleRight,
-			IdleLeft:    &idleLeft,
-			MovingRight: &runRight,
-			MovingLeft:  &runLeft,
-			ActiveRight: &bigSlashRight,
-			ActiveLeft:  &bigSlashLeft,
+			IdleRight:    &idleRight,
+			IdleLeft:     &idleLeft,
+			MovingRight:  &runRight,
+			MovingLeft:   &runLeft,
+			ActiveRight:  &bigSlashRight,
+			ActiveLeft:   &bigSlashLeft,
+			ActiveRight2: &downSlashRight,
+			ActiveLeft2:  &downSlashLeft,
 		},
 		Body: cp.NewBody(1, cp.INFINITY),
 	}

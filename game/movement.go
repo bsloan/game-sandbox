@@ -205,7 +205,7 @@ func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
 	yDistance := math.Abs(swordDogY - playerY)
 
 	// chase the player if we're close
-	if xDistance < 32 && swordDog.State != entity.ActiveRight && swordDog.State != entity.ActiveLeft {
+	if xDistance < 32 && swordDog.State != entity.ActiveRight && swordDog.State != entity.ActiveLeft && swordDog.State != entity.ActiveRight2 && swordDog.State != entity.ActiveLeft2 {
 		if playerX > swordDogX {
 			swordDog.Facing = entity.Right
 			swordDog.State = entity.MovingRight
@@ -215,21 +215,35 @@ func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
 		}
 	}
 
-	// attack the player if we're really close
-	if xDistance < 22 && yDistance < 20 && swordDog.State != entity.ActiveRight && swordDog.State != entity.ActiveLeft {
+	// attack the player if we're really close and not already in an attacking state
+	if xDistance < 22 && yDistance < 20 && swordDog.State != entity.ActiveRight && swordDog.State != entity.ActiveLeft && swordDog.State != entity.ActiveRight2 && swordDog.State != entity.ActiveLeft2 {
 		if swordDog.Facing == entity.Right {
-			swordDog.State = entity.ActiveRight
+			if swordDog.RememberState == entity.ActiveRight || swordDog.RememberState == entity.ActiveLeft {
+				swordDog.State = entity.ActiveRight2
+				swordDog.RememberState = entity.ActiveRight2
+			} else {
+				swordDog.State = entity.ActiveRight
+				swordDog.RememberState = entity.ActiveRight
+			}
 		} else {
-			swordDog.State = entity.ActiveLeft
+			if swordDog.RememberState == entity.ActiveRight || swordDog.RememberState == entity.ActiveLeft {
+				swordDog.State = entity.ActiveLeft2
+				swordDog.RememberState = entity.ActiveLeft2
+			} else {
+				swordDog.State = entity.ActiveLeft
+				swordDog.RememberState = entity.ActiveLeft
+			}
 		}
 	}
 
 	// move the dog
 	if swordDog.State == entity.MovingLeft {
+		swordDog.Facing = entity.Left
 		vx, vy := swordDog.Body.Velocity().X, 0.0
 		vx -= settings.SwordDogAccelerationStep
 		swordDog.Body.ApplyForceAtWorldPoint(cp.Vector{X: vx, Y: vy}, swordDog.Body.Position())
 	} else if swordDog.State == entity.MovingRight {
+		swordDog.Facing = entity.Right
 		vx, vy := swordDog.Body.Velocity().X, 0.0
 		vx += settings.SwordDogAccelerationStep
 		swordDog.Body.ApplyForceAtWorldPoint(cp.Vector{X: vx, Y: vy}, swordDog.Body.Position())

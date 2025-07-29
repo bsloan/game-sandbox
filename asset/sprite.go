@@ -136,6 +136,21 @@ var (
 	//go:embed sprite/sword_dog_slash6.png
 	swordDogBigSlashRight6Png []byte
 
+	//go:embed sprite/sword_dog_downslash1.png
+	swordDogDownSlashRight1Png []byte
+
+	//go:embed sprite/sword_dog_downslash2.png
+	swordDogDownSlashRight2Png []byte
+
+	//go:embed sprite/sword_dog_downslash3.png
+	swordDogDownSlashRight3Png []byte
+
+	//go:embed sprite/sword_dog_downslash4.png
+	swordDogDownSlashRight4Png []byte
+
+	//go:embed sprite/sword_dog_downslash5.png
+	swordDogDownSlashRight5Png []byte
+
 	PlayerIdleRight1 *ebiten.Image
 	PlayerIdleRight2 *ebiten.Image
 	PlayerIdleRight3 *ebiten.Image
@@ -218,6 +233,18 @@ var (
 	SwordDogBigSlashLeft4 *ebiten.Image
 	SwordDogBigSlashLeft5 *ebiten.Image
 	SwordDogBigSlashLeft6 *ebiten.Image
+
+	SwordDogDownSlashRight1 *ebiten.Image
+	SwordDogDownSlashRight2 *ebiten.Image
+	SwordDogDownSlashRight3 *ebiten.Image
+	SwordDogDownSlashRight4 *ebiten.Image
+	SwordDogDownSlashRight5 *ebiten.Image
+
+	SwordDogDownSlashLeft1 *ebiten.Image
+	SwordDogDownSlashLeft2 *ebiten.Image
+	SwordDogDownSlashLeft3 *ebiten.Image
+	SwordDogDownSlashLeft4 *ebiten.Image
+	SwordDogDownSlashLeft5 *ebiten.Image
 )
 
 func LoadSprites() {
@@ -305,4 +332,16 @@ func LoadSprites() {
 	SwordDogBigSlashLeft4 = flipImageXAxis(SwordDogBigSlashRight4)
 	SwordDogBigSlashLeft5 = flipImageXAxis(SwordDogBigSlashRight5)
 	SwordDogBigSlashLeft6 = flipImageXAxis(SwordDogBigSlashRight6)
+
+	SwordDogDownSlashRight1 = imageFromBytes(swordDogDownSlashRight1Png)
+	SwordDogDownSlashRight2 = imageFromBytes(swordDogDownSlashRight2Png)
+	SwordDogDownSlashRight3 = imageFromBytes(swordDogDownSlashRight3Png)
+	SwordDogDownSlashRight4 = imageFromBytes(swordDogDownSlashRight4Png)
+	SwordDogDownSlashRight5 = imageFromBytes(swordDogDownSlashRight5Png)
+
+	SwordDogDownSlashLeft1 = flipImageXAxis(SwordDogDownSlashRight1)
+	SwordDogDownSlashLeft2 = flipImageXAxis(SwordDogDownSlashRight2)
+	SwordDogDownSlashLeft3 = flipImageXAxis(SwordDogDownSlashRight3)
+	SwordDogDownSlashLeft4 = flipImageXAxis(SwordDogDownSlashRight4)
+	SwordDogDownSlashLeft5 = flipImageXAxis(SwordDogDownSlashRight5)
 }
