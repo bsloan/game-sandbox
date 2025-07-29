@@ -216,7 +216,7 @@ func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
 	}
 
 	// attack the player if we're really close and not already in an attacking state
-	if xDistance < 22 && yDistance < 20 && swordDog.State != entity.ActiveRight && swordDog.State != entity.ActiveLeft && swordDog.State != entity.ActiveRight2 && swordDog.State != entity.ActiveLeft2 {
+	if ((playerX < swordDogX && xDistance < 22) || (playerX > swordDogX && xDistance < 31)) && yDistance < 20 && swordDog.State != entity.ActiveRight && swordDog.State != entity.ActiveLeft && swordDog.State != entity.ActiveRight2 && swordDog.State != entity.ActiveLeft2 {
 		if swordDog.Facing == entity.Right {
 			if swordDog.RememberState == entity.ActiveRight || swordDog.RememberState == entity.ActiveLeft {
 				swordDog.State = entity.ActiveRight2

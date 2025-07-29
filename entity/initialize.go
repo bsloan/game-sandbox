@@ -281,7 +281,7 @@ func InitializeSwordDog(space *cp.Space, x, y float64) *Entity {
 	swordDog.Body.UserData = &swordDog
 	space.AddBody(swordDog.Body)
 	swordDog.Body.SetPosition(cp.Vector{X: x, Y: y})
-	swordDogShape := space.AddShape(cp.NewCircle(swordDog.Body, 11, cp.Vector{X: 0, Y: 0}))
+	swordDogShape := space.AddShape(cp.NewCircle(swordDog.Body, 11, cp.Vector{X: 10, Y: 0}))
 	swordDogShape.SetElasticity(0)
 	swordDogShape.SetFriction(0.75)
 	swordDogShape.SetCollisionType(SwordDogCollisionType)
