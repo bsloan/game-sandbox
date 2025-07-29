@@ -204,8 +204,10 @@ func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
 	xDistance := math.Abs(swordDogX - playerX)
 	yDistance := math.Abs(swordDogY - playerY)
 
+	notAttacking := swordDog.State != entity.ActiveRight && swordDog.State != entity.ActiveLeft && swordDog.State != entity.ActiveRight2 && swordDog.State != entity.ActiveLeft2
+
 	// chase the player if we're close
-	if xDistance < 32 && swordDog.State != entity.ActiveRight && swordDog.State != entity.ActiveLeft && swordDog.State != entity.ActiveRight2 && swordDog.State != entity.ActiveLeft2 {
+	if xDistance < 32 && notAttacking {
 		if playerX > swordDogX {
 			swordDog.Facing = entity.Right
 			swordDog.State = entity.MovingRight
@@ -216,7 +218,7 @@ func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
 	}
 
 	// attack the player if we're really close and not already in an attacking state
-	if ((playerX < swordDogX && xDistance < 22) || (playerX > swordDogX && xDistance < 31)) && yDistance < 20 && swordDog.State != entity.ActiveRight && swordDog.State != entity.ActiveLeft && swordDog.State != entity.ActiveRight2 && swordDog.State != entity.ActiveLeft2 {
+	if ((playerX < swordDogX && xDistance < 22) || (playerX > swordDogX && xDistance < 31)) && yDistance < 20 && notAttacking {
 		if swordDog.Facing == entity.Right {
 			if swordDog.RememberState == entity.ActiveRight || swordDog.RememberState == entity.ActiveLeft {
 				swordDog.State = entity.ActiveRight2
@@ -234,6 +236,29 @@ func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
 				swordDog.RememberState = entity.ActiveLeft
 			}
 		}
+
+		// TODO: attach a larger shape to the dog while it's attacking
+		//swordShape := g.space.AddShape(cp.NewBox(swordDog.Body, 45, 19, 3))
+		swordShape := g.space.AddShape(cp.NewBox2(swordDog.Body, cp.BB{
+			L: -23,
+			B: 10,
+			R: 38,
+			T: -10,
+		}, 3))
+		swordShape.SetElasticity(0.4)
+		swordShape.SetFriction(0.75)
+		swordShape.UserData = 1 // hack to remember later that this shape was added for attack
+		// TODO: collision type and handler
+		//swordShape.SetCollisionType(SwordDogCollisionType)
+		//GenericGroundedHandler(space, SwordDogCollisionType)
+	} else if notAttacking {
+		// remove any shapes that were added just for attack
+		swordDog.Body.EachShape(func(shape *cp.Shape) {
+			if shape.UserData == 1 {
+				swordDog.Body.RemoveShape(shape)
+				g.space.RemoveShape(shape)
+			}
+		})
 	}
 
 	// move the dog
