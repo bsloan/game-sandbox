@@ -57,6 +57,7 @@ type Entity struct {
 	OnSlope         bool
 	WeaponAvailable bool
 	Running         bool
+	Damaged         int // number of ticks to show damaged color scale when entity takes damage
 	Boost           float64
 	Animations      map[EntityState]*Animation
 	StaticImage     *ebiten.Image
