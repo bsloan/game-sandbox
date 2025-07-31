@@ -122,8 +122,6 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 	playerShape.SetFriction(0.75)
 	playerShape.SetCollisionType(PlayerCollisionType)
 	player.Shape = playerShape
-	GenericGroundedHandler(space, PlayerCollisionType)
-	SlopeHandler(space, PlayerCollisionType)
 	return &player
 }
 
@@ -286,8 +284,5 @@ func InitializeSwordDog(space *cp.Space, x, y float64) *Entity {
 	swordDogShape.SetFriction(0.75)
 	swordDogShape.SetCollisionType(SwordDogCollisionType)
 	swordDog.Shape = swordDogShape
-	GenericGroundedHandler(space, SwordDogCollisionType)
-	SlopeHandler(space, SwordDogCollisionType)
-	EntityObstructedHandler(space, SwordDogCollisionType)
 	return &swordDog
 }

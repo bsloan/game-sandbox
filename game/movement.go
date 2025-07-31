@@ -248,9 +248,9 @@ func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
 		swordShape.SetElasticity(0.4)
 		swordShape.SetFriction(0.75)
 		swordShape.UserData = 1 // hack to remember later that this shape was added for attack
+
 		// TODO: collision type and handler
-		//swordShape.SetCollisionType(SwordDogCollisionType)
-		//GenericGroundedHandler(space, SwordDogCollisionType)
+		swordShape.SetCollisionType(entity.SwordDogCollisionType)
 	} else if notAttacking {
 		// remove any shapes that were added just for attack
 		swordDog.Body.EachShape(func(shape *cp.Shape) {

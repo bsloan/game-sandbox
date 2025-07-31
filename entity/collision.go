@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"github.com/bsloan/game-sandbox/settings"
 	"github.com/jakecoffman/cp"
 	"math"
 )
@@ -69,7 +70,7 @@ func SlopeHandler(space *cp.Space, collisionType cp.CollisionType) {
 	}
 }
 
-func EntityObstructedHandler(space *cp.Space, collisionType cp.CollisionType) {
+func ObstructedHandler(space *cp.Space, collisionType cp.CollisionType) {
 	handler := space.NewCollisionHandler(collisionType, BlockCollisionType)
 	handler.BeginFunc = func(arb *cp.Arbiter, space *cp.Space, data interface{}) bool {
 		n := arb.Normal()
@@ -89,4 +90,48 @@ func EntityObstructedHandler(space *cp.Space, collisionType cp.CollisionType) {
 		}
 		return true
 	}
+}
+
+func DamagePlayerHandler(space *cp.Space, collisionType cp.CollisionType) {
+	handler := space.NewCollisionHandler(collisionType, PlayerCollisionType)
+
+	handler.BeginFunc = func(arb *cp.Arbiter, space *cp.Space, data interface{}) bool {
+		n := arb.Normal()
+		body1, body2 := arb.Bodies()
+
+		//var enemyBody *cp.Body
+		var playerBody *cp.Body
+
+		if body1.UserData.(*Entity).Type == Player {
+			playerBody = body1
+			//enemyBody = body2
+		} else {
+			playerBody = body2
+			//enemyBody = body1
+		}
+
+		// jolt the player backwards a bit
+		if n.X > 0.5 {
+			playerBody.ApplyForceAtLocalPoint(cp.Vector{X: settings.PlayerJumpInitialVelocity * 3, Y: playerBody.Position().Y}, cp.Vector{X: 0, Y: 0})
+		} else if n.X < -0.5 {
+			playerBody.ApplyForceAtLocalPoint(cp.Vector{X: -settings.PlayerJumpInitialVelocity * 3, Y: playerBody.Position().Y}, cp.Vector{X: 0, Y: 0})
+		}
+
+		// TODO: set Player state to Hurt ?
+
+		// TODO: subtract damage from player health
+		return true
+	}
+}
+
+func InitializeCollisionHandlers(space *cp.Space) {
+	// attach collision handlers to player
+	GenericGroundedHandler(space, PlayerCollisionType)
+	SlopeHandler(space, PlayerCollisionType)
+
+	// attach collision handlers to enemies
+	DamagePlayerHandler(space, SwordDogCollisionType)
+	GenericGroundedHandler(space, SwordDogCollisionType)
+	SlopeHandler(space, SwordDogCollisionType)
+	ObstructedHandler(space, SwordDogCollisionType)
 }

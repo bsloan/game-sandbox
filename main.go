@@ -39,6 +39,8 @@ func main() {
 	swordDog := entity.InitializeSwordDog(space, 290, 382)
 	r.AddEntity(swordDog)
 
+	entity.InitializeCollisionHandlers(space)
+
 	gameboard := boards.Gameboard{}
 	gameboard.LoadGameboard(boards.Level1Map, space)
 
