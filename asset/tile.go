@@ -6,6 +6,32 @@ import (
 	_ "image/png"
 )
 
+const (
+	EMPTY = iota
+	GRASS_LEFT_EDGE
+	GRASS_MIDDLE
+	GRASS_RIGHT_EDGE
+	DIRT_CENTER
+	GRASS_SLOPE_R_START
+	GRASS_SLOPE_R_BASE_1
+	GRASS_SLOPE_R_MIDDLE
+	GRASS_SLOPE_R_BASE_2
+	GRASS_SLOPE_R_MAGIC_ROOT
+	GRASS_SLOPE_L_START
+	GRASS_SLOPE_L_BASE_1
+	GRASS_SLOPE_L_MIDDLE
+	GRASS_SLOPE_L_BASE_2
+	GRASS_SLOPE_L_MAGIC_ROOT
+	DIRT_CENTER_ROCKS_1
+	DIRT_CENTER_ROCKS_2
+	DIRT_L_1
+	DIRT_L_2
+	DIRT_R_1
+	DIRT_R_2
+	DIRT_BOTTOM_1
+	DIRT_BOTTOM_2
+)
+
 var (
 	//go:embed environment/grass_l.png
 	grassLeftPng []byte
@@ -18,6 +44,30 @@ var (
 
 	//go:embed environment/dirt_m.png
 	dirtMiddlePng []byte
+
+	//go:embed environment/dirt_left_1.png
+	dirtLeft1Png []byte
+
+	//go:embed environment/dirt_left_2.png
+	dirtLeft2Png []byte
+
+	//go:embed environment/dirt_right_1.png
+	dirtRight1Png []byte
+
+	//go:embed environment/dirt_right_2.png
+	dirtRight2Png []byte
+
+	//go:embed environment/dirt_m_rocks_1.png
+	dirtMiddleRocks1Png []byte
+
+	//go:embed environment/dirt_m_rocks_2.png
+	dirtMiddleRocks2Png []byte
+
+	//go:embed environment/dirt_bot_1.png
+	dirtBottom1Png []byte
+
+	//go:embed environment/dirt_bot_2.png
+	dirtBottom2Png []byte
 
 	//go:embed environment/grass_slope_r1.png
 	grassSlopeR1Png []byte
@@ -41,6 +91,14 @@ var (
 	GrassMiddle  *ebiten.Image
 	GrassRight   *ebiten.Image
 	DirtMiddle   *ebiten.Image
+	DirtLeft1    *ebiten.Image
+	DirtLeft2    *ebiten.Image
+	DirtRight1   *ebiten.Image
+	DirtRight2   *ebiten.Image
+	DirtRocks1   *ebiten.Image
+	DirtRocks2   *ebiten.Image
+	DirtBottom1  *ebiten.Image
+	DirtBottom2  *ebiten.Image
 	GrassSlopeR1 *ebiten.Image
 	GrassSlopeR2 *ebiten.Image
 	GrassSlopeR3 *ebiten.Image
@@ -60,6 +118,14 @@ func LoadTiles() {
 	GrassMiddle = imageFromBytes(grassMiddlePng)
 	GrassRight = imageFromBytes(grassRightPng)
 	DirtMiddle = imageFromBytes(dirtMiddlePng)
+	DirtLeft1 = imageFromBytes(dirtLeft1Png)
+	DirtLeft2 = imageFromBytes(dirtLeft2Png)
+	DirtRight1 = imageFromBytes(dirtRight1Png)
+	DirtRight2 = imageFromBytes(dirtRight2Png)
+	DirtBottom1 = imageFromBytes(dirtBottom1Png)
+	DirtBottom2 = imageFromBytes(dirtBottom2Png)
+	DirtRocks1 = imageFromBytes(dirtMiddleRocks1Png)
+	DirtRocks2 = imageFromBytes(dirtMiddleRocks2Png)
 	GrassSlopeR1 = imageFromBytes(grassSlopeR1Png)
 	GrassSlopeR2 = imageFromBytes(grassSlopeR2Png)
 	GrassSlopeR3 = imageFromBytes(grassSlopeR3Png)
@@ -89,4 +155,12 @@ func LoadTiles() {
 	TileImages[13] = GrassSlopeL4
 	TileImages[14] = GrassSlopeL1 // Magic root tile for ~26 degree negative slope (grass)
 
+	TileImages[DIRT_L_1] = DirtLeft1
+	TileImages[DIRT_L_2] = DirtLeft2
+	TileImages[DIRT_R_1] = DirtRight1
+	TileImages[DIRT_R_2] = DirtRight2
+	TileImages[DIRT_BOTTOM_1] = DirtBottom1
+	TileImages[DIRT_BOTTOM_2] = DirtBottom2
+	TileImages[DIRT_CENTER_ROCKS_1] = DirtRocks1
+	TileImages[DIRT_CENTER_ROCKS_2] = DirtRocks2
 }

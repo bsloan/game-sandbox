@@ -3,36 +3,19 @@ package boards
 import (
 	_ "embed"
 	"encoding/json"
+	"github.com/bsloan/game-sandbox/asset"
 	"github.com/bsloan/game-sandbox/entity"
 	"github.com/jakecoffman/cp"
 	"log"
 	"slices"
 )
 
-const (
-	EMPTY = iota
-	GRASS_LEFT_EDGE
-	GRASS_MIDDLE
-	GRASS_RIGHT_EDGE
-	DIRT_CENTER
-	GRASS_SLOPE_R_START
-	GRASS_SLOPE_R_BASE_1
-	GRASS_SLOPE_R_MIDDLE
-	GRASS_SLOPE_R_BASE_2
-	GRASS_SLOPE_R_MAGIC_ROOT
-	GRASS_SLOPE_L_START
-	GRASS_SLOPE_L_BASE_1
-	GRASS_SLOPE_L_MIDDLE
-	GRASS_SLOPE_L_BASE_2
-	GRASS_SLOPE_L_MAGIC_ROOT
-)
-
 var NoOpTiles = []int{
-	EMPTY,
-	GRASS_SLOPE_R_START,
-	GRASS_SLOPE_R_MIDDLE,
-	GRASS_SLOPE_L_START,
-	GRASS_SLOPE_L_MIDDLE,
+	asset.EMPTY,
+	asset.GRASS_SLOPE_R_START,
+	asset.GRASS_SLOPE_R_MIDDLE,
+	asset.GRASS_SLOPE_L_START,
+	asset.GRASS_SLOPE_L_MIDDLE,
 }
 
 var (
@@ -70,18 +53,7 @@ func (gb *Gameboard) initializeTiles(space *cp.Space) {
 				tileBody := cp.NewStaticBody()
 				tileBody.SetPosition(cp.Vector{X: x, Y: y})
 				var tileShape *cp.Shape
-				// FIXME: differentiating edge vs middle blocks is not really needed any more - remove all this
-				if tile == GRASS_MIDDLE || tile == DIRT_CENTER || tile == GRASS_SLOPE_R_BASE_1 || tile == GRASS_SLOPE_R_BASE_2 || tile == GRASS_SLOPE_L_BASE_1 || tile == GRASS_SLOPE_L_BASE_2 {
-					// these are center blocks - make the collision shape a normal 16x16 square
-					tileShape = cp.NewBox(tileBody, 16, 16, 0)
-					tileShape.SetFriction(1)
-					tileShape.SetCollisionType(entity.BlockCollisionType)
-				} else if tile == GRASS_LEFT_EDGE || tile == GRASS_RIGHT_EDGE {
-					// these are edge blocks - collision shape is narrower
-					tileShape = cp.NewBox(tileBody, 16, 16, 0) // FIXME see above - this used to be 8x16
-					tileShape.SetFriction(1)
-					tileShape.SetCollisionType(entity.BlockCollisionType)
-				} else if tile == GRASS_SLOPE_R_MAGIC_ROOT {
+				if tile == asset.GRASS_SLOPE_R_MAGIC_ROOT {
 					// hard code a line segment of a pre-defined length and slope, starting at this tile
 					// this is a hack but it works. this particular slope root creates a 26 degree positive
 					// slope that is 6 tiles wide and 6 tiles high.
@@ -90,14 +62,17 @@ func (gb *Gameboard) initializeTiles(space *cp.Space) {
 					tileShape = cp.NewSegment(tileBody, vert2, vert1, 3)
 					tileShape.SetFriction(0.1)
 					tileShape.SetCollisionType(entity.SlopeCollisionType)
-				} else if tile == GRASS_SLOPE_L_MAGIC_ROOT {
+				} else if tile == asset.GRASS_SLOPE_L_MAGIC_ROOT {
 					vert1 := cp.Vector{X: -4, Y: 0}
 					vert2 := cp.Vector{X: -80, Y: -36}
 					tileShape = cp.NewSegment(tileBody, vert2, vert1, 3)
 					tileShape.SetFriction(0.1)
 					tileShape.SetCollisionType(entity.SlopeCollisionType)
 				} else {
-					// unrecognized tile - panic
+					// by default, just make it a regular block
+					tileShape = cp.NewBox(tileBody, 16, 16, 0)
+					tileShape.SetFriction(1)
+					tileShape.SetCollisionType(entity.BlockCollisionType)
 				}
 				tileShape.SetElasticity(0)
 				space.AddBody(tileBody)
