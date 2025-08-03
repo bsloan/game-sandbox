@@ -33,7 +33,7 @@ func main() {
 	r := entity.Registry{}
 	r.AddEntity(player)
 
-	swordDog := entity.InitializeSwordDog(space, 290, 382)
+	swordDog := entity.InitializeSwordDog(space, 555, 414)
 	r.AddEntity(swordDog)
 
 	sword := entity.InitializePlayerSword(space, 0, 0)
