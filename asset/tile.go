@@ -51,6 +51,15 @@ var (
 	//go:embed environment/dirt_m.png
 	dirtMiddlePng []byte
 
+	//go:embed environment/grass_float_l.png
+	grassFloatLeftPng []byte
+
+	//go:embed environment/grass_float_m.png
+	grassFloatMiddlePng []byte
+
+	//go:embed environment/grass_float_r.png
+	grassFloatRightPng []byte
+
 	//go:embed environment/dirt_left_1.png
 	dirtLeft1Png []byte
 
@@ -108,6 +117,9 @@ var (
 	GrassLeft         *ebiten.Image
 	GrassMiddle       *ebiten.Image
 	GrassRight        *ebiten.Image
+	GrassFloatLeft    *ebiten.Image
+	GrassFloatMiddle  *ebiten.Image
+	GrassFloatRight   *ebiten.Image
 	DirtMiddle        *ebiten.Image
 	DirtLeft1         *ebiten.Image
 	DirtLeft2         *ebiten.Image
@@ -139,6 +151,9 @@ func LoadTiles() {
 	GrassLeft = imageFromBytes(grassLeftPng)
 	GrassMiddle = imageFromBytes(grassMiddlePng)
 	GrassRight = imageFromBytes(grassRightPng)
+	GrassFloatLeft = imageFromBytes(grassFloatLeftPng)
+	GrassFloatMiddle = imageFromBytes(grassFloatMiddlePng)
+	GrassFloatRight = imageFromBytes(grassFloatRightPng)
 	DirtMiddle = imageFromBytes(dirtMiddlePng)
 	DirtLeft1 = imageFromBytes(dirtLeft1Png)
 	DirtLeft2 = imageFromBytes(dirtLeft2Png)
@@ -198,4 +213,8 @@ func LoadTiles() {
 	TileImages[26] = GrassSlopeSteepL1
 	TileImages[27] = GrassSlopeSteepL2
 	TileImages[28] = GrassSlopeSteepL2 // Magic root tile for steep grass negative slope
+
+	TileImages[29] = GrassFloatLeft
+	TileImages[30] = GrassFloatMiddle
+	TileImages[31] = GrassFloatRight
 }
