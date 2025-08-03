@@ -86,7 +86,7 @@ func (p *Viewport) Draw(g *Game) {
 		// TODO: refactor to generate the midground image elsewhere
 		p.midground = ebiten.NewImage(int(float64(g.board.PixelWidth)), int(float64(g.board.PixelHeight)))
 		ht := float64(asset.HillsMidground.Bounds().Dy())
-		midY := float64(g.board.PixelHeight) - (ht + 100)
+		midY := float64(g.board.PixelHeight) - (ht + 55)
 		for midX := 0; midX < g.board.PixelWidth; midX += 160 {
 			op := ebiten.DrawImageOptions{}
 			op.GeoM.Translate(float64(midX), midY)
