@@ -30,6 +30,12 @@ const (
 	DIRT_R_2
 	DIRT_BOTTOM_1
 	DIRT_BOTTOM_2
+	GRASS_SLOPE_STEEP_R_BASE
+	GRASS_SLOPE_STEEP_R_START
+	GRASS_SLOPE_STEEP_R_MAGIC_ROOT
+	GRASS_SLOPE_STEEP_L_BASE
+	GRASS_SLOPE_STEEP_L_START
+	GRASS_SLOPE_STEEP_L_MAGIC_ROOT
 )
 
 var (
@@ -81,32 +87,48 @@ var (
 	//go:embed environment/grass_slope_r4.png
 	grassSlopeR4Png []byte
 
+	//go:embed environment/grass_slope_steep_r1.png
+	grassSlopeSteepR1Png []byte
+
+	//go:embed environment/grass_slope_steep_r2.png
+	grassSlopeSteepR2Png []byte
+
+	//go:embed environment/grass_slope_steep_l1.png
+	grassSlopeSteepL1Png []byte
+
+	//go:embed environment/grass_slope_steep_l2.png
+	grassSlopeSteepL2Png []byte
+
 	//go:embed environment/back.png
 	skyBackgroundPng []byte
 
 	//go:embed environment/middle.png
 	hillsMidgroundPng []byte
 
-	GrassLeft    *ebiten.Image
-	GrassMiddle  *ebiten.Image
-	GrassRight   *ebiten.Image
-	DirtMiddle   *ebiten.Image
-	DirtLeft1    *ebiten.Image
-	DirtLeft2    *ebiten.Image
-	DirtRight1   *ebiten.Image
-	DirtRight2   *ebiten.Image
-	DirtRocks1   *ebiten.Image
-	DirtRocks2   *ebiten.Image
-	DirtBottom1  *ebiten.Image
-	DirtBottom2  *ebiten.Image
-	GrassSlopeR1 *ebiten.Image
-	GrassSlopeR2 *ebiten.Image
-	GrassSlopeR3 *ebiten.Image
-	GrassSlopeR4 *ebiten.Image
-	GrassSlopeL1 *ebiten.Image
-	GrassSlopeL2 *ebiten.Image
-	GrassSlopeL3 *ebiten.Image
-	GrassSlopeL4 *ebiten.Image
+	GrassLeft         *ebiten.Image
+	GrassMiddle       *ebiten.Image
+	GrassRight        *ebiten.Image
+	DirtMiddle        *ebiten.Image
+	DirtLeft1         *ebiten.Image
+	DirtLeft2         *ebiten.Image
+	DirtRight1        *ebiten.Image
+	DirtRight2        *ebiten.Image
+	DirtRocks1        *ebiten.Image
+	DirtRocks2        *ebiten.Image
+	DirtBottom1       *ebiten.Image
+	DirtBottom2       *ebiten.Image
+	GrassSlopeR1      *ebiten.Image
+	GrassSlopeR2      *ebiten.Image
+	GrassSlopeR3      *ebiten.Image
+	GrassSlopeR4      *ebiten.Image
+	GrassSlopeL1      *ebiten.Image
+	GrassSlopeL2      *ebiten.Image
+	GrassSlopeL3      *ebiten.Image
+	GrassSlopeL4      *ebiten.Image
+	GrassSlopeSteepR1 *ebiten.Image
+	GrassSlopeSteepR2 *ebiten.Image
+	GrassSlopeSteepL1 *ebiten.Image
+	GrassSlopeSteepL2 *ebiten.Image
 
 	SkyBackground  *ebiten.Image
 	HillsMidground *ebiten.Image
@@ -134,6 +156,11 @@ func LoadTiles() {
 	GrassSlopeL2 = flipImageXAxis(GrassSlopeR2)
 	GrassSlopeL3 = flipImageXAxis(GrassSlopeR3)
 	GrassSlopeL4 = flipImageXAxis(GrassSlopeR4)
+	GrassSlopeSteepR1 = imageFromBytes(grassSlopeSteepR1Png)
+	GrassSlopeSteepR2 = imageFromBytes(grassSlopeSteepR2Png)
+	GrassSlopeSteepL1 = imageFromBytes(grassSlopeSteepL1Png)
+	GrassSlopeSteepL2 = imageFromBytes(grassSlopeSteepL2Png)
+
 	SkyBackground = imageFromBytes(skyBackgroundPng)
 	HillsMidground = imageFromBytes(hillsMidgroundPng)
 
@@ -155,12 +182,20 @@ func LoadTiles() {
 	TileImages[13] = GrassSlopeL4
 	TileImages[14] = GrassSlopeL1 // Magic root tile for ~26 degree negative slope (grass)
 
-	TileImages[DIRT_L_1] = DirtLeft1
-	TileImages[DIRT_L_2] = DirtLeft2
-	TileImages[DIRT_R_1] = DirtRight1
-	TileImages[DIRT_R_2] = DirtRight2
-	TileImages[DIRT_BOTTOM_1] = DirtBottom1
-	TileImages[DIRT_BOTTOM_2] = DirtBottom2
-	TileImages[DIRT_CENTER_ROCKS_1] = DirtRocks1
-	TileImages[DIRT_CENTER_ROCKS_2] = DirtRocks2
+	TileImages[15] = DirtRocks1
+	TileImages[16] = DirtRocks2
+
+	TileImages[17] = DirtLeft1
+	TileImages[18] = DirtLeft2
+	TileImages[19] = DirtRight1
+	TileImages[20] = DirtRight2
+	TileImages[21] = DirtBottom1
+	TileImages[22] = DirtBottom2
+
+	TileImages[23] = GrassSlopeSteepR1
+	TileImages[24] = GrassSlopeSteepR2
+	TileImages[25] = GrassSlopeSteepR2 // Magic root tile for steep grass positive slope
+	TileImages[26] = GrassSlopeSteepL1
+	TileImages[27] = GrassSlopeSteepL2
+	TileImages[28] = GrassSlopeSteepL2 // Magic root tile for steep grass negative slope
 }

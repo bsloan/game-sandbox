@@ -16,6 +16,8 @@ var NoOpTiles = []int{
 	asset.GRASS_SLOPE_R_MIDDLE,
 	asset.GRASS_SLOPE_L_START,
 	asset.GRASS_SLOPE_L_MIDDLE,
+	asset.GRASS_SLOPE_STEEP_R_START,
+	asset.GRASS_SLOPE_STEEP_L_START,
 }
 
 var (
@@ -65,6 +67,18 @@ func (gb *Gameboard) initializeTiles(space *cp.Space) {
 				} else if tile == asset.GRASS_SLOPE_L_MAGIC_ROOT {
 					vert1 := cp.Vector{X: -4, Y: 0}
 					vert2 := cp.Vector{X: -80, Y: -36}
+					tileShape = cp.NewSegment(tileBody, vert2, vert1, 3)
+					tileShape.SetFriction(0.1)
+					tileShape.SetCollisionType(entity.SlopeCollisionType)
+				} else if tile == asset.GRASS_SLOPE_STEEP_R_MAGIC_ROOT {
+					vert1 := cp.Vector{X: 4, Y: 0}    // 4
+					vert2 := cp.Vector{X: 29, Y: -24} // 30, -24 better)
+					tileShape = cp.NewSegment(tileBody, vert2, vert1, 3)
+					tileShape.SetFriction(0.1)
+					tileShape.SetCollisionType(entity.SlopeCollisionType)
+				} else if tile == asset.GRASS_SLOPE_STEEP_L_MAGIC_ROOT {
+					vert1 := cp.Vector{X: -4, Y: 0}    // -4
+					vert2 := cp.Vector{X: -29, Y: -24} // -30, -24
 					tileShape = cp.NewSegment(tileBody, vert2, vert1, 3)
 					tileShape.SetFriction(0.1)
 					tileShape.SetCollisionType(entity.SlopeCollisionType)
