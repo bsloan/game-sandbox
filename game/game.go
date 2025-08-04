@@ -8,8 +8,10 @@ import (
 	"github.com/bsloan/game-sandbox/settings"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 	"github.com/jakecoffman/cp"
 	"image"
+	"image/color"
 )
 
 type Viewport struct {
@@ -194,6 +196,20 @@ func (g *Game) animateSprites() {
 	}
 }
 
+func (g *Game) drawPlayerHealth(screen *ebiten.Image) {
+	player := g.registry.Player()
+	barWidth := player.MaxHealth + 1
+	barHeight := 5
+	x, y := 2, 233
+
+	// draw health bar background
+	vector.DrawFilledRect(screen, float32(x), float32(y), float32(barWidth), float32(barHeight), color.RGBA{R: 211, G: 211, B: 211, A: 255}, false)
+
+	// draw filled portion representing player's remaining health
+	filledWidth := player.Health
+	vector.DrawFilledRect(screen, float32(x+1), float32(y+1), float32(filledWidth), float32(barHeight-1), color.RGBA{R: 255, G: 0, B: 0, A: 255}, false)
+}
+
 func (g *Game) Cleanup() {
 	g.registry.RemoveDead(g.space)
 }
@@ -227,6 +243,9 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.DrawImage(g.vp.view, &ebiten.DrawImageOptions{})
+
+	g.drawPlayerHealth(screen)
+
 	if g.debug {
 		tx, ty := g.vp.TilePosition()
 		px, py := g.registry.Player().Body.Position().X, g.registry.Player().Body.Position().Y

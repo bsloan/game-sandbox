@@ -122,6 +122,10 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 	playerShape.SetFriction(0.75)
 	playerShape.SetCollisionType(PlayerCollisionType)
 	player.Shape = playerShape
+
+	player.MaxHealth = 50
+	player.Health = player.MaxHealth
+
 	return &player
 }
 

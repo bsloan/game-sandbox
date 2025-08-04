@@ -63,6 +63,8 @@ type Entity struct {
 	StaticImage     *ebiten.Image
 	Body            *cp.Body
 	Shape           *cp.Shape
+	MaxHealth       float64
+	Health          float64
 	// other metadata: health, attack damage, points, etc
 }
 
