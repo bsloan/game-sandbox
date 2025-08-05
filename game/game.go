@@ -73,6 +73,10 @@ func (p *Viewport) InView(e *entity.Entity) bool {
 		y < p.viewY+settings.ScreenHeight
 }
 
+func translateTileCoordsToScreen(tileX, tileY int, offsetX, offsetY float64) (float64, float64) {
+	return float64(tileX*settings.TileSize) - offsetX - (settings.TileSize / 2), float64(tileY*settings.TileSize) - offsetY - (settings.TileSize / 2)
+}
+
 // Draw renders the foreground layer (tiles and sprites) within the currently visible section
 // of the game board. When the frame is ready, this is later copied to the screen on top
 // of any background and middle layers for a parallax scrolling affect.
@@ -129,7 +133,7 @@ func (p *Viewport) Draw(g *Game) {
 				// the tile's x,y coordinates in chipmunk 2d space are at it's center, so need to pull it
 				// back and to the left by tileSize/2, and adjust by (ox,oy) to get the correct pixel offset
 				op := ebiten.DrawImageOptions{}
-				op.GeoM.Translate(float64(xTileCount*settings.TileSize)-ox-(settings.TileSize/2), float64(yTileCount*settings.TileSize)-oy-(settings.TileSize/2))
+				op.GeoM.Translate(translateTileCoordsToScreen(xTileCount, yTileCount, ox, oy))
 				p.view.DrawImage(asset.TileImages[tile], &op)
 			}
 			xTileCount++
@@ -169,7 +173,7 @@ func (p *Viewport) Draw(g *Game) {
 	// render foreground tiles
 	for _, tileCoord := range foregroundTiles {
 		op := ebiten.DrawImageOptions{}
-		op.GeoM.Translate(float64(tileCoord.X*settings.TileSize)-ox-(settings.TileSize/2), float64(tileCoord.Y*settings.TileSize)-oy-(settings.TileSize/2))
+		op.GeoM.Translate(translateTileCoordsToScreen(tileCoord.X, tileCoord.Y, ox, oy))
 		p.view.DrawImage(asset.TileImages[tileCoord.Tile], &op)
 	}
 }
@@ -218,6 +222,8 @@ func (g *Game) drawPlayerHealth(screen *ebiten.Image) {
 	barWidth := player.MaxHealth + 1
 	barHeight := 5
 	x, y := 2, 233
+
+	// TODO: put this in the top-right screen instead of lower left
 
 	// draw health bar background
 	vector.DrawFilledRect(screen, float32(x), float32(y), float32(barWidth), float32(barHeight), color.RGBA{R: 211, G: 211, B: 211, A: 255}, false)
