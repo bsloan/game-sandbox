@@ -12,6 +12,7 @@ import (
 	"github.com/jakecoffman/cp"
 	"image"
 	"image/color"
+	"slices"
 )
 
 type Viewport struct {
@@ -110,11 +111,20 @@ func (p *Viewport) Draw(g *Game) {
 	tileX, tileY := p.TilePosition()
 	ox, oy := float64(int(p.viewX)%settings.TileSize), float64(int(p.viewY)%settings.TileSize)
 	yTileCount := 0
+	// create a structure to hold any foreground tiles we find, so we can draw them later after sprites
+	type tileCoords struct {
+		X, Y, Tile int
+	}
+	var foregroundTiles []tileCoords
+
 	for ty := tileY; ty <= (tileY+settings.ScreenHeightTiles+1) && ty < g.board.TileHeight; ty++ {
 		xTileCount := 0
 		for tx := tileX; tx <= (tileX+settings.ScreenWidthTiles+1) && tx < g.board.TileWidth; tx++ {
 			tile := g.board.Map[ty][tx]
-			if tile != 0 {
+			if slices.Contains(boards.ForegroundTiles, tile) {
+				// save foreground tiles for rendering later
+				foregroundTiles = append(foregroundTiles, tileCoords{X: xTileCount, Y: yTileCount, Tile: tile})
+			} else if tile != 0 {
 				// adjust the x,y position where the tile is rendered from to be its top-left corner.
 				// the tile's x,y coordinates in chipmunk 2d space are at it's center, so need to pull it
 				// back and to the left by tileSize/2, and adjust by (ox,oy) to get the correct pixel offset
@@ -154,6 +164,13 @@ func (p *Viewport) Draw(g *Game) {
 				p.view.DrawImage(entityImage, &op)
 			}
 		}
+	}
+
+	// render foreground tiles
+	for _, tileCoord := range foregroundTiles {
+		op := ebiten.DrawImageOptions{}
+		op.GeoM.Translate(float64(tileCoord.X*settings.TileSize)-ox-(settings.TileSize/2), float64(tileCoord.Y*settings.TileSize)-oy-(settings.TileSize/2))
+		p.view.DrawImage(asset.TileImages[tileCoord.Tile], &op)
 	}
 }
 

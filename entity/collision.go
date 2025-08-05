@@ -111,17 +111,17 @@ func DamagePlayerHandler(space *cp.Space, collisionType cp.CollisionType) {
 		}
 
 		// jolt the player backwards a bit
-		if n.X > 0.5 && playerBody.UserData.(*Entity).Damaged <= 0 {
+		if n.X > 0.75 && playerBody.UserData.(*Entity).Damaged <= 0 {
 			playerBody.ApplyForceAtLocalPoint(cp.Vector{X: settings.PlayerJumpInitialVelocity * 3, Y: 0}, cp.Vector{X: 0, Y: 0})
 			playerBody.UserData.(*Entity).Damaged = 5
-		} else if n.X < -0.5 {
+		} else if n.X < -0.75 {
 			playerBody.ApplyForceAtLocalPoint(cp.Vector{X: -settings.PlayerJumpInitialVelocity * 3, Y: 0}, cp.Vector{X: 0, Y: 0})
 			playerBody.UserData.(*Entity).Damaged = 5
 		}
-		if n.Y > 0.5 && playerBody.UserData.(*Entity).Damaged <= 0 {
+		if n.Y > 0.75 && playerBody.UserData.(*Entity).Damaged <= 0 {
 			playerBody.ApplyForceAtLocalPoint(cp.Vector{X: 0, Y: settings.PlayerJumpInitialVelocity * 3}, cp.Vector{X: 0, Y: 0})
 			playerBody.UserData.(*Entity).Damaged = 5
-		} else if n.Y < -0.5 {
+		} else if n.Y < -0.75 {
 			playerBody.ApplyForceAtLocalPoint(cp.Vector{X: 0, Y: -settings.PlayerJumpInitialVelocity * 3}, cp.Vector{X: 0, Y: 0})
 			playerBody.UserData.(*Entity).Damaged = 5
 		}

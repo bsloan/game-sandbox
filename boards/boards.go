@@ -24,6 +24,13 @@ var NoOpTiles = []int{
 	asset.BRANCH_FOREGROUND_2,
 }
 
+var ForegroundTiles = []int{
+	asset.GRASS_FOREGROUND_1,
+	asset.GRASS_FOREGROUND_2,
+	asset.BRANCH_FOREGROUND_1,
+	asset.BRANCH_FOREGROUND_2,
+}
+
 var (
 	//go:embed map.json
 	Level1Map []byte
@@ -64,13 +71,13 @@ func (gb *Gameboard) initializeTiles(space *cp.Space) {
 					// this is a hack but it works. this particular slope root creates a 26 degree positive
 					// slope that is 6 tiles wide and 6 tiles high.
 					vert1 := cp.Vector{X: 4, Y: 0}
-					vert2 := cp.Vector{X: 80, Y: -36}
+					vert2 := cp.Vector{X: 80, Y: -34} // was -36
 					tileShape = cp.NewSegment(tileBody, vert2, vert1, 3)
 					tileShape.SetFriction(0.1)
 					tileShape.SetCollisionType(entity.SlopeCollisionType)
 				} else if tile == asset.GRASS_SLOPE_L_MAGIC_ROOT {
 					vert1 := cp.Vector{X: -4, Y: 0}
-					vert2 := cp.Vector{X: -80, Y: -36}
+					vert2 := cp.Vector{X: -80, Y: -34} // was: -36
 					tileShape = cp.NewSegment(tileBody, vert2, vert1, 3)
 					tileShape.SetFriction(0.1)
 					tileShape.SetCollisionType(entity.SlopeCollisionType)
