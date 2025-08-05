@@ -12,6 +12,7 @@ const (
 	GRASS_MIDDLE
 	GRASS_RIGHT_EDGE
 	DIRT_CENTER
+
 	GRASS_SLOPE_R_START
 	GRASS_SLOPE_R_BASE_1
 	GRASS_SLOPE_R_MIDDLE
@@ -22,6 +23,7 @@ const (
 	GRASS_SLOPE_L_MIDDLE
 	GRASS_SLOPE_L_BASE_2
 	GRASS_SLOPE_L_MAGIC_ROOT
+
 	DIRT_CENTER_ROCKS_1
 	DIRT_CENTER_ROCKS_2
 	DIRT_L_1
@@ -30,12 +32,28 @@ const (
 	DIRT_R_2
 	DIRT_BOTTOM_1
 	DIRT_BOTTOM_2
+
 	GRASS_SLOPE_STEEP_R_BASE
 	GRASS_SLOPE_STEEP_R_START
 	GRASS_SLOPE_STEEP_R_MAGIC_ROOT
 	GRASS_SLOPE_STEEP_L_BASE
 	GRASS_SLOPE_STEEP_L_START
 	GRASS_SLOPE_STEEP_L_MAGIC_ROOT
+
+	GRASS_FLOAT_LEFT
+	GRASS_FLOAT_MIDDLE
+	GRASS_FLOAT_RIGHT
+
+	PLANK_LEFT_BASE
+	PLANK_MIDDLE
+	PLANK_LEFT_END
+	PLANK_RIGHT_BASE
+	PLANK_RIGHT_END
+
+	GRASS_FOREGROUND_1
+	GRASS_FOREGROUND_2
+	BRANCH_FOREGROUND_1
+	BRANCH_FOREGROUND_2
 )
 
 var (
@@ -108,6 +126,33 @@ var (
 	//go:embed environment/grass_slope_steep_l2.png
 	grassSlopeSteepL2Png []byte
 
+	//go:embed environment/plank_base_l.png
+	plankBaseLPng []byte
+
+	//go:embed environment/plank_base_r.png
+	plankBaseRPng []byte
+
+	//go:embed environment/plank_middle.png
+	plankMiddlePng []byte
+
+	//go:embed environment/plank_end_l.png
+	plankEndLPng []byte
+
+	//go:embed environment/plank_end_r.png
+	plankEndRPng []byte
+
+	//go:embed environment/grass_fore_1.png
+	grassForeground1Png []byte
+
+	//go:embed environment/grass_fore_2.png
+	grassForeground2Png []byte
+
+	//go:embed environment/branch_fore_1.png
+	branchForeground1Png []byte
+
+	//go:embed environment/branch_fore_2.png
+	branchForeground2Png []byte
+
 	//go:embed environment/back.png
 	skyBackgroundPng []byte
 
@@ -141,6 +186,16 @@ var (
 	GrassSlopeSteepR2 *ebiten.Image
 	GrassSlopeSteepL1 *ebiten.Image
 	GrassSlopeSteepL2 *ebiten.Image
+	PlankBaseL        *ebiten.Image
+	PlankBaseR        *ebiten.Image
+	PlankEndL         *ebiten.Image
+	PlankEndR         *ebiten.Image
+	PlankMiddle       *ebiten.Image
+
+	GrassForeground1  *ebiten.Image
+	GrassForeground2  *ebiten.Image
+	BranchForeground1 *ebiten.Image
+	BranchForeground2 *ebiten.Image
 
 	SkyBackground  *ebiten.Image
 	HillsMidground *ebiten.Image
@@ -175,6 +230,16 @@ func LoadTiles() {
 	GrassSlopeSteepR2 = imageFromBytes(grassSlopeSteepR2Png)
 	GrassSlopeSteepL1 = imageFromBytes(grassSlopeSteepL1Png)
 	GrassSlopeSteepL2 = imageFromBytes(grassSlopeSteepL2Png)
+	PlankBaseL = imageFromBytes(plankBaseLPng)
+	PlankBaseR = imageFromBytes(plankBaseRPng)
+	PlankEndL = imageFromBytes(plankEndLPng)
+	PlankEndR = imageFromBytes(plankEndRPng)
+	PlankMiddle = imageFromBytes(plankMiddlePng)
+
+	GrassForeground1 = imageFromBytes(grassForeground1Png)
+	GrassForeground2 = imageFromBytes(grassForeground2Png)
+	BranchForeground1 = imageFromBytes(branchForeground1Png)
+	BranchForeground2 = imageFromBytes(branchForeground2Png)
 
 	SkyBackground = imageFromBytes(skyBackgroundPng)
 	HillsMidground = imageFromBytes(hillsMidgroundPng)
@@ -217,4 +282,15 @@ func LoadTiles() {
 	TileImages[29] = GrassFloatLeft
 	TileImages[30] = GrassFloatMiddle
 	TileImages[31] = GrassFloatRight
+
+	TileImages[32] = PlankBaseL
+	TileImages[33] = PlankMiddle
+	TileImages[34] = PlankEndL
+	TileImages[35] = PlankBaseR
+	TileImages[36] = PlankEndR
+
+	TileImages[37] = GrassForeground1
+	TileImages[38] = GrassForeground2
+	TileImages[39] = BranchForeground1
+	TileImages[40] = BranchForeground2
 }
