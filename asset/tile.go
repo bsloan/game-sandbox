@@ -54,6 +54,21 @@ const (
 	GRASS_FOREGROUND_2
 	BRANCH_FOREGROUND_1
 	BRANCH_FOREGROUND_2
+
+	CAVE_BACKGROUND_L_1
+	CAVE_BACKGROUND_L_2
+	CAVE_BACKGROUND_L_3
+	CAVE_BACKGROUND_L_4
+	CAVE_BACKGROUND_L_5
+	CAVE_BACKGROUND_L_6
+	CAVE_BACKGROUND_L_7
+	CAVE_BACKGROUND_R_1
+	CAVE_BACKGROUND_R_2
+	CAVE_BACKGROUND_R_3
+	CAVE_BACKGROUND_R_4
+	CAVE_BACKGROUND_R_5
+	CAVE_BACKGROUND_R_6
+	CAVE_BACKGROUND_R_7
 )
 
 var (
@@ -153,6 +168,27 @@ var (
 	//go:embed environment/branch_fore_2.png
 	branchForeground2Png []byte
 
+	//go:embed environment/cave_back_l1.png
+	caveBackgroundL1Png []byte
+
+	//go:embed environment/cave_back_l2.png
+	caveBackgroundL2Png []byte
+
+	//go:embed environment/cave_back_l3.png
+	caveBackgroundL3Png []byte
+
+	//go:embed environment/cave_back_l4.png
+	caveBackgroundL4Png []byte
+
+	//go:embed environment/cave_back_l5.png
+	caveBackgroundL5Png []byte
+
+	//go:embed environment/cave_back_l6.png
+	caveBackgroundL6Png []byte
+
+	//go:embed environment/cave_back_l7.png
+	caveBackgroundL7Png []byte
+
 	//go:embed environment/back.png
 	skyBackgroundPng []byte
 
@@ -191,6 +227,20 @@ var (
 	PlankEndL         *ebiten.Image
 	PlankEndR         *ebiten.Image
 	PlankMiddle       *ebiten.Image
+	CaveBackgroundL1  *ebiten.Image
+	CaveBackgroundL2  *ebiten.Image
+	CaveBackgroundL3  *ebiten.Image
+	CaveBackgroundL4  *ebiten.Image
+	CaveBackgroundL5  *ebiten.Image
+	CaveBackgroundL6  *ebiten.Image
+	CaveBackgroundL7  *ebiten.Image
+	CaveBackgroundR1  *ebiten.Image
+	CaveBackgroundR2  *ebiten.Image
+	CaveBackgroundR3  *ebiten.Image
+	CaveBackgroundR4  *ebiten.Image
+	CaveBackgroundR5  *ebiten.Image
+	CaveBackgroundR6  *ebiten.Image
+	CaveBackgroundR7  *ebiten.Image
 
 	GrassForeground1  *ebiten.Image
 	GrassForeground2  *ebiten.Image
@@ -243,6 +293,21 @@ func LoadTiles() {
 
 	SkyBackground = imageFromBytes(skyBackgroundPng)
 	HillsMidground = imageFromBytes(hillsMidgroundPng)
+
+	CaveBackgroundL1 = imageFromBytes(caveBackgroundL1Png)
+	CaveBackgroundL2 = imageFromBytes(caveBackgroundL2Png)
+	CaveBackgroundL3 = imageFromBytes(caveBackgroundL3Png)
+	CaveBackgroundL4 = imageFromBytes(caveBackgroundL4Png)
+	CaveBackgroundL5 = imageFromBytes(caveBackgroundL5Png)
+	CaveBackgroundL6 = imageFromBytes(caveBackgroundL6Png)
+	CaveBackgroundL7 = imageFromBytes(caveBackgroundL7Png)
+	CaveBackgroundR1 = flipImageXAxis(CaveBackgroundL1)
+	CaveBackgroundR2 = flipImageXAxis(CaveBackgroundL2)
+	CaveBackgroundR3 = flipImageXAxis(CaveBackgroundL3)
+	CaveBackgroundR4 = flipImageXAxis(CaveBackgroundL4)
+	CaveBackgroundR5 = flipImageXAxis(CaveBackgroundL5)
+	CaveBackgroundR6 = flipImageXAxis(CaveBackgroundL6)
+	CaveBackgroundR7 = flipImageXAxis(CaveBackgroundL7)
 
 	// assign tile images to values
 	TileImages[1] = GrassLeft
