@@ -366,4 +366,12 @@ func LoadTiles() {
 	TileImages[45] = CaveBackgroundL5
 	TileImages[46] = CaveBackgroundL6
 	TileImages[47] = CaveBackgroundL7
+
+	TileImages[48] = CaveBackgroundR1
+	TileImages[49] = CaveBackgroundR2
+	TileImages[50] = CaveBackgroundR3
+	TileImages[51] = CaveBackgroundR4
+	TileImages[52] = CaveBackgroundR5
+	TileImages[53] = CaveBackgroundR6
+	TileImages[54] = CaveBackgroundR7
 }
