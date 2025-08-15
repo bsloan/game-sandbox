@@ -65,7 +65,8 @@ type Entity struct {
 	Shape           *cp.Shape
 	MaxHealth       int
 	Health          int
-	// other metadata: health, attack damage, points, etc
+	AttackDamage    int
+	// other metadata: points, etc
 }
 
 func (e *Entity) Position() (float64, float64) {

@@ -99,15 +99,15 @@ func DamagePlayerHandler(space *cp.Space, collisionType cp.CollisionType) {
 		n := arb.Normal()
 		body1, body2 := arb.Bodies()
 
-		//var enemyBody *cp.Body
+		var enemyBody *cp.Body
 		var playerBody *cp.Body
 
 		if body1.UserData.(*Entity).Type == Player {
 			playerBody = body1
-			//enemyBody = body2
+			enemyBody = body2
 		} else {
 			playerBody = body2
-			//enemyBody = body1
+			enemyBody = body1
 		}
 
 		// jolt the player backwards a bit
@@ -126,7 +126,9 @@ func DamagePlayerHandler(space *cp.Space, collisionType cp.CollisionType) {
 			playerBody.UserData.(*Entity).Damaged = 5
 		}
 
-		// TODO: subtract damage from player health
+		// subtract enemy's attack damage from player's health
+		playerBody.UserData.(*Entity).Health -= enemyBody.UserData.(*Entity).AttackDamage
+
 		return true
 	}
 }

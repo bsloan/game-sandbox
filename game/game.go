@@ -227,7 +227,7 @@ func (g *Game) drawPlayerHealth(screen *ebiten.Image) {
 	vector.DrawFilledRect(screen, x, y, float32(barWidth), barHeight, color.RGBA{R: 211, G: 211, B: 211, A: 255}, false)
 
 	// draw filled portion representing player's remaining health
-	filledWidth := player.Health
+	filledWidth := max(player.Health, 0)
 	vector.DrawFilledRect(screen, x+1, y+1, float32(filledWidth), barHeight-1, color.RGBA{R: 255, G: 0, B: 0, A: 255}, false)
 }
 
@@ -240,7 +240,7 @@ func (g *Game) Update() error {
 	g.MovePlayer()
 
 	// TODO: iterate all entities in the registry, get the relevant Move* function
-	//  based on entity type, and run the move function.
+	//  based on entity type, and run the move function (e.g., g.MoveEntity(entity) )
 	//  For now, just query for sword directly.
 	swordDog := g.registry.Query(entity.SwordDog)
 	g.MoveSwordDog(swordDog)

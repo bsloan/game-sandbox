@@ -289,5 +289,6 @@ func InitializeSwordDog(space *cp.Space, x, y float64) *Entity {
 	swordDogShape.SetFriction(0.75)
 	swordDogShape.SetCollisionType(SwordDogCollisionType)
 	swordDog.Shape = swordDogShape
+	swordDog.AttackDamage = 2
 	return &swordDog
 }
