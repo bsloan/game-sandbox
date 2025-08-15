@@ -206,6 +206,13 @@ func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
 
 	notAttacking := swordDog.State != entity.ActiveRight && swordDog.State != entity.ActiveLeft && swordDog.State != entity.ActiveRight2 && swordDog.State != entity.ActiveLeft2
 
+	// attack damage increases if sword dog is swinging his sword
+	if notAttacking {
+		swordDog.AttackDamage = 2
+	} else {
+		swordDog.AttackDamage = 6
+	}
+
 	// chase the player if we're close
 	if xDistance < 32 && notAttacking {
 		if playerX > swordDogX {
