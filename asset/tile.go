@@ -69,6 +69,7 @@ const (
 	CAVE_BACKGROUND_R_5
 	CAVE_BACKGROUND_R_6
 	CAVE_BACKGROUND_R_7
+	CAVE_BACKGROUND_ROCKS
 )
 
 var (
@@ -189,58 +190,68 @@ var (
 	//go:embed environment/cave_back_l7.png
 	caveBackgroundL7Png []byte
 
+	//go:embed environment/cave_rocks.png
+	caveRocksPng []byte
+
+	//go:embed environment/grass_float_m_cave.png
+	grassFloatMiddleCavePng []byte
+
+	//go:embed environment/cave_ceil_1.png
+	caveCeil1Png []byte
+
 	//go:embed environment/back.png
 	skyBackgroundPng []byte
 
 	//go:embed environment/middle.png
 	hillsMidgroundPng []byte
 
-	GrassLeft         *ebiten.Image
-	GrassMiddle       *ebiten.Image
-	GrassRight        *ebiten.Image
-	GrassFloatLeft    *ebiten.Image
-	GrassFloatMiddle  *ebiten.Image
-	GrassFloatRight   *ebiten.Image
-	DirtMiddle        *ebiten.Image
-	DirtLeft1         *ebiten.Image
-	DirtLeft2         *ebiten.Image
-	DirtRight1        *ebiten.Image
-	DirtRight2        *ebiten.Image
-	DirtRocks1        *ebiten.Image
-	DirtRocks2        *ebiten.Image
-	DirtBottom1       *ebiten.Image
-	DirtBottom2       *ebiten.Image
-	GrassSlopeR1      *ebiten.Image
-	GrassSlopeR2      *ebiten.Image
-	GrassSlopeR3      *ebiten.Image
-	GrassSlopeR4      *ebiten.Image
-	GrassSlopeL1      *ebiten.Image
-	GrassSlopeL2      *ebiten.Image
-	GrassSlopeL3      *ebiten.Image
-	GrassSlopeL4      *ebiten.Image
-	GrassSlopeSteepR1 *ebiten.Image
-	GrassSlopeSteepR2 *ebiten.Image
-	GrassSlopeSteepL1 *ebiten.Image
-	GrassSlopeSteepL2 *ebiten.Image
-	PlankBaseL        *ebiten.Image
-	PlankBaseR        *ebiten.Image
-	PlankEndL         *ebiten.Image
-	PlankEndR         *ebiten.Image
-	PlankMiddle       *ebiten.Image
-	CaveBackgroundL1  *ebiten.Image
-	CaveBackgroundL2  *ebiten.Image
-	CaveBackgroundL3  *ebiten.Image
-	CaveBackgroundL4  *ebiten.Image
-	CaveBackgroundL5  *ebiten.Image
-	CaveBackgroundL6  *ebiten.Image
-	CaveBackgroundL7  *ebiten.Image
-	CaveBackgroundR1  *ebiten.Image
-	CaveBackgroundR2  *ebiten.Image
-	CaveBackgroundR3  *ebiten.Image
-	CaveBackgroundR4  *ebiten.Image
-	CaveBackgroundR5  *ebiten.Image
-	CaveBackgroundR6  *ebiten.Image
-	CaveBackgroundR7  *ebiten.Image
+	GrassLeft           *ebiten.Image
+	GrassMiddle         *ebiten.Image
+	GrassRight          *ebiten.Image
+	GrassFloatLeft      *ebiten.Image
+	GrassFloatMiddle    *ebiten.Image
+	GrassFloatRight     *ebiten.Image
+	DirtMiddle          *ebiten.Image
+	DirtLeft1           *ebiten.Image
+	DirtLeft2           *ebiten.Image
+	DirtRight1          *ebiten.Image
+	DirtRight2          *ebiten.Image
+	DirtRocks1          *ebiten.Image
+	DirtRocks2          *ebiten.Image
+	DirtBottom1         *ebiten.Image
+	DirtBottom2         *ebiten.Image
+	GrassSlopeR1        *ebiten.Image
+	GrassSlopeR2        *ebiten.Image
+	GrassSlopeR3        *ebiten.Image
+	GrassSlopeR4        *ebiten.Image
+	GrassSlopeL1        *ebiten.Image
+	GrassSlopeL2        *ebiten.Image
+	GrassSlopeL3        *ebiten.Image
+	GrassSlopeL4        *ebiten.Image
+	GrassSlopeSteepR1   *ebiten.Image
+	GrassSlopeSteepR2   *ebiten.Image
+	GrassSlopeSteepL1   *ebiten.Image
+	GrassSlopeSteepL2   *ebiten.Image
+	PlankBaseL          *ebiten.Image
+	PlankBaseR          *ebiten.Image
+	PlankEndL           *ebiten.Image
+	PlankEndR           *ebiten.Image
+	PlankMiddle         *ebiten.Image
+	CaveBackgroundL1    *ebiten.Image
+	CaveBackgroundL2    *ebiten.Image
+	CaveBackgroundL3    *ebiten.Image
+	CaveBackgroundL4    *ebiten.Image
+	CaveBackgroundL5    *ebiten.Image
+	CaveBackgroundL6    *ebiten.Image
+	CaveBackgroundL7    *ebiten.Image
+	CaveBackgroundR1    *ebiten.Image
+	CaveBackgroundR2    *ebiten.Image
+	CaveBackgroundR3    *ebiten.Image
+	CaveBackgroundR4    *ebiten.Image
+	CaveBackgroundR5    *ebiten.Image
+	CaveBackgroundR6    *ebiten.Image
+	CaveBackgroundR7    *ebiten.Image
+	CaveBackgroundRocks *ebiten.Image
 
 	GrassForeground1  *ebiten.Image
 	GrassForeground2  *ebiten.Image
@@ -308,6 +319,7 @@ func LoadTiles() {
 	CaveBackgroundR5 = flipImageXAxis(CaveBackgroundL5)
 	CaveBackgroundR6 = flipImageXAxis(CaveBackgroundL6)
 	CaveBackgroundR7 = flipImageXAxis(CaveBackgroundL7)
+	CaveBackgroundRocks = imageFromBytes(caveRocksPng)
 
 	// assign tile images to values
 	TileImages[1] = GrassLeft
@@ -374,4 +386,6 @@ func LoadTiles() {
 	TileImages[52] = CaveBackgroundR5
 	TileImages[53] = CaveBackgroundR6
 	TileImages[54] = CaveBackgroundR7
+
+	TileImages[55] = CaveBackgroundRocks
 }

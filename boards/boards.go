@@ -36,6 +36,7 @@ var NoOpTiles = []int{
 	asset.CAVE_BACKGROUND_R_5,
 	asset.CAVE_BACKGROUND_R_6,
 	asset.CAVE_BACKGROUND_R_7,
+	asset.CAVE_BACKGROUND_ROCKS,
 }
 
 var ForegroundTiles = []int{
