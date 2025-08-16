@@ -141,7 +141,7 @@ func InitializePlayerSword(space *cp.Space, x, y float64) *Entity {
 			asset.WhiteSlashRight6,
 		},
 		AnimationSpeed:        0.4,
-		EntityStateTransition: IdleRight,
+		EntityStateTransition: Dead,
 	}
 	slashLeft := Animation{
 		Frames: []*ebiten.Image{
@@ -153,7 +153,7 @@ func InitializePlayerSword(space *cp.Space, x, y float64) *Entity {
 			asset.WhiteSlashLeft6,
 		},
 		AnimationSpeed:        0.4,
-		EntityStateTransition: IdleLeft,
+		EntityStateTransition: Dead,
 	}
 	sword := Entity{
 		Type:   PlayerWeapon,
@@ -170,6 +170,7 @@ func InitializePlayerSword(space *cp.Space, x, y float64) *Entity {
 	sword.Body.UserData = &sword
 	space.AddBody(sword.Body)
 	sword.Body.SetPosition(cp.Vector{X: x, Y: y})
+	sword.AttackDamage = 2
 	return &sword
 }
 
@@ -290,5 +291,7 @@ func InitializeSwordDog(space *cp.Space, x, y float64) *Entity {
 	swordDogShape.SetCollisionType(SwordDogCollisionType)
 	swordDog.Shape = swordDogShape
 	swordDog.AttackDamage = 2
+	swordDog.MaxHealth = 4
+	swordDog.Health = swordDog.MaxHealth
 	return &swordDog
 }

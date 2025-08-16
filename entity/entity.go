@@ -4,6 +4,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/jakecoffman/cp"
 	"math"
+	"slices"
 )
 
 type EntityType int
@@ -103,7 +104,7 @@ func (r *Registry) Player() *Entity {
 
 func (r *Registry) Query(entityType EntityType) *Entity {
 	for i, entity := range r.Entities {
-		if entity.Type == entityType {
+		if entity != nil && entity.Type == entityType {
 			return r.Entities[i]
 		}
 	}
@@ -113,7 +114,7 @@ func (r *Registry) Query(entityType EntityType) *Entity {
 func (r *Registry) DrawableEntities() []*Entity {
 	var result []*Entity
 	for i, entity := range r.Entities {
-		if entity.State != Dead && entity.Image() != nil {
+		if entity != nil && entity.State != Dead && entity.Image() != nil {
 			result = append(result, r.Entities[i])
 		}
 	}
@@ -121,13 +122,18 @@ func (r *Registry) DrawableEntities() []*Entity {
 }
 
 func (r *Registry) RemoveDead(space *cp.Space) {
-	for _, entity := range r.Entities {
-		if entity.State == Dead {
+	var entitiesToRemove []int
+	for i, entity := range r.Entities {
+		if entity != nil && entity.State == Dead {
 			entity.Body.EachShape(func(shape *cp.Shape) {
 				entity.Body.RemoveShape(shape)
 				space.RemoveShape(shape)
 			})
+			entitiesToRemove = append(entitiesToRemove, i)
 		}
+	}
+	for _, i := range entitiesToRemove {
+		slices.Delete(r.Entities, i, i+1)
 	}
 }
 

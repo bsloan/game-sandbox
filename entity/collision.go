@@ -8,6 +8,7 @@ import (
 
 const (
 	PlayerCollisionType cp.CollisionType = iota
+	PlayerSwordCollisionType
 	BlockCollisionType
 	SlopeCollisionType
 	SwordDogCollisionType
@@ -133,6 +134,32 @@ func DamagePlayerHandler(space *cp.Space, collisionType cp.CollisionType) {
 	}
 }
 
+func PlayerSwordHandler(space *cp.Space, collisionType cp.CollisionType) {
+	handler := space.NewCollisionHandler(collisionType, PlayerSwordCollisionType)
+
+	handler.BeginFunc = func(arb *cp.Arbiter, space *cp.Space, data interface{}) bool {
+		body1, body2 := arb.Bodies()
+
+		var enemyBody *cp.Body
+		var swordBody *cp.Body
+
+		if body1.UserData.(*Entity).Type == PlayerWeapon {
+			swordBody = body1
+			enemyBody = body2
+		} else {
+			swordBody = body2
+			enemyBody = body1
+		}
+
+		enemyBody.UserData.(*Entity).Damaged = 3
+
+		// subtract attack damage from other entity's health
+		enemyBody.UserData.(*Entity).Health -= swordBody.UserData.(*Entity).AttackDamage
+
+		return true
+	}
+}
+
 func InitializeCollisionHandlers(space *cp.Space) {
 	// attach collision handlers to player
 	GenericGroundedHandler(space, PlayerCollisionType)
@@ -143,4 +170,5 @@ func InitializeCollisionHandlers(space *cp.Space) {
 	GenericGroundedHandler(space, SwordDogCollisionType)
 	SlopeHandler(space, SwordDogCollisionType)
 	ObstructedHandler(space, SwordDogCollisionType)
+	PlayerSwordHandler(space, SwordDogCollisionType)
 }

@@ -41,7 +41,7 @@ func (g *Game) inputAttack() bool {
 
 func (g *Game) MovePlayer() {
 	var p = g.registry.Player()
-	var pWeapon = g.registry.Query(entity.PlayerWeapon)
+	var pWeapon = g.registry.Query(entity.PlayerWeapon) // may be nil
 
 	g.gamepadIds = ebiten.AppendGamepadIDs(g.gamepadIds[:0])
 
@@ -115,22 +115,22 @@ func (g *Game) MovePlayer() {
 		}
 	}
 
-	if g.inputAttack() && pWeapon.State != entity.ActiveRight && pWeapon.State != entity.ActiveLeft && p.WeaponAvailable {
-		// create a special Shape for the slash, and show/animate it
+	if g.inputAttack() && pWeapon == nil && p.WeaponAvailable {
+		// create a special Entity for the slash and animate it
+		pWeapon = entity.InitializePlayerSword(g.space, p.Body.Position().X, p.Body.Position().Y)
+		g.registry.AddEntity(pWeapon)
+
 		if p.Facing == entity.Right {
 			pWeapon.State = entity.ActiveRight
-			pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X + 20, p.Body.Position().Y + 10})
 			p.State = entity.ActiveRight
 		} else {
 			pWeapon.State = entity.ActiveLeft
-			pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X - 5, p.Body.Position().Y + 10})
 			p.State = entity.ActiveLeft
 		}
-		weaponShape := g.space.AddShape(cp.NewBox(pWeapon.Body, 64, 47, 10))
-		weaponShape.SetSensor(true)
+		weaponShape := g.space.AddShape(cp.NewBox(pWeapon.Body, 35, 28, 10))
+		weaponShape.SetCollisionType(entity.PlayerSwordCollisionType)
 		pWeapon.Shape = weaponShape
 		p.WeaponAvailable = false // disable next attack until after the button is released
-		// TODO: collision detection for the slash Shape
 	} else if g.inputAttack() {
 		// attack and horizontal boost are the same button
 		if p.Grounded {
@@ -141,11 +141,13 @@ func (g *Game) MovePlayer() {
 		p.Running = false
 	}
 
-	// make sure player's weapon position tracks player's body position each frame
-	if p.Facing == entity.Right {
-		pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X + 20, p.Body.Position().Y + 10})
-	} else {
-		pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X - 5, p.Body.Position().Y + 10})
+	// make sure player's weapon position tracks player's body position each frame, with slight adjustment
+	if pWeapon != nil {
+		if p.Facing == entity.Right {
+			pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X + 5, p.Body.Position().Y})
+		} else {
+			pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X - 15, p.Body.Position().Y})
+		}
 	}
 
 	// determine if player is falling, change friction and sprite animation accordingly
@@ -244,8 +246,6 @@ func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
 			}
 		}
 
-		// TODO: attach a larger shape to the dog while it's attacking
-		//swordShape := g.space.AddShape(cp.NewBox(swordDog.Body, 45, 19, 3))
 		swordShape := g.space.AddShape(cp.NewBox2(swordDog.Body, cp.BB{
 			L: -23,
 			B: 10,
@@ -255,8 +255,6 @@ func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
 		swordShape.SetElasticity(0.4)
 		swordShape.SetFriction(0.75)
 		swordShape.UserData = 1 // hack to remember later that this shape was added for attack
-
-		// TODO: collision type and handler
 		swordShape.SetCollisionType(entity.SwordDogCollisionType)
 	} else if notAttacking {
 		// remove any shapes that were added just for attack

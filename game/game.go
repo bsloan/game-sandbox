@@ -205,14 +205,16 @@ func (g *Game) CenterViewport(x, y float64) {
 
 func (g *Game) animateSprites() {
 	for _, e := range g.registry.Entities {
-		if e.Animations != nil && e.Animations[e.State] != nil {
-			newEntityState := e.Animations[e.State].Animate()
-			if newEntityState != entity.Default {
-				e.State = newEntityState
+		if e != nil {
+			if e.Animations != nil && e.Animations[e.State] != nil {
+				newEntityState := e.Animations[e.State].Animate()
+				if newEntityState != entity.Default {
+					e.State = newEntityState
+				}
 			}
-		}
-		if e.Damaged > 0 {
-			e.Damaged-- // decrement number of ticks remaining to show damage color scale
+			if e.Damaged > 0 {
+				e.Damaged-- // decrement number of ticks remaining to show damage color scale
+			}
 		}
 	}
 }
