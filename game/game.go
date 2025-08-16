@@ -238,14 +238,15 @@ func (g *Game) Cleanup() {
 }
 
 func (g *Game) Update() error {
-	// get user input and move the player entity
-	g.MovePlayer()
-
-	// TODO: iterate all entities in the registry, get the relevant Move* function
-	//  based on entity type, and run the move function (e.g., g.MoveEntity(entity) )
-	//  For now, just query for sword directly.
-	swordDog := g.registry.Query(entity.SwordDog)
-	g.MoveSwordDog(swordDog)
+	// apply movement/behavior logic for all active entities in the game
+	for _, e := range g.registry.Entities {
+		if e != nil {
+			movementBehavior, found := EntityBehavior[e.Type]
+			if found {
+				movementBehavior(e)
+			}
+		}
+	}
 
 	// render the image of the current viewport, centered on player
 	g.vp.Center(g.registry.Player().Body.Position().X, g.registry.Player().Body.Position().Y)

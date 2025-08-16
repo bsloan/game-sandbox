@@ -39,8 +39,7 @@ func (g *Game) inputAttack() bool {
 	return ebiten.IsKeyPressed(ebiten.KeyK) || ebiten.IsKeyPressed(ebiten.KeyAlt) || (g.gamepadAvailable() && ebiten.IsGamepadButtonPressed(g.gamepadIds[0], NonstandardGamepadButtonX))
 }
 
-func (g *Game) MovePlayer() {
-	var p = g.registry.Player()
+func (g *Game) MovePlayer(p *entity.Entity) {
 	var pWeapon = g.registry.Query(entity.PlayerWeapon) // may be nil
 
 	g.gamepadIds = ebiten.AppendGamepadIDs(g.gamepadIds[:0])
@@ -198,11 +197,6 @@ func (g *Game) MovePlayer() {
 }
 
 func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
-	// TODO: remove this, won't be needed in future
-	if swordDog == nil {
-		return
-	}
-
 	// first, check if we're dead
 	if swordDog.Health <= 0 {
 		swordDog.Body.EachShape(func(shape *cp.Shape) {
@@ -303,4 +297,12 @@ func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
 	if swordDog.Body.Velocity().X > settings.SwordDogMaxVelocityX {
 		swordDog.Body.SetVelocity(settings.SwordDogMaxVelocityX, swordDog.Body.Velocity().Y)
 	}
+}
+
+var EntityBehavior map[entity.EntityType]entity.Behavior
+
+func InitializeEntityBehavior(g *Game) {
+	EntityBehavior = make(map[entity.EntityType]entity.Behavior)
+	EntityBehavior[entity.Player] = g.MovePlayer
+	EntityBehavior[entity.SwordDog] = g.MoveSwordDog
 }

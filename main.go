@@ -53,6 +53,9 @@ func main() {
 		space,
 	)
 
+	// initialize the behavior of all the entities in the game
+	game.InitializeEntityBehavior(g)
+
 	// set the initial position of the viewport
 	g.CenterViewport(player.Position())
 

@@ -88,6 +88,8 @@ func (e *Entity) Image() *ebiten.Image {
 	return nil
 }
 
+type Behavior func(e *Entity)
+
 type Registry struct {
 	Entities []*Entity
 }
