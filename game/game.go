@@ -241,9 +241,9 @@ func (g *Game) Update() error {
 	// apply movement/behavior logic for all active entities in the game
 	for _, e := range g.registry.Entities {
 		if e != nil {
-			movementBehavior, found := EntityBehavior[e.Type]
+			entityBehavior, found := EntityBehavior[e.Type]
 			if found {
-				movementBehavior(e)
+				entityBehavior(e)
 			}
 		}
 	}

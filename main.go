@@ -33,13 +33,10 @@ func main() {
 	r := entity.Registry{}
 	r.AddEntity(player)
 
-	swordDog := entity.InitializeSwordDog(space, 555, 414)
-	r.AddEntity(swordDog)
-
 	entity.InitializeCollisionHandlers(space)
 
 	gameboard := boards.Gameboard{}
-	gameboard.LoadGameboard(boards.Level1Map, space)
+	gameboard.LoadGameboard(boards.Level1Map, space, &r)
 
 	// initialize a new game
 	g := game.NewGame(

@@ -60,7 +60,7 @@ type Gameboard struct {
 	PixelHeight int
 }
 
-func (gb *Gameboard) LoadGameboard(mapData []byte, space *cp.Space) {
+func (gb *Gameboard) LoadGameboard(mapData []byte, space *cp.Space, registry *entity.Registry) {
 	err := json.Unmarshal(mapData, &gb)
 	if err != nil {
 		log.Fatal("Error unmarshaling JSON for map:", err)
@@ -70,6 +70,7 @@ func (gb *Gameboard) LoadGameboard(mapData []byte, space *cp.Space) {
 	gb.PixelWidth = gb.TileWidth * gb.TileSize
 	gb.PixelHeight = gb.TileHeight * gb.TileSize
 	gb.initializeTiles(space)
+	gb.initializeEntities(space, registry)
 }
 
 func (gb *Gameboard) initializeTiles(space *cp.Space) {
@@ -120,4 +121,20 @@ func (gb *Gameboard) initializeTiles(space *cp.Space) {
 			}
 		}
 	}
+}
+
+func (gb *Gameboard) initializeEntities(space *cp.Space, registry *entity.Registry) {
+	// FIXME: initialize from the map instead of hard-coding
+	swordDog1 := entity.InitializeSwordDog(space, 555, 414)
+	swordDog2 := entity.InitializeSwordDog(space, 493, 414)
+
+	swordDog3 := entity.InitializeSwordDog(space, 745, 414)
+	swordDog4 := entity.InitializeSwordDog(space, 806, 414)
+	swordDog5 := entity.InitializeSwordDog(space, 820, 414)
+
+	registry.AddEntity(swordDog1)
+	registry.AddEntity(swordDog2)
+	registry.AddEntity(swordDog3)
+	registry.AddEntity(swordDog4)
+	registry.AddEntity(swordDog5)
 }
