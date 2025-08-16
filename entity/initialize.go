@@ -308,3 +308,47 @@ func InitializeSwordDog(space *cp.Space, x, y float64) *Entity {
 	swordDog.Health = swordDog.MaxHealth
 	return &swordDog
 }
+
+func InitializeAlligator(space *cp.Space, x, y float64) *Entity {
+	idleRight := Animation{
+		Frames: []*ebiten.Image{
+			asset.AlligatorIdleRight1,
+			asset.AlligatorIdleRight2,
+			asset.AlligatorIdleRight3,
+			asset.AlligatorIdleRight4,
+		},
+		AnimationSpeed: 0.1,
+	}
+	idleLeft := Animation{
+		Frames: []*ebiten.Image{
+			asset.AlligatorIdleLeft1,
+			asset.AlligatorIdleLeft2,
+			asset.AlligatorIdleLeft3,
+			asset.AlligatorIdleLeft4,
+		},
+		AnimationSpeed: 0.1,
+	}
+	alligator := Entity{
+		Type:          Alligator,
+		State:         IdleLeft,
+		RememberState: ActiveLeft,
+		Facing:        Left,
+		Animations: map[EntityState]*Animation{
+			IdleRight: &idleRight,
+			IdleLeft:  &idleLeft,
+		},
+		Body: cp.NewBody(1, cp.INFINITY),
+	}
+	alligator.Body.UserData = &alligator
+	space.AddBody(alligator.Body)
+	alligator.Body.SetPosition(cp.Vector{X: x, Y: y})
+	alligatorShape := space.AddShape(cp.NewCircle(alligator.Body, 11, cp.Vector{X: 10, Y: 0}))
+	alligatorShape.SetElasticity(0)
+	alligatorShape.SetFriction(0.75)
+	alligatorShape.SetCollisionType(SwordDogCollisionType) // FIXME?
+	alligator.Shape = alligatorShape
+	alligator.AttackDamage = 4
+	alligator.MaxHealth = 12
+	alligator.Health = alligator.MaxHealth
+	return &alligator
+}

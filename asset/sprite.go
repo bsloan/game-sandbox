@@ -151,6 +151,18 @@ var (
 	//go:embed sprite/sword_dog_downslash5.png
 	swordDogDownSlashRight5Png []byte
 
+	//go:embed sprite/alligator_idle1.png
+	alligatorIdle1Png []byte
+
+	//go:embed sprite/alligator_idle2.png
+	alligatorIdle2Png []byte
+
+	//go:embed sprite/alligator_idle3.png
+	alligatorIdle3Png []byte
+
+	//go:embed sprite/alligator_idle4.png
+	alligatorIdle4Png []byte
+
 	//go:embed sprite/enemy_death_1.png
 	enemyDeath1Png []byte
 
@@ -264,6 +276,16 @@ var (
 	SwordDogDownSlashLeft4 *ebiten.Image
 	SwordDogDownSlashLeft5 *ebiten.Image
 
+	AlligatorIdleRight1 *ebiten.Image
+	AlligatorIdleRight2 *ebiten.Image
+	AlligatorIdleRight3 *ebiten.Image
+	AlligatorIdleRight4 *ebiten.Image
+
+	AlligatorIdleLeft1 *ebiten.Image
+	AlligatorIdleLeft2 *ebiten.Image
+	AlligatorIdleLeft3 *ebiten.Image
+	AlligatorIdleLeft4 *ebiten.Image
+
 	EnemyDeath1 *ebiten.Image
 	EnemyDeath2 *ebiten.Image
 	EnemyDeath3 *ebiten.Image
@@ -363,6 +385,16 @@ func LoadSprites() {
 	SwordDogDownSlashRight3 = imageFromBytes(swordDogDownSlashRight3Png)
 	SwordDogDownSlashRight4 = imageFromBytes(swordDogDownSlashRight4Png)
 	SwordDogDownSlashRight5 = imageFromBytes(swordDogDownSlashRight5Png)
+
+	AlligatorIdleRight1 = imageFromBytes(alligatorIdle1Png)
+	AlligatorIdleRight2 = imageFromBytes(alligatorIdle2Png)
+	AlligatorIdleRight3 = imageFromBytes(alligatorIdle3Png)
+	AlligatorIdleRight4 = imageFromBytes(alligatorIdle4Png)
+
+	AlligatorIdleLeft1 = flipImageXAxis(AlligatorIdleRight1)
+	AlligatorIdleLeft2 = flipImageXAxis(AlligatorIdleRight2)
+	AlligatorIdleLeft3 = flipImageXAxis(AlligatorIdleRight3)
+	AlligatorIdleLeft4 = flipImageXAxis(AlligatorIdleRight4)
 
 	SwordDogDownSlashLeft1 = flipImageXAxis(SwordDogDownSlashRight1)
 	SwordDogDownSlashLeft2 = flipImageXAxis(SwordDogDownSlashRight2)

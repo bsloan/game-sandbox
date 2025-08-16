@@ -14,6 +14,7 @@ const (
 	PlayerWeapon
 	SwordDog
 	Frog
+	Alligator
 )
 
 type EntityState int
