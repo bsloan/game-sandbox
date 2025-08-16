@@ -265,6 +265,18 @@ func InitializeSwordDog(space *cp.Space, x, y float64) *Entity {
 		AnimationSpeed:        0.3,
 		EntityStateTransition: MovingLeft,
 	}
+	dying := Animation{
+		Frames: []*ebiten.Image{
+			asset.EnemyDeath1,
+			asset.EnemyDeath2,
+			asset.EnemyDeath3,
+			asset.EnemyDeath4,
+			asset.EnemyDeath5,
+			asset.EnemyDeath6,
+		},
+		AnimationSpeed:        0.3,
+		EntityStateTransition: Dead,
+	}
 	swordDog := Entity{
 		Type:          SwordDog,
 		State:         IdleLeft,
@@ -279,6 +291,7 @@ func InitializeSwordDog(space *cp.Space, x, y float64) *Entity {
 			ActiveLeft:   &bigSlashLeft,
 			ActiveRight2: &downSlashRight,
 			ActiveLeft2:  &downSlashLeft,
+			Dying:        &dying,
 		},
 		Body: cp.NewBody(1, cp.INFINITY),
 	}
@@ -291,7 +304,7 @@ func InitializeSwordDog(space *cp.Space, x, y float64) *Entity {
 	swordDogShape.SetCollisionType(SwordDogCollisionType)
 	swordDog.Shape = swordDogShape
 	swordDog.AttackDamage = 2
-	swordDog.MaxHealth = 4
+	swordDog.MaxHealth = 6
 	swordDog.Health = swordDog.MaxHealth
 	return &swordDog
 }

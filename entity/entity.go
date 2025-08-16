@@ -35,6 +35,7 @@ const (
 	ActiveLeft
 	ActiveRight2
 	ActiveLeft2
+	Dying
 	Dead
 )
 

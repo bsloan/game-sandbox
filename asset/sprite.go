@@ -151,6 +151,24 @@ var (
 	//go:embed sprite/sword_dog_downslash5.png
 	swordDogDownSlashRight5Png []byte
 
+	//go:embed sprite/enemy_death_1.png
+	enemyDeath1Png []byte
+
+	//go:embed sprite/enemy_death_2.png
+	enemyDeath2Png []byte
+
+	//go:embed sprite/enemy_death_3.png
+	enemyDeath3Png []byte
+
+	//go:embed sprite/enemy_death_4.png
+	enemyDeath4Png []byte
+
+	//go:embed sprite/enemy_death_5.png
+	enemyDeath5Png []byte
+
+	//go:embed sprite/enemy_death_6.png
+	enemyDeath6Png []byte
+
 	PlayerIdleRight1 *ebiten.Image
 	PlayerIdleRight2 *ebiten.Image
 	PlayerIdleRight3 *ebiten.Image
@@ -245,6 +263,13 @@ var (
 	SwordDogDownSlashLeft3 *ebiten.Image
 	SwordDogDownSlashLeft4 *ebiten.Image
 	SwordDogDownSlashLeft5 *ebiten.Image
+
+	EnemyDeath1 *ebiten.Image
+	EnemyDeath2 *ebiten.Image
+	EnemyDeath3 *ebiten.Image
+	EnemyDeath4 *ebiten.Image
+	EnemyDeath5 *ebiten.Image
+	EnemyDeath6 *ebiten.Image
 )
 
 func LoadSprites() {
@@ -344,4 +369,11 @@ func LoadSprites() {
 	SwordDogDownSlashLeft3 = flipImageXAxis(SwordDogDownSlashRight3)
 	SwordDogDownSlashLeft4 = flipImageXAxis(SwordDogDownSlashRight4)
 	SwordDogDownSlashLeft5 = flipImageXAxis(SwordDogDownSlashRight5)
+
+	EnemyDeath1 = imageFromBytes(enemyDeath1Png)
+	EnemyDeath2 = imageFromBytes(enemyDeath2Png)
+	EnemyDeath3 = imageFromBytes(enemyDeath3Png)
+	EnemyDeath4 = imageFromBytes(enemyDeath4Png)
+	EnemyDeath5 = imageFromBytes(enemyDeath5Png)
+	EnemyDeath6 = imageFromBytes(enemyDeath6Png)
 }

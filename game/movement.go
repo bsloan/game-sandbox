@@ -198,6 +198,23 @@ func (g *Game) MovePlayer() {
 }
 
 func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
+	// TODO: remove this, won't be needed in future
+	if swordDog == nil {
+		return
+	}
+
+	// first, check if we're dead
+	if swordDog.Health <= 0 {
+		swordDog.Body.EachShape(func(shape *cp.Shape) {
+			swordDog.Body.RemoveShape(shape)
+			g.space.RemoveShape(shape)
+		})
+		swordDog.State = entity.Dying
+		swordDog.Body.SetPosition(cp.Vector{X: swordDog.Body.Position().X, Y: swordDog.Body.Position().Y - 2})
+		swordDog.Body.SetVelocity(0, 0)
+		return
+	}
+
 	// find proximity to player
 	var swordDogX = swordDog.Body.Position().X
 	var swordDogY = swordDog.Body.Position().Y

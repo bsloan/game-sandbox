@@ -161,7 +161,7 @@ func (p *Viewport) Draw(g *Game) {
 			if entityImage != nil {
 				op := ebiten.DrawImageOptions{}
 				op.GeoM.Translate(x, y)
-				if e.Damaged > 0 {
+				if e.Damaged > 0 && e.State != entity.Dying {
 					// if this entity has taken damage, render with a solid red fill
 					op.ColorScale.Scale(255.0, 0.0, 0.0, 255.0)
 				}
