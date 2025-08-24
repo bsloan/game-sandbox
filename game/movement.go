@@ -299,10 +299,80 @@ func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
 	}
 }
 
+func (g *Game) MoveAlligator(alligator *entity.Entity) {
+	// first, check if we're dead
+	if alligator.Health <= 0 {
+		alligator.Body.EachShape(func(shape *cp.Shape) {
+			alligator.Body.RemoveShape(shape)
+			g.space.RemoveShape(shape)
+		})
+		alligator.State = entity.Dying
+		alligator.Body.SetPosition(cp.Vector{X: alligator.Body.Position().X, Y: alligator.Body.Position().Y - 1})
+		alligator.Body.SetVelocity(0, 0)
+		return
+	}
+
+	// find proximity to player
+	var alligatorX = alligator.Body.Position().X
+	var alligatorY = alligator.Body.Position().Y
+	var playerX = g.registry.Player().Body.Position().X
+	var playerY = g.registry.Player().Body.Position().Y
+	xDistance := math.Abs(alligatorX - playerX)
+	yDistance := math.Abs(alligatorY - playerY)
+
+	notAttacking := alligator.State != entity.ActiveRight && alligator.State != entity.ActiveLeft && alligator.State != entity.ActiveRight2 && alligator.State != entity.ActiveLeft2
+
+	// attack damage increases when alligator is actively attacking
+	if notAttacking {
+		alligator.AttackDamage = 2
+	} else {
+		alligator.AttackDamage = 6
+	}
+
+	// chase the player if we're close
+	if xDistance < 256 && notAttacking {
+		if playerX > alligatorX {
+			alligator.Facing = entity.Right
+			alligator.State = entity.MovingRight
+		} else {
+			alligator.Facing = entity.Left
+			alligator.State = entity.MovingLeft
+		}
+	}
+
+	if ((playerX < alligatorX && xDistance < 22) || (playerX > alligatorX && xDistance < 31)) && yDistance < 20 && notAttacking {
+		// TODO: attack the player
+	} else if notAttacking {
+		// TODO: remove alligator's attack/weapon shapes
+	}
+
+	// move the alligator
+	if alligator.State == entity.MovingLeft {
+		alligator.Facing = entity.Left
+		vx, vy := alligator.Body.Velocity().X, 0.0
+		vx -= settings.SwordDogAccelerationStep
+		alligator.Body.ApplyForceAtWorldPoint(cp.Vector{X: vx, Y: vy}, alligator.Body.Position())
+	} else if alligator.State == entity.MovingRight {
+		alligator.Facing = entity.Right
+		vx, vy := alligator.Body.Velocity().X, 0.0
+		vx += settings.SwordDogAccelerationStep
+		alligator.Body.ApplyForceAtWorldPoint(cp.Vector{X: vx, Y: vy}, alligator.Body.Position())
+	}
+
+	// enforce velocity constraints
+	if alligator.Body.Velocity().X < -settings.SwordDogMaxVelocityX {
+		alligator.Body.SetVelocity(-settings.SwordDogMaxVelocityX, alligator.Body.Velocity().Y)
+	}
+	if alligator.Body.Velocity().X > settings.SwordDogMaxVelocityX {
+		alligator.Body.SetVelocity(settings.SwordDogMaxVelocityX, alligator.Body.Velocity().Y)
+	}
+}
+
 var EntityBehavior map[entity.EntityType]entity.Behavior
 
 func InitializeEntityBehavior(g *Game) {
 	EntityBehavior = make(map[entity.EntityType]entity.Behavior)
 	EntityBehavior[entity.Player] = g.MovePlayer
 	EntityBehavior[entity.SwordDog] = g.MoveSwordDog
+	EntityBehavior[entity.Alligator] = g.MoveAlligator
 }

@@ -328,14 +328,57 @@ func InitializeAlligator(space *cp.Space, x, y float64) *Entity {
 		},
 		AnimationSpeed: 0.1,
 	}
+	runRight := Animation{
+		Frames: []*ebiten.Image{
+			asset.AlligatorRunRight1,
+			asset.AlligatorRunRight2,
+			asset.AlligatorRunRight3,
+			asset.AlligatorRunRight4,
+			asset.AlligatorRunRight5,
+			asset.AlligatorRunRight6,
+			asset.AlligatorRunRight7,
+			asset.AlligatorRunRight8,
+			asset.AlligatorRunRight9,
+		},
+		AnimationSpeed: 0.2,
+	}
+	runLeft := Animation{
+		Frames: []*ebiten.Image{
+			asset.AlligatorRunLeft1,
+			asset.AlligatorRunLeft2,
+			asset.AlligatorRunLeft3,
+			asset.AlligatorRunLeft4,
+			asset.AlligatorRunLeft5,
+			asset.AlligatorRunLeft6,
+			asset.AlligatorRunLeft7,
+			asset.AlligatorRunLeft8,
+			asset.AlligatorRunLeft9,
+		},
+		AnimationSpeed: 0.2,
+	}
+	dying := Animation{
+		Frames: []*ebiten.Image{
+			asset.EnemyDeath1,
+			asset.EnemyDeath2,
+			asset.EnemyDeath3,
+			asset.EnemyDeath4,
+			asset.EnemyDeath5,
+			asset.EnemyDeath6,
+		},
+		AnimationSpeed:        0.3,
+		EntityStateTransition: Dead,
+	}
 	alligator := Entity{
 		Type:          Alligator,
 		State:         IdleLeft,
 		RememberState: ActiveLeft,
 		Facing:        Left,
 		Animations: map[EntityState]*Animation{
-			IdleRight: &idleRight,
-			IdleLeft:  &idleLeft,
+			IdleRight:   &idleRight,
+			IdleLeft:    &idleLeft,
+			MovingRight: &runRight,
+			MovingLeft:  &runLeft,
+			Dying:       &dying,
 		},
 		Body: cp.NewBody(1, cp.INFINITY),
 	}
