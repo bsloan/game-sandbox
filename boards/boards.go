@@ -128,13 +128,13 @@ func (gb *Gameboard) initializeEntities(space *cp.Space, registry *entity.Regist
 	swordDog1 := entity.InitializeSwordDog(space, 555, 414)
 	swordDog2 := entity.InitializeSwordDog(space, 493, 414)
 
-	swordDog3 := entity.InitializeSwordDog(space, 745, 414)
-	swordDog4 := entity.InitializeSwordDog(space, 806, 414)
+	//swordDog3 := entity.InitializeSwordDog(space, 745, 414)
+	//swordDog4 := entity.InitializeSwordDog(space, 806, 414)
 	swordDog5 := entity.InitializeAlligator(space, 820, 414)
 
 	registry.AddEntity(swordDog1)
 	registry.AddEntity(swordDog2)
-	registry.AddEntity(swordDog3)
-	registry.AddEntity(swordDog4)
+	//registry.AddEntity(swordDog3)
+	//registry.AddEntity(swordDog4)
 	registry.AddEntity(swordDog5)
 }

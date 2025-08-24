@@ -320,7 +320,7 @@ func (g *Game) MoveAlligator(alligator *entity.Entity) {
 	xDistance := math.Abs(alligatorX - playerX)
 	yDistance := math.Abs(alligatorY - playerY)
 
-	notAttacking := alligator.State != entity.ActiveRight && alligator.State != entity.ActiveLeft && alligator.State != entity.ActiveRight2 && alligator.State != entity.ActiveLeft2
+	notAttacking := alligator.State != entity.ActiveRight && alligator.State != entity.ActiveLeft
 
 	// attack damage increases when alligator is actively attacking
 	if notAttacking {
@@ -329,8 +329,8 @@ func (g *Game) MoveAlligator(alligator *entity.Entity) {
 		alligator.AttackDamage = 6
 	}
 
-	// chase the player if we're close
-	if xDistance < 256 && notAttacking {
+	// alligator paces back and forth, doesn't chase player
+	if xDistance < 256 && notAttacking && alligator.State != entity.MovingLeft && alligator.State != entity.MovingRight {
 		if playerX > alligatorX {
 			alligator.Facing = entity.Right
 			alligator.State = entity.MovingRight
@@ -340,10 +340,31 @@ func (g *Game) MoveAlligator(alligator *entity.Entity) {
 		}
 	}
 
-	if ((playerX < alligatorX && xDistance < 22) || (playerX > alligatorX && xDistance < 31)) && yDistance < 20 && notAttacking {
-		// TODO: attack the player
+	if ((playerX < alligatorX && xDistance < 22) || (playerX > alligatorX && xDistance < 40)) && yDistance < 20 && notAttacking {
+		if alligator.Facing == entity.Right {
+			alligator.State = entity.ActiveRight
+		} else {
+			alligator.State = entity.ActiveLeft
+		}
+		// TODO: adjust box shape for Alligator?
+		swordShape := g.space.AddShape(cp.NewBox2(alligator.Body, cp.BB{
+			L: -23,
+			B: 10,
+			R: 38,
+			T: -10,
+		}, 3))
+		swordShape.SetElasticity(0.4)
+		swordShape.SetFriction(0.75)
+		swordShape.UserData = 1 // hack to remember later that this shape was added for attack
+		swordShape.SetCollisionType(entity.SwordDogCollisionType)
 	} else if notAttacking {
-		// TODO: remove alligator's attack/weapon shapes
+		// remove any shapes that were added just for attack
+		alligator.Body.EachShape(func(shape *cp.Shape) {
+			if shape.UserData == 1 {
+				alligator.Body.RemoveShape(shape)
+				g.space.RemoveShape(shape)
+			}
+		})
 	}
 
 	// move the alligator

@@ -190,6 +190,39 @@ var (
 	//go:embed sprite/alligator_run9.png
 	alligatorRun9Png []byte
 
+	//go:embed sprite/alligator_slash1.png
+	alligatorSlash1Png []byte
+
+	//go:embed sprite/alligator_slash2.png
+	alligatorSlash2Png []byte
+
+	//go:embed sprite/alligator_slash3.png
+	alligatorSlash3Png []byte
+
+	//go:embed sprite/alligator_slash4.png
+	alligatorSlash4Png []byte
+
+	//go:embed sprite/alligator_slash5.png
+	alligatorSlash5Png []byte
+
+	//go:embed sprite/alligator_slash6.png
+	alligatorSlash6Png []byte
+
+	//go:embed sprite/alligator_slash7.png
+	alligatorSlash7Png []byte
+
+	//go:embed sprite/alligator_slash8.png
+	alligatorSlash8Png []byte
+
+	//go:embed sprite/alligator_slash9.png
+	alligatorSlash9Png []byte
+
+	//go:embed sprite/alligator_slash10.png
+	alligatorSlash10Png []byte
+
+	//go:embed sprite/alligator_slash11.png
+	alligatorSlash11Png []byte
+
 	//go:embed sprite/enemy_death_1.png
 	enemyDeath1Png []byte
 
@@ -333,6 +366,30 @@ var (
 	AlligatorRunLeft8 *ebiten.Image
 	AlligatorRunLeft9 *ebiten.Image
 
+	AlligatorSlashRight1  *ebiten.Image
+	AlligatorSlashRight2  *ebiten.Image
+	AlligatorSlashRight3  *ebiten.Image
+	AlligatorSlashRight4  *ebiten.Image
+	AlligatorSlashRight5  *ebiten.Image
+	AlligatorSlashRight6  *ebiten.Image
+	AlligatorSlashRight7  *ebiten.Image
+	AlligatorSlashRight8  *ebiten.Image
+	AlligatorSlashRight9  *ebiten.Image
+	AlligatorSlashRight10 *ebiten.Image
+	AlligatorSlashRight11 *ebiten.Image
+
+	AlligatorSlashLeft1  *ebiten.Image
+	AlligatorSlashLeft2  *ebiten.Image
+	AlligatorSlashLeft3  *ebiten.Image
+	AlligatorSlashLeft4  *ebiten.Image
+	AlligatorSlashLeft5  *ebiten.Image
+	AlligatorSlashLeft6  *ebiten.Image
+	AlligatorSlashLeft7  *ebiten.Image
+	AlligatorSlashLeft8  *ebiten.Image
+	AlligatorSlashLeft9  *ebiten.Image
+	AlligatorSlashLeft10 *ebiten.Image
+	AlligatorSlashLeft11 *ebiten.Image
+
 	EnemyDeath1 *ebiten.Image
 	EnemyDeath2 *ebiten.Image
 	EnemyDeath3 *ebiten.Image
@@ -468,6 +525,30 @@ func LoadSprites() {
 	AlligatorRunLeft7 = flipImageXAxis(AlligatorRunRight7)
 	AlligatorRunLeft8 = flipImageXAxis(AlligatorRunRight8)
 	AlligatorRunLeft9 = flipImageXAxis(AlligatorRunRight9)
+
+	AlligatorSlashRight1 = imageFromBytes(alligatorSlash1Png)
+	AlligatorSlashRight2 = imageFromBytes(alligatorSlash2Png)
+	AlligatorSlashRight3 = imageFromBytes(alligatorSlash3Png)
+	AlligatorSlashRight4 = imageFromBytes(alligatorSlash4Png)
+	AlligatorSlashRight5 = imageFromBytes(alligatorSlash5Png)
+	AlligatorSlashRight6 = imageFromBytes(alligatorSlash6Png)
+	AlligatorSlashRight7 = imageFromBytes(alligatorSlash7Png)
+	AlligatorSlashRight8 = imageFromBytes(alligatorSlash8Png)
+	AlligatorSlashRight9 = imageFromBytes(alligatorSlash9Png)
+	AlligatorSlashRight10 = imageFromBytes(alligatorSlash10Png)
+	AlligatorSlashRight11 = imageFromBytes(alligatorSlash11Png)
+
+	AlligatorSlashLeft1 = flipImageXAxis(AlligatorSlashRight1)
+	AlligatorSlashLeft2 = flipImageXAxis(AlligatorSlashRight2)
+	AlligatorSlashLeft3 = flipImageXAxis(AlligatorSlashRight3)
+	AlligatorSlashLeft4 = flipImageXAxis(AlligatorSlashRight4)
+	AlligatorSlashLeft5 = flipImageXAxis(AlligatorSlashRight5)
+	AlligatorSlashLeft6 = flipImageXAxis(AlligatorSlashRight6)
+	AlligatorSlashLeft7 = flipImageXAxis(AlligatorSlashRight7)
+	AlligatorSlashLeft8 = flipImageXAxis(AlligatorSlashRight8)
+	AlligatorSlashLeft9 = flipImageXAxis(AlligatorSlashRight9)
+	AlligatorSlashLeft10 = flipImageXAxis(AlligatorSlashRight10)
+	AlligatorSlashLeft11 = flipImageXAxis(AlligatorSlashRight11)
 
 	EnemyDeath1 = imageFromBytes(enemyDeath1Png)
 	EnemyDeath2 = imageFromBytes(enemyDeath2Png)
