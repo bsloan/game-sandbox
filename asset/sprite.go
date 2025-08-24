@@ -433,6 +433,12 @@ func LoadSprites() {
 	SwordDogDownSlashRight4 = imageFromBytes(swordDogDownSlashRight4Png)
 	SwordDogDownSlashRight5 = imageFromBytes(swordDogDownSlashRight5Png)
 
+	SwordDogDownSlashLeft1 = flipImageXAxis(SwordDogDownSlashRight1)
+	SwordDogDownSlashLeft2 = flipImageXAxis(SwordDogDownSlashRight2)
+	SwordDogDownSlashLeft3 = flipImageXAxis(SwordDogDownSlashRight3)
+	SwordDogDownSlashLeft4 = flipImageXAxis(SwordDogDownSlashRight4)
+	SwordDogDownSlashLeft5 = flipImageXAxis(SwordDogDownSlashRight5)
+
 	AlligatorIdleRight1 = imageFromBytes(alligatorIdle1Png)
 	AlligatorIdleRight2 = imageFromBytes(alligatorIdle2Png)
 	AlligatorIdleRight3 = imageFromBytes(alligatorIdle3Png)
@@ -462,12 +468,6 @@ func LoadSprites() {
 	AlligatorRunLeft7 = flipImageXAxis(AlligatorRunRight7)
 	AlligatorRunLeft8 = flipImageXAxis(AlligatorRunRight8)
 	AlligatorRunLeft9 = flipImageXAxis(AlligatorRunRight9)
-
-	SwordDogDownSlashLeft1 = flipImageXAxis(SwordDogDownSlashRight1)
-	SwordDogDownSlashLeft2 = flipImageXAxis(SwordDogDownSlashRight2)
-	SwordDogDownSlashLeft3 = flipImageXAxis(SwordDogDownSlashRight3)
-	SwordDogDownSlashLeft4 = flipImageXAxis(SwordDogDownSlashRight4)
-	SwordDogDownSlashLeft5 = flipImageXAxis(SwordDogDownSlashRight5)
 
 	EnemyDeath1 = imageFromBytes(enemyDeath1Png)
 	EnemyDeath2 = imageFromBytes(enemyDeath2Png)
