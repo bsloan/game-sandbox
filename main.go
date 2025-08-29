@@ -2,6 +2,8 @@ package main
 
 import (
 	"flag"
+	"log"
+
 	"github.com/bsloan/game-sandbox/asset"
 	"github.com/bsloan/game-sandbox/boards"
 	"github.com/bsloan/game-sandbox/entity"
@@ -9,7 +11,6 @@ import (
 	"github.com/bsloan/game-sandbox/settings"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/jakecoffman/cp"
-	"log"
 )
 
 func main() {
@@ -21,8 +22,10 @@ func main() {
 
 	ebiten.SetWindowSize(settings.ScreenWidth*2, settings.ScreenHeight*2)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
-	ebiten.SetWindowTitle("Hello, World!")
+	ebiten.SetWindowTitle("Ninja Dōru ドール")
 	ebiten.SetTPS(settings.TicksPerSecond)
+
+	// TODO: refactor to separate gameplay initialization from actual global game initialization
 
 	space := cp.NewSpace()
 	space.SetGravity(cp.Vector{0, settings.Gravity})

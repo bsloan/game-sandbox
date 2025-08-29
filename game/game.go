@@ -2,6 +2,10 @@ package game
 
 import (
 	"fmt"
+	"image"
+	"image/color"
+	"slices"
+
 	"github.com/bsloan/game-sandbox/asset"
 	"github.com/bsloan/game-sandbox/boards"
 	"github.com/bsloan/game-sandbox/entity"
@@ -10,9 +14,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 	"github.com/jakecoffman/cp"
-	"image"
-	"image/color"
-	"slices"
 )
 
 type Viewport struct {
@@ -178,6 +179,13 @@ func (p *Viewport) Draw(g *Game) {
 	}
 }
 
+type GameMode int
+
+const (
+	TitleMode GameMode = iota
+	GameplayMode
+)
+
 type Game struct {
 	vp         Viewport
 	board      boards.Gameboard
@@ -185,6 +193,7 @@ type Game struct {
 	registry   entity.Registry
 	space      *cp.Space
 	gamepadIds []ebiten.GamepadID
+	gameMode   GameMode
 }
 
 func NewGame(viewport Viewport, gameboard boards.Gameboard, debug bool, registry entity.Registry, space *cp.Space) *Game {
@@ -196,6 +205,7 @@ func NewGame(viewport Viewport, gameboard boards.Gameboard, debug bool, registry
 		space:      space,
 		gamepadIds: []ebiten.GamepadID{},
 	}
+	game.gameMode = GameplayMode
 	return &game
 }
 
@@ -237,7 +247,39 @@ func (g *Game) Cleanup() {
 	g.registry.RemoveDead(g.space)
 }
 
+func (g *Game) updateGameplay() error {
+	// apply movement/behavior logic for all active entities in the game
+	for _, e := range g.registry.Entities {
+		if e != nil {
+			entityBehavior, found := EntityBehavior[e.Type]
+			if found {
+				entityBehavior(e)
+			}
+		}
+	}
+
+	// render the image of the current viewport, centered on player
+	g.vp.Center(g.registry.Player().Body.Position().X, g.registry.Player().Body.Position().Y)
+	g.vp.Draw(g)
+
+	// animate sprites
+	g.animateSprites()
+
+	// update physics space
+	g.space.Step(1.0 / float64(ebiten.TPS()))
+
+	// remove Dead entities from the space
+	g.Cleanup()
+
+	// return any errors
+	return nil
+}
+
 func (g *Game) Update() error {
+
+	// TODO: switch case for game mode - title screen, gameplay, etc.
+	//  if gameplay, then updateGameplay. if title, updateTitle, and so on
+
 	// apply movement/behavior logic for all active entities in the game
 	for _, e := range g.registry.Entities {
 		if e != nil {
