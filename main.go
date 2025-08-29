@@ -14,6 +14,7 @@ func main() {
 	debugMode := flag.Bool("debug", false, "Enable debug features")
 	flag.Parse()
 
+	asset.LoadGeneralAssets()
 	asset.LoadTiles()
 	asset.LoadSprites()
 

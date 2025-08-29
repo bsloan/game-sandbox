@@ -13,6 +13,7 @@ import (
 	"github.com/bsloan/game-sandbox/settings"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 	"github.com/jakecoffman/cp"
 )
@@ -303,7 +304,37 @@ func (g *Game) gameplay() error {
 }
 
 func (g *Game) titleScreen() error {
-	g.gameMode = InitializingGameplayMode
+	if g.vp.view == nil {
+		// init viewport for the title screen if it's not set up yet
+		g.vp.view = ebiten.NewImage(settings.ScreenWidth, settings.ScreenHeight)
+	}
+
+	g.vp.view.Clear()
+
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(40, 0)
+	g.vp.view.DrawImage(asset.TitleScreen, op)
+
+	newGameText := fmt.Sprintf("New Game")
+	ngOp := &text.DrawOptions{}
+	ngOp.GeoM.Translate(130, 160)
+	ngOp.ColorScale.ScaleWithColor(color.White)
+	text.Draw(g.vp.view, newGameText, &text.GoTextFace{
+		Source: asset.BoldPixelsFS,
+		Size:   16,
+	}, ngOp)
+
+	exitText := fmt.Sprintf("Exit")
+	exitOp := &text.DrawOptions{}
+	exitOp.GeoM.Translate(130, 176)
+	exitOp.ColorScale.ScaleWithColor(color.White)
+	text.Draw(g.vp.view, exitText, &text.GoTextFace{
+		Source: asset.BoldPixelsFS,
+		Size:   16,
+	}, exitOp)
+
+	// TODO: initialize gameplay after player makes selection, or exit
+	//g.gameMode = InitializingGameplayMode
 	return nil
 }
 
@@ -321,9 +352,12 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
+	screen.DrawImage(g.vp.view, &ebiten.DrawImageOptions{})
+
+	// render overlays when we're in gameplay mode
 	if g.gameMode == GameplayMode {
-		screen.DrawImage(g.vp.view, &ebiten.DrawImageOptions{})
 		g.drawPlayerHealth(screen)
+
 		if g.debug {
 			tx, ty := g.vp.TilePosition()
 			px, py := g.registry.Player().Body.Position().X, g.registry.Player().Body.Position().Y
