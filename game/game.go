@@ -1,6 +1,7 @@
 package game
 
 import (
+	"errors"
 	"fmt"
 	"image"
 	"image/color"
@@ -247,7 +248,7 @@ func (g *Game) Cleanup() {
 	g.registry.RemoveDead(g.space)
 }
 
-func (g *Game) updateGameplay() error {
+func (g *Game) gameplay() error {
 	// apply movement/behavior logic for all active entities in the game
 	for _, e := range g.registry.Entities {
 		if e != nil {
@@ -275,36 +276,17 @@ func (g *Game) updateGameplay() error {
 	return nil
 }
 
-func (g *Game) Update() error {
-
-	// TODO: switch case for game mode - title screen, gameplay, etc.
-	//  if gameplay, then updateGameplay. if title, updateTitle, and so on
-
-	// apply movement/behavior logic for all active entities in the game
-	for _, e := range g.registry.Entities {
-		if e != nil {
-			entityBehavior, found := EntityBehavior[e.Type]
-			if found {
-				entityBehavior(e)
-			}
-		}
-	}
-
-	// render the image of the current viewport, centered on player
-	g.vp.Center(g.registry.Player().Body.Position().X, g.registry.Player().Body.Position().Y)
-	g.vp.Draw(g)
-
-	// animate sprites
-	g.animateSprites()
-
-	// update physics space
-	g.space.Step(1.0 / float64(ebiten.TPS()))
-
-	// remove Dead entities from the space
-	g.Cleanup()
-
-	// return any errors
+func (g *Game) titleScreen() error {
 	return nil
+}
+
+func (g *Game) Update() error {
+	if g.gameMode == GameplayMode {
+		return g.gameplay()
+	} else if g.gameMode == TitleMode {
+		return g.titleScreen()
+	}
+	return errors.New("invalid game mode")
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
