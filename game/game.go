@@ -184,6 +184,7 @@ type GameMode int
 
 const (
 	TitleMode GameMode = iota
+	InitializingGameplayMode
 	GameplayMode
 )
 
@@ -197,17 +198,42 @@ type Game struct {
 	gameMode   GameMode
 }
 
-func NewGame(viewport Viewport, gameboard boards.Gameboard, debug bool, registry entity.Registry, space *cp.Space) *Game {
+func NewGame(debug bool) *Game {
 	game := Game{
-		vp:         viewport,
-		board:      gameboard,
 		debug:      debug,
-		registry:   registry,
-		space:      space,
 		gamepadIds: []ebiten.GamepadID{},
+		gameMode:   TitleMode,
 	}
-	game.gameMode = GameplayMode
 	return &game
+}
+
+func NewGameplaySession(game *Game) {
+	space := cp.NewSpace()
+	space.SetGravity(cp.Vector{X: 0, Y: settings.Gravity})
+	// allow no overlap between shapes in the space, to reduce prevalence of tile overlap/collision bug
+	//space.SetCollisionSlop(0.00)
+
+	player := entity.InitializePlayer(space, 10, 400)
+
+	r := entity.Registry{}
+	r.AddEntity(player)
+
+	entity.InitializeCollisionHandlers(space)
+
+	gameboard := boards.Gameboard{}
+	gameboard.LoadGameboard(boards.Level1Map, space, &r)
+
+	game.vp = Viewport{
+		MaxViewX: float64(gameboard.PixelWidth - settings.ScreenWidth - settings.TileSize),
+		MaxViewY: float64(gameboard.PixelHeight - settings.ScreenHeight - settings.TileSize),
+	}
+	game.board = gameboard
+	game.registry = r
+	game.space = space
+	game.gameMode = GameplayMode
+
+	// set the initial position of the viewport
+	game.CenterViewport(player.Position())
 }
 
 func (g *Game) CenterViewport(x, y float64) {
@@ -277,6 +303,7 @@ func (g *Game) gameplay() error {
 }
 
 func (g *Game) titleScreen() error {
+	g.gameMode = InitializingGameplayMode
 	return nil
 }
 
@@ -285,24 +312,28 @@ func (g *Game) Update() error {
 		return g.gameplay()
 	} else if g.gameMode == TitleMode {
 		return g.titleScreen()
+	} else if g.gameMode == InitializingGameplayMode {
+		NewGameplaySession(g)
+		g.gameMode = GameplayMode
+		return nil
 	}
 	return errors.New("invalid game mode")
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	screen.DrawImage(g.vp.view, &ebiten.DrawImageOptions{})
-
-	g.drawPlayerHealth(screen)
-
-	if g.debug {
-		tx, ty := g.vp.TilePosition()
-		px, py := g.registry.Player().Body.Position().X, g.registry.Player().Body.Position().Y
-		vx, vy := g.registry.Player().Body.Velocity().X, g.registry.Player().Body.Velocity().Y
-		x, y := g.vp.Position()
-		debugMsg := fmt.Sprintf(
-			"TPS: %0.2f Origin X,Y: (%0.2f, %0.2f) Tile X,Y: (%v, %v)\nPlayer X,Y (%0.2f, %0.2f)\nVelocity X,Y (%0.2f, %0.2f)\nGrounded: %v\nSlope: %v\nBoost: %v",
-			ebiten.ActualTPS(), x, y, tx, ty, px, py, vx, vy, g.registry.Player().Grounded, g.registry.Player().OnSlope, g.registry.Player().Boost)
-		ebitenutil.DebugPrint(screen, debugMsg)
+	if g.gameMode == GameplayMode {
+		screen.DrawImage(g.vp.view, &ebiten.DrawImageOptions{})
+		g.drawPlayerHealth(screen)
+		if g.debug {
+			tx, ty := g.vp.TilePosition()
+			px, py := g.registry.Player().Body.Position().X, g.registry.Player().Body.Position().Y
+			vx, vy := g.registry.Player().Body.Velocity().X, g.registry.Player().Body.Velocity().Y
+			x, y := g.vp.Position()
+			debugMsg := fmt.Sprintf(
+				"TPS: %0.2f Origin X,Y: (%0.2f, %0.2f) Tile X,Y: (%v, %v)\nPlayer X,Y (%0.2f, %0.2f)\nVelocity X,Y (%0.2f, %0.2f)\nGrounded: %v\nSlope: %v\nBoost: %v",
+				ebiten.ActualTPS(), x, y, tx, ty, px, py, vx, vy, g.registry.Player().Grounded, g.registry.Player().OnSlope, g.registry.Player().Boost)
+			ebitenutil.DebugPrint(screen, debugMsg)
+		}
 	}
 }
 

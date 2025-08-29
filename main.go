@@ -5,12 +5,9 @@ import (
 	"log"
 
 	"github.com/bsloan/game-sandbox/asset"
-	"github.com/bsloan/game-sandbox/boards"
-	"github.com/bsloan/game-sandbox/entity"
 	"github.com/bsloan/game-sandbox/game"
 	"github.com/bsloan/game-sandbox/settings"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/jakecoffman/cp"
 )
 
 func main() {
@@ -25,39 +22,13 @@ func main() {
 	ebiten.SetWindowTitle("Ninja Dōru ドール")
 	ebiten.SetTPS(settings.TicksPerSecond)
 
-	// TODO: refactor to separate gameplay initialization from actual global game initialization
-
-	space := cp.NewSpace()
-	space.SetGravity(cp.Vector{0, settings.Gravity})
-	// allow no overlap between shapes in the space, to reduce prevalence of tile overlap/collision bug
-	//space.SetCollisionSlop(0.00)
-
-	player := entity.InitializePlayer(space, 10, 400)
-	r := entity.Registry{}
-	r.AddEntity(player)
-
-	entity.InitializeCollisionHandlers(space)
-
-	gameboard := boards.Gameboard{}
-	gameboard.LoadGameboard(boards.Level1Map, space, &r)
-
 	// initialize a new game
 	g := game.NewGame(
-		game.Viewport{
-			MaxViewX: float64(gameboard.PixelWidth - settings.ScreenWidth - settings.TileSize),
-			MaxViewY: float64(gameboard.PixelHeight - settings.ScreenHeight - settings.TileSize),
-		},
-		gameboard,
 		*debugMode,
-		r,
-		space,
 	)
 
 	// initialize the behavior of all the entities in the game
 	game.InitializeEntityBehavior(g)
-
-	// set the initial position of the viewport
-	g.CenterViewport(player.Position())
 
 	// run the main loop
 	if err := ebiten.RunGame(g); err != nil {
