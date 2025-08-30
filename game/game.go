@@ -198,6 +198,7 @@ type Game struct {
 	gamepadIds     []ebiten.GamepadID
 	gameMode       GameMode
 	titleSelection int
+	inputAvailable bool
 }
 
 func NewGame(debug bool) *Game {
@@ -206,6 +207,7 @@ func NewGame(debug bool) *Game {
 		gamepadIds:     []ebiten.GamepadID{},
 		gameMode:       TitleMode,
 		titleSelection: 0,
+		inputAvailable: true,
 	}
 	return &game
 }
@@ -333,16 +335,20 @@ func (g *Game) titleScreen() error {
 		}, textOp)
 	}
 
-	if g.inputLeft() {
+	if (g.inputLeft() || g.inputUp()) && g.inputAvailable {
 		g.titleSelection--
+		g.inputAvailable = false
 		if g.titleSelection < 0 {
 			g.titleSelection = 0
 		}
-	} else if g.inputRight() {
+	} else if (g.inputRight() || g.inputDown()) && g.inputAvailable {
 		g.titleSelection++
+		g.inputAvailable = false
 		if g.titleSelection > len(options)-1 {
 			g.titleSelection = len(options) - 1
 		}
+	} else if !g.inputAny() {
+		g.inputAvailable = true
 	}
 
 	// TODO: initialize gameplay after player makes selection, or exit

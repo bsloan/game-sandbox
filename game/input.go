@@ -5,6 +5,8 @@ import "github.com/hajimehoshi/ebiten/v2"
 const (
 	NonstandardGamepadButtonLeft  = 18
 	NonstandardGamepadButtonRight = 16
+	NonstandardGamepadButtonUp    = 15
+	NonstandardGamepadButtonDown  = 17
 	NonstandardGamepadButtonX     = 3
 	NonstandardGamepadButtonA     = 0
 )
@@ -14,7 +16,7 @@ func (g *Game) gamepadAvailable() bool {
 }
 
 func (g *Game) inputAny() bool {
-	return g.inputJump() || g.inputLeft() || g.inputRight() || g.inputAttack()
+	return g.inputJump() || g.inputLeft() || g.inputRight() || g.inputUp() || g.inputDown() || g.inputAttack()
 }
 
 func (g *Game) inputJump() bool {
@@ -27,6 +29,14 @@ func (g *Game) inputLeft() bool {
 
 func (g *Game) inputRight() bool {
 	return ebiten.IsKeyPressed(ebiten.KeyRight) || ebiten.IsKeyPressed(ebiten.KeyD) || (g.gamepadAvailable() && ebiten.IsGamepadButtonPressed(g.gamepadIds[0], NonstandardGamepadButtonRight))
+}
+
+func (g *Game) inputUp() bool {
+	return ebiten.IsKeyPressed(ebiten.KeyUp) || ebiten.IsKeyPressed(ebiten.KeyW) || (g.gamepadAvailable() && ebiten.IsGamepadButtonPressed(g.gamepadIds[0], NonstandardGamepadButtonUp))
+}
+
+func (g *Game) inputDown() bool {
+	return ebiten.IsKeyPressed(ebiten.KeyDown) || ebiten.IsKeyPressed(ebiten.KeyS) || (g.gamepadAvailable() && ebiten.IsGamepadButtonPressed(g.gamepadIds[0], NonstandardGamepadButtonDown))
 }
 
 func (g *Game) inputAttack() bool {
