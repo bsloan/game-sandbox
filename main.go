@@ -33,6 +33,9 @@ func main() {
 
 	// run the main loop
 	if err := ebiten.RunGame(g); err != nil {
-		log.Fatal(err)
+		if err.Error() != "game ended by user" {
+			log.Fatal(err)
+		}
 	}
+	log.Println("program exited normally")
 }

@@ -184,6 +184,7 @@ const (
 	TitleMode GameMode = iota
 	InitializingGameplayMode
 	GameplayMode
+	ExitingMode
 )
 
 type Game struct {
@@ -353,7 +354,7 @@ func (g *Game) titleScreen() error {
 		} else if options[g.titleSelection] == "About" {
 			// TODO
 		} else if options[g.titleSelection] == "Exit" {
-			// TODO
+			g.gameMode = ExitingMode
 		}
 	} else if !g.inputAny() {
 		g.inputAvailable = true
@@ -373,6 +374,8 @@ func (g *Game) Update() error {
 		NewGameplaySession(g)
 		g.gameMode = GameplayMode
 		return nil
+	} else if g.gameMode == ExitingMode {
+		return fmt.Errorf("game ended by user")
 	}
 	return errors.New("invalid game mode")
 }
