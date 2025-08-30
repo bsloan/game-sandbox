@@ -190,20 +190,22 @@ const (
 )
 
 type Game struct {
-	vp         Viewport
-	board      boards.Gameboard
-	debug      bool
-	registry   entity.Registry
-	space      *cp.Space
-	gamepadIds []ebiten.GamepadID
-	gameMode   GameMode
+	vp             Viewport
+	board          boards.Gameboard
+	debug          bool
+	registry       entity.Registry
+	space          *cp.Space
+	gamepadIds     []ebiten.GamepadID
+	gameMode       GameMode
+	titleSelection int
 }
 
 func NewGame(debug bool) *Game {
 	game := Game{
-		debug:      debug,
-		gamepadIds: []ebiten.GamepadID{},
-		gameMode:   TitleMode,
+		debug:          debug,
+		gamepadIds:     []ebiten.GamepadID{},
+		gameMode:       TitleMode,
+		titleSelection: 0,
 	}
 	return &game
 }
@@ -315,11 +317,16 @@ func (g *Game) titleScreen() error {
 	op.GeoM.Translate(40, 0)
 	g.vp.view.DrawImage(asset.TitleScreen, op)
 
-	options := []string{"New Game", "Exit"}
+	// show title options - highlight the selected option in red
+	options := []string{"New Game", "About", "Exit"}
 	for i, option := range options {
 		textOp := &text.DrawOptions{}
 		textOp.GeoM.Translate(130, 160+float64(i*16))
-		textOp.ColorScale.ScaleWithColor(color.White)
+		if g.titleSelection == i {
+			textOp.ColorScale.ScaleWithColor(color.RGBA{R: 255, G: 0, B: 0, A: 255})
+		} else {
+			textOp.ColorScale.ScaleWithColor(color.White)
+		}
 		text.Draw(g.vp.view, option, &text.GoTextFace{
 			Source: asset.BoldPixelsFS,
 			Size:   16,
