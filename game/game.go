@@ -333,12 +333,26 @@ func (g *Game) titleScreen() error {
 		}, textOp)
 	}
 
+	if g.inputLeft() {
+		g.titleSelection--
+		if g.titleSelection < 0 {
+			g.titleSelection = 0
+		}
+	} else if g.inputRight() {
+		g.titleSelection++
+		if g.titleSelection > len(options)-1 {
+			g.titleSelection = len(options) - 1
+		}
+	}
+
 	// TODO: initialize gameplay after player makes selection, or exit
 	//g.gameMode = InitializingGameplayMode
 	return nil
 }
 
 func (g *Game) Update() error {
+	g.gamepadIds = ebiten.AppendGamepadIDs(g.gamepadIds[:0])
+
 	if g.gameMode == GameplayMode {
 		return g.gameplay()
 	} else if g.gameMode == TitleMode {
