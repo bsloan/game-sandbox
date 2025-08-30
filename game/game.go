@@ -315,23 +315,16 @@ func (g *Game) titleScreen() error {
 	op.GeoM.Translate(40, 0)
 	g.vp.view.DrawImage(asset.TitleScreen, op)
 
-	newGameText := fmt.Sprintf("New Game")
-	ngOp := &text.DrawOptions{}
-	ngOp.GeoM.Translate(130, 160)
-	ngOp.ColorScale.ScaleWithColor(color.White)
-	text.Draw(g.vp.view, newGameText, &text.GoTextFace{
-		Source: asset.BoldPixelsFS,
-		Size:   16,
-	}, ngOp)
-
-	exitText := fmt.Sprintf("Exit")
-	exitOp := &text.DrawOptions{}
-	exitOp.GeoM.Translate(130, 176)
-	exitOp.ColorScale.ScaleWithColor(color.White)
-	text.Draw(g.vp.view, exitText, &text.GoTextFace{
-		Source: asset.BoldPixelsFS,
-		Size:   16,
-	}, exitOp)
+	options := []string{"New Game", "Exit"}
+	for i, option := range options {
+		textOp := &text.DrawOptions{}
+		textOp.GeoM.Translate(130, 160+float64(i*16))
+		textOp.ColorScale.ScaleWithColor(color.White)
+		text.Draw(g.vp.view, option, &text.GoTextFace{
+			Source: asset.BoldPixelsFS,
+			Size:   16,
+		}, textOp)
+	}
 
 	// TODO: initialize gameplay after player makes selection, or exit
 	//g.gameMode = InitializingGameplayMode
