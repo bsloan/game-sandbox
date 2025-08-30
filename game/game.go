@@ -84,10 +84,6 @@ func translateTileCoordsToScreen(tileX, tileY int, offsetX, offsetY float64) (fl
 // of the game board. When the frame is ready, this is later copied to the screen on top
 // of any background and middle layers for a parallax scrolling affect.
 func (p *Viewport) Draw(g *Game) {
-	// ebiten performance: avoid allocating a new image on every Update, use Clear instead
-	if p.view == nil {
-		p.view = ebiten.NewImage(settings.ScreenWidth, settings.ScreenHeight)
-	}
 	if p.midground == nil {
 		// iterate horizontally in chunks of 160 pixels (width of midground image)
 		// across the entire game board. draw any instances of the image that happen
@@ -104,6 +100,7 @@ func (p *Viewport) Draw(g *Game) {
 		}
 	}
 
+	// ebiten performance: avoid allocating a new image on every Update, use Clear instead
 	p.view.Clear()
 
 	// render the static background image
@@ -232,6 +229,8 @@ func NewGameplaySession(game *Game) {
 		MaxViewX: float64(gameboard.PixelWidth - settings.ScreenWidth - settings.TileSize),
 		MaxViewY: float64(gameboard.PixelHeight - settings.ScreenHeight - settings.TileSize),
 	}
+	game.vp.view = ebiten.NewImage(settings.ScreenWidth, settings.ScreenHeight)
+
 	game.board = gameboard
 	game.registry = r
 	game.space = space
@@ -335,6 +334,7 @@ func (g *Game) titleScreen() error {
 		}, textOp)
 	}
 
+	// make the selection
 	if (g.inputLeft() || g.inputUp()) && g.inputAvailable {
 		g.titleSelection--
 		g.inputAvailable = false
@@ -347,12 +347,18 @@ func (g *Game) titleScreen() error {
 		if g.titleSelection > len(options)-1 {
 			g.titleSelection = len(options) - 1
 		}
+	} else if g.inputAttack() {
+		if options[g.titleSelection] == "New Game" {
+			g.gameMode = InitializingGameplayMode
+		} else if options[g.titleSelection] == "About" {
+			// TODO
+		} else if options[g.titleSelection] == "Exit" {
+			// TODO
+		}
 	} else if !g.inputAny() {
 		g.inputAvailable = true
 	}
 
-	// TODO: initialize gameplay after player makes selection, or exit
-	//g.gameMode = InitializingGameplayMode
 	return nil
 }
 
