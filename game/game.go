@@ -18,6 +18,12 @@ import (
 	"github.com/jakecoffman/cp"
 )
 
+var titleOptions = map[string]GameMode{
+	"New Game": InitializingGameplayMode,
+	"About":    TitleMode,
+	"Exit":     ExitingMode,
+}
+
 type Viewport struct {
 	viewX     float64
 	viewY     float64
@@ -337,25 +343,17 @@ func (g *Game) titleScreen() error {
 
 	// make the selection
 	if (g.inputLeft() || g.inputUp()) && g.inputAvailable {
-		g.titleSelection--
 		g.inputAvailable = false
-		if g.titleSelection < 0 {
-			g.titleSelection = 0
+		if g.titleSelection > 0 {
+			g.titleSelection--
 		}
 	} else if (g.inputRight() || g.inputDown()) && g.inputAvailable {
-		g.titleSelection++
 		g.inputAvailable = false
-		if g.titleSelection > len(options)-1 {
-			g.titleSelection = len(options) - 1
+		if g.titleSelection < len(options)-1 {
+			g.titleSelection++
 		}
 	} else if g.inputAttack() {
-		if options[g.titleSelection] == "New Game" {
-			g.gameMode = InitializingGameplayMode
-		} else if options[g.titleSelection] == "About" {
-			// TODO
-		} else if options[g.titleSelection] == "Exit" {
-			g.gameMode = ExitingMode
-		}
+		g.gameMode = titleOptions[options[g.titleSelection]]
 	} else if !g.inputAny() {
 		g.inputAvailable = true
 	}
