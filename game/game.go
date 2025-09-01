@@ -319,7 +319,7 @@ func (g *Game) Update() error {
 		g.gameMode = GameplayMode
 		return nil
 	} else if g.gameMode == LevelSelectMode {
-		// TODO
+		return g.levelSelect()
 	} else if g.gameMode == ExitingMode {
 		return errors.New("game ended by user")
 	}
