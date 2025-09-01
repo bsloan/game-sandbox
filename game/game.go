@@ -13,16 +13,9 @@ import (
 	"github.com/bsloan/game-sandbox/settings"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 	"github.com/jakecoffman/cp"
 )
-
-var titleOptions = map[string]GameMode{
-	"New Game": InitializingGameplayMode,
-	"About":    TitleMode,
-	"Exit":     ExitingMode,
-}
 
 type Viewport struct {
 	viewX     float64
@@ -190,6 +183,7 @@ const (
 	TitleMode GameMode = iota
 	InitializingGameplayMode
 	GameplayMode
+	LevelSelectMode
 	ExitingMode
 )
 
@@ -313,54 +307,6 @@ func (g *Game) gameplay() error {
 	return nil
 }
 
-func (g *Game) titleScreen() error {
-	if g.vp.view == nil {
-		// init viewport for the title screen if it's not set up yet
-		g.vp.view = ebiten.NewImage(settings.ScreenWidth, settings.ScreenHeight)
-	}
-
-	g.vp.view.Clear()
-
-	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(40, 0)
-	g.vp.view.DrawImage(asset.TitleScreen, op)
-
-	// show title options - highlight the selected option in red
-	options := []string{"New Game", "About", "Exit"}
-	for i, option := range options {
-		textOp := &text.DrawOptions{}
-		textOp.GeoM.Translate(130, 160+float64(i*16))
-		if g.titleSelection == i {
-			textOp.ColorScale.ScaleWithColor(color.RGBA{R: 255, G: 0, B: 0, A: 255})
-		} else {
-			textOp.ColorScale.ScaleWithColor(color.White)
-		}
-		text.Draw(g.vp.view, option, &text.GoTextFace{
-			Source: asset.BoldPixelsFS,
-			Size:   16,
-		}, textOp)
-	}
-
-	// make the selection
-	if (g.inputLeft() || g.inputUp()) && g.inputAvailable {
-		g.inputAvailable = false
-		if g.titleSelection > 0 {
-			g.titleSelection--
-		}
-	} else if (g.inputRight() || g.inputDown()) && g.inputAvailable {
-		g.inputAvailable = false
-		if g.titleSelection < len(options)-1 {
-			g.titleSelection++
-		}
-	} else if g.inputAttack() {
-		g.gameMode = titleOptions[options[g.titleSelection]]
-	} else if !g.inputAny() {
-		g.inputAvailable = true
-	}
-
-	return nil
-}
-
 func (g *Game) Update() error {
 	g.gamepadIds = ebiten.AppendGamepadIDs(g.gamepadIds[:0])
 
@@ -372,8 +318,10 @@ func (g *Game) Update() error {
 		NewGameplaySession(g)
 		g.gameMode = GameplayMode
 		return nil
+	} else if g.gameMode == LevelSelectMode {
+		// TODO
 	} else if g.gameMode == ExitingMode {
-		return fmt.Errorf("game ended by user")
+		return errors.New("game ended by user")
 	}
 	return errors.New("invalid game mode")
 }

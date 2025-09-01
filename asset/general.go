@@ -17,13 +17,21 @@ var (
 	//go:embed general/BoldPixels1.4.ttf
 	boldPixelsTtf []byte
 
-	TitleScreen  *ebiten.Image
+	//go:embed general/map_take1.png
+	levelSelectMapPng []byte
+
+	TitleScreen    *ebiten.Image
+	LevelSelectMap *ebiten.Image
+
 	BoldPixelsFS *text.GoTextFaceSource
 )
 
 func LoadGeneralAssets() {
+	// load static assets for title screen, level select map, etc
 	TitleScreen = imageFromBytes(titleScreenPng)
+	LevelSelectMap = imageFromBytes(levelSelectMapPng)
 
+	// load the font
 	source, err := text.NewGoTextFaceSource(bytes.NewReader(boldPixelsTtf))
 	if err != nil {
 		log.Fatal(err)
