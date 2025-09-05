@@ -21,6 +21,7 @@ type LevelSelectPoint struct {
 
 var fadeValue float32 = 0.0
 var fadeDesc = false
+var selectedLevel int = 0
 
 var levelSelectPoints = []LevelSelectPoint{
 	{x: 28, y: 100, state: Playable},
@@ -61,7 +62,7 @@ func (g *Game) levelSelect() error {
 	cs.SetA(fadeValue)
 
 	// draw the level cursors on the map
-	for _, point := range levelSelectPoints {
+	for i, point := range levelSelectPoints {
 		var cursorImage *ebiten.Image
 		op := &ebiten.DrawImageOptions{}
 		if point.state == Playable {
@@ -75,15 +76,31 @@ func (g *Game) levelSelect() error {
 		}
 		op.GeoM.Translate(point.x, point.y)
 		g.vp.view.DrawImage(cursorImage, op)
+		if i == selectedLevel {
+			selectedOp := &ebiten.DrawImageOptions{}
+			selectedOp.GeoM.Translate(point.x-8, point.y-8)
+			g.vp.view.DrawImage(asset.LevelSelectPlayer, selectedOp)
+		}
 	}
 
 	// get player input
 	if (g.inputLeft() || g.inputUp()) && g.inputAvailable {
-
+		g.inputAvailable = false
+		if selectedLevel > 0 {
+			selectedLevel--
+		} else {
+			selectedLevel = len(levelSelectPoints) - 1
+		}
 	} else if (g.inputRight() || g.inputDown()) && g.inputAvailable {
-
+		g.inputAvailable = false
+		if selectedLevel < len(levelSelectPoints)-1 {
+			selectedLevel++
+		} else {
+			selectedLevel = 0
+		}
 	} else if g.inputAttack() && g.inputAvailable {
 		g.inputAvailable = false
+		// TODO: start player on the appropriate level
 		g.gameMode = InitializingGameplayMode
 	} else if !g.inputAny() {
 		g.inputAvailable = true

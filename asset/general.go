@@ -29,11 +29,15 @@ var (
 	//go:embed general/cursor_red.png
 	levelSelectCursorRedPng []byte
 
+	//go:embed general/player_head.png
+	levelSelectPlayerPng []byte
+
 	TitleScreen            *ebiten.Image
 	LevelSelectMap         *ebiten.Image
 	LevelSelectCursorGreen *ebiten.Image
 	LevelSelectCursorWhite *ebiten.Image
 	LevelSelectCursorRed   *ebiten.Image
+	LevelSelectPlayer      *ebiten.Image
 
 	BoldPixelsFS *text.GoTextFaceSource
 )
@@ -45,6 +49,7 @@ func LoadGeneralAssets() {
 	LevelSelectCursorGreen = imageFromBytes(levelSelectCursorGreenPng)
 	LevelSelectCursorWhite = imageFromBytes(levelSelectCursorWhitePng)
 	LevelSelectCursorRed = imageFromBytes(levelSelectCursorRedPng)
+	LevelSelectPlayer = imageFromBytes(levelSelectPlayerPng)
 
 	// load the font
 	source, err := text.NewGoTextFaceSource(bytes.NewReader(boldPixelsTtf))
