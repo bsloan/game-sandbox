@@ -10,7 +10,7 @@ import (
 )
 
 var titleOptions = map[string]GameMode{
-	"New Game": InitializingGameplayMode,
+	"New Game": LevelSelectMode,
 	"About":    TitleMode,
 	"Exit":     ExitingMode,
 }
@@ -55,6 +55,7 @@ func (g *Game) titleScreen() error {
 			g.titleSelection++
 		}
 	} else if g.inputAttack() {
+		g.inputAvailable = false
 		g.gameMode = titleOptions[options[g.titleSelection]]
 	} else if !g.inputAny() {
 		g.inputAvailable = true

@@ -19,8 +19,17 @@ type LevelSelectPoint struct {
 	state LevelSelectState
 }
 
+var fadeValue float32 = 0.0
+var fadeDesc = false
+
 var levelSelectPoints = []LevelSelectPoint{
+	{x: 28, y: 100, state: Playable},
+	{x: 120, y: 34, state: Playable},
+	{x: 86, y: 66, state: Playable},
 	{x: 75, y: 140, state: Playable},
+	{x: 175, y: 128, state: Playable},
+	{x: 268, y: 56, state: Locked},
+	{x: 260, y: 96, state: Locked},
 }
 
 func (g *Game) levelSelect() error {
@@ -32,18 +41,38 @@ func (g *Game) levelSelect() error {
 	g.vp.view.Clear()
 	g.vp.view.DrawImage(asset.LevelSelectMap, &ebiten.DrawImageOptions{})
 
+	// fade the cursors in and out
+	cs := ebiten.ColorScale{}
+	if fadeDesc {
+		fadeValue -= 0.03
+	} else {
+		fadeValue += 0.03
+	}
+	if fadeValue <= 0.0 {
+		fadeValue = 0.0
+		fadeDesc = false
+	} else if fadeValue >= 1.0 {
+		fadeValue = 1.0
+		fadeDesc = true
+	}
+	cs.SetR(fadeValue)
+	cs.SetG(fadeValue)
+	cs.SetB(fadeValue)
+	cs.SetA(fadeValue)
+
 	// draw the level cursors on the map
 	for _, point := range levelSelectPoints {
 		var cursorImage *ebiten.Image
+		op := &ebiten.DrawImageOptions{}
 		if point.state == Playable {
 			cursorImage = asset.LevelSelectCursorWhite
+			op.ColorScale = cs
 		} else if point.state == Completed {
 			cursorImage = asset.LevelSelectCursorGreen
 		} else {
 			// locked
 			cursorImage = asset.LevelSelectCursorRed
 		}
-		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(point.x, point.y)
 		g.vp.view.DrawImage(cursorImage, op)
 	}
@@ -53,8 +82,9 @@ func (g *Game) levelSelect() error {
 
 	} else if (g.inputRight() || g.inputDown()) && g.inputAvailable {
 
-	} else if g.inputAttack() {
-
+	} else if g.inputAttack() && g.inputAvailable {
+		g.inputAvailable = false
+		g.gameMode = InitializingGameplayMode
 	} else if !g.inputAny() {
 		g.inputAvailable = true
 	}
