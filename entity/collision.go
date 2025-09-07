@@ -1,9 +1,10 @@
 package entity
 
 import (
+	"math"
+
 	"github.com/bsloan/game-sandbox/settings"
 	"github.com/jakecoffman/cp"
-	"math"
 )
 
 const (
@@ -11,7 +12,7 @@ const (
 	PlayerSwordCollisionType
 	BlockCollisionType
 	SlopeCollisionType
-	SwordDogCollisionType
+	GenericEnemyCollisionType
 )
 
 func GenericGroundedHandler(space *cp.Space, collisionType cp.CollisionType) {
@@ -166,9 +167,9 @@ func InitializeCollisionHandlers(space *cp.Space) {
 	SlopeHandler(space, PlayerCollisionType)
 
 	// attach collision handlers to enemies
-	DamagePlayerHandler(space, SwordDogCollisionType)
-	GenericGroundedHandler(space, SwordDogCollisionType)
-	SlopeHandler(space, SwordDogCollisionType)
-	ObstructedHandler(space, SwordDogCollisionType)
-	PlayerSwordHandler(space, SwordDogCollisionType)
+	DamagePlayerHandler(space, GenericEnemyCollisionType)
+	GenericGroundedHandler(space, GenericEnemyCollisionType)
+	SlopeHandler(space, GenericEnemyCollisionType)
+	ObstructedHandler(space, GenericEnemyCollisionType)
+	PlayerSwordHandler(space, GenericEnemyCollisionType)
 }

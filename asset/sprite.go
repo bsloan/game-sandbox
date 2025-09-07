@@ -2,8 +2,9 @@ package asset
 
 import (
 	_ "embed"
-	"github.com/hajimehoshi/ebiten/v2"
 	_ "image/png"
+
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 var (
@@ -223,6 +224,18 @@ var (
 	//go:embed sprite/alligator_slash11.png
 	alligatorSlash11Png []byte
 
+	//go:embed sprite/frog_idle_1.png
+	frogIdle1Png []byte
+
+	//go:embed sprite/frog_idle_2.png
+	frogIdle2Png []byte
+
+	//go:embed sprite/frog_idle_3.png
+	frogIdle3Png []byte
+
+	//go:embed sprite/frog_idle_4.png
+	frogIdle4Png []byte
+
 	//go:embed sprite/enemy_death_1.png
 	enemyDeath1Png []byte
 
@@ -390,6 +403,16 @@ var (
 	AlligatorSlashLeft10 *ebiten.Image
 	AlligatorSlashLeft11 *ebiten.Image
 
+	FrogIdleLeft1 *ebiten.Image
+	FrogIdleLeft2 *ebiten.Image
+	FrogIdleLeft3 *ebiten.Image
+	FrogIdleLeft4 *ebiten.Image
+
+	FrogIdleRight1 *ebiten.Image
+	FrogIdleRight2 *ebiten.Image
+	FrogIdleRight3 *ebiten.Image
+	FrogIdleRight4 *ebiten.Image
+
 	EnemyDeath1 *ebiten.Image
 	EnemyDeath2 *ebiten.Image
 	EnemyDeath3 *ebiten.Image
@@ -549,6 +572,16 @@ func LoadSprites() {
 	AlligatorSlashLeft9 = flipImageXAxis(AlligatorSlashRight9)
 	AlligatorSlashLeft10 = flipImageXAxis(AlligatorSlashRight10)
 	AlligatorSlashLeft11 = flipImageXAxis(AlligatorSlashRight11)
+
+	FrogIdleLeft1 = imageFromBytes(frogIdle1Png)
+	FrogIdleLeft2 = imageFromBytes(frogIdle2Png)
+	FrogIdleLeft3 = imageFromBytes(frogIdle3Png)
+	FrogIdleLeft4 = imageFromBytes(frogIdle4Png)
+
+	FrogIdleRight1 = flipImageXAxis(FrogIdleLeft1)
+	FrogIdleRight2 = flipImageXAxis(FrogIdleLeft2)
+	FrogIdleRight3 = flipImageXAxis(FrogIdleLeft3)
+	FrogIdleRight4 = flipImageXAxis(FrogIdleLeft4)
 
 	EnemyDeath1 = imageFromBytes(enemyDeath1Png)
 	EnemyDeath2 = imageFromBytes(enemyDeath2Png)

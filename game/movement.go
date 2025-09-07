@@ -234,7 +234,7 @@ func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
 		swordShape.SetElasticity(0.4)
 		swordShape.SetFriction(0.75)
 		swordShape.UserData = 1 // hack to remember later that this shape was added for attack
-		swordShape.SetCollisionType(entity.SwordDogCollisionType)
+		swordShape.SetCollisionType(entity.GenericEnemyCollisionType)
 	} else if notAttacking {
 		// remove any shapes that were added just for attack
 		swordDog.Body.EachShape(func(shape *cp.Shape) {
@@ -324,7 +324,7 @@ func (g *Game) MoveAlligator(alligator *entity.Entity) {
 		swordShape.SetElasticity(0.4)
 		swordShape.SetFriction(0.75)
 		swordShape.UserData = 1 // hack to remember later that this shape was added for attack
-		swordShape.SetCollisionType(entity.SwordDogCollisionType)
+		swordShape.SetCollisionType(entity.GenericEnemyCollisionType)
 	} else if notAttacking {
 		// remove any shapes that were added just for attack
 		alligator.Body.EachShape(func(shape *cp.Shape) {

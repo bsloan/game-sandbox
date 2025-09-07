@@ -301,7 +301,7 @@ func InitializeSwordDog(space *cp.Space, x, y float64) *Entity {
 	swordDogShape := space.AddShape(cp.NewCircle(swordDog.Body, 11, cp.Vector{X: 10, Y: 0}))
 	swordDogShape.SetElasticity(0)
 	swordDogShape.SetFriction(0.75)
-	swordDogShape.SetCollisionType(SwordDogCollisionType)
+	swordDogShape.SetCollisionType(GenericEnemyCollisionType)
 	swordDog.Shape = swordDogShape
 	swordDog.AttackDamage = 2
 	swordDog.MaxHealth = 6
@@ -424,10 +424,53 @@ func InitializeAlligator(space *cp.Space, x, y float64) *Entity {
 	alligatorShape := space.AddShape(cp.NewCircle(alligator.Body, 11, cp.Vector{X: 10, Y: 0}))
 	alligatorShape.SetElasticity(0)
 	alligatorShape.SetFriction(0.75)
-	alligatorShape.SetCollisionType(SwordDogCollisionType) // FIXME?
+	alligatorShape.SetCollisionType(GenericEnemyCollisionType)
 	alligator.Shape = alligatorShape
 	alligator.AttackDamage = 4
 	alligator.MaxHealth = 12
 	alligator.Health = alligator.MaxHealth
 	return &alligator
+}
+
+func InitializeFrog(space *cp.Space, x, y float64) *Entity {
+	idleRight := Animation{
+		Frames: []*ebiten.Image{
+			asset.FrogIdleRight1,
+			asset.FrogIdleRight2,
+			asset.FrogIdleRight3,
+			asset.FrogIdleRight4,
+		},
+		AnimationSpeed: 0.1,
+	}
+	idleLeft := Animation{
+		Frames: []*ebiten.Image{
+			asset.FrogIdleLeft1,
+			asset.FrogIdleLeft2,
+			asset.FrogIdleLeft3,
+			asset.FrogIdleLeft4,
+		},
+		AnimationSpeed: 0.1,
+	}
+	frog := Entity{
+		Type:   Frog,
+		State:  IdleLeft,
+		Facing: Left,
+		Animations: map[EntityState]*Animation{
+			IdleRight: &idleRight,
+			IdleLeft:  &idleLeft,
+		},
+		Body: cp.NewBody(1, cp.INFINITY),
+	}
+	frog.Body.UserData = &frog
+	space.AddBody(frog.Body)
+	frog.Body.SetPosition(cp.Vector{X: x, Y: y})
+	frogShape := space.AddShape(cp.NewCircle(frog.Body, 16, cp.Vector{X: 0, Y: 0}))
+	frogShape.SetElasticity(0)
+	frogShape.SetFriction(0.75)
+	frogShape.SetCollisionType(GenericEnemyCollisionType)
+	frog.Shape = frogShape
+	frog.AttackDamage = 4
+	frog.MaxHealth = 2
+	frog.Health = frog.MaxHealth
+	return &frog
 }
