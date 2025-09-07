@@ -164,16 +164,23 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 	}
 }
 
-func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
-	// first, check if we're dead
-	if swordDog.Health <= 0 {
-		swordDog.Body.EachShape(func(shape *cp.Shape) {
-			swordDog.Body.RemoveShape(shape)
+func (g *Game) handleDeadEnemy(e *entity.Entity) bool {
+	if e.Health <= 0 {
+		e.Body.EachShape(func(shape *cp.Shape) {
+			e.Body.RemoveShape(shape)
 			g.space.RemoveShape(shape)
 		})
-		swordDog.State = entity.Dying
-		swordDog.Body.SetPosition(cp.Vector{X: swordDog.Body.Position().X, Y: swordDog.Body.Position().Y - 1})
-		swordDog.Body.SetVelocity(0, 0)
+		e.State = entity.Dying
+		e.Body.SetPosition(cp.Vector{X: e.Body.Position().X, Y: e.Body.Position().Y - 1})
+		e.Body.SetVelocity(0, 0)
+		return true
+	}
+	return false
+}
+
+func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
+	// first, check if we're dead
+	if g.handleDeadEnemy(swordDog) {
 		return
 	}
 
@@ -269,14 +276,7 @@ func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
 
 func (g *Game) MoveAlligator(alligator *entity.Entity) {
 	// first, check if we're dead
-	if alligator.Health <= 0 {
-		alligator.Body.EachShape(func(shape *cp.Shape) {
-			alligator.Body.RemoveShape(shape)
-			g.space.RemoveShape(shape)
-		})
-		alligator.State = entity.Dying
-		alligator.Body.SetPosition(cp.Vector{X: alligator.Body.Position().X, Y: alligator.Body.Position().Y - 1})
-		alligator.Body.SetVelocity(0, 0)
+	if g.handleDeadEnemy(alligator) {
 		return
 	}
 
@@ -357,6 +357,31 @@ func (g *Game) MoveAlligator(alligator *entity.Entity) {
 	}
 }
 
+func (g *Game) MoveFrog(frog *entity.Entity) {
+	// first, check if we're dead
+	if g.handleDeadEnemy(frog) {
+		return
+	}
+
+	// find proximity to player
+	var frogX = frog.Body.Position().X
+	//var frogY = frog.Body.Position().Y
+	var playerX = g.registry.Player().Body.Position().X
+	//var playerY = g.registry.Player().Body.Position().Y
+	//xDistance := math.Abs(frogX - playerX)
+	//yDistance := math.Abs(frogY - playerY)
+
+	// if idle, switch direction to face the player
+	if frog.State == entity.IdleLeft && playerX > frogX {
+		frog.State = entity.IdleRight
+	} else if frog.State == entity.IdleRight && playerX <= frogX {
+		frog.State = entity.IdleLeft
+	}
+
+	// TODO: if idle, and within certain distance to player, maybe jump
+
+}
+
 var EntityBehavior map[entity.EntityType]entity.Behavior
 
 func InitializeEntityBehavior(g *Game) {
@@ -364,4 +389,5 @@ func InitializeEntityBehavior(g *Game) {
 	EntityBehavior[entity.Player] = g.MovePlayer
 	EntityBehavior[entity.SwordDog] = g.MoveSwordDog
 	EntityBehavior[entity.Alligator] = g.MoveAlligator
+	EntityBehavior[entity.Frog] = g.MoveFrog
 }

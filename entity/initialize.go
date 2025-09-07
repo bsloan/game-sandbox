@@ -463,6 +463,18 @@ func InitializeFrog(space *cp.Space, x, y float64) *Entity {
 		},
 		AnimationSpeed: 0.1,
 	}
+	dying := Animation{
+		Frames: []*ebiten.Image{
+			asset.EnemyDeath1,
+			asset.EnemyDeath2,
+			asset.EnemyDeath3,
+			asset.EnemyDeath4,
+			asset.EnemyDeath5,
+			asset.EnemyDeath6,
+		},
+		AnimationSpeed:        0.3,
+		EntityStateTransition: Dead,
+	}
 	frog := Entity{
 		Type:   Frog,
 		State:  IdleLeft,
@@ -470,6 +482,7 @@ func InitializeFrog(space *cp.Space, x, y float64) *Entity {
 		Animations: map[EntityState]*Animation{
 			IdleRight: &idleRight,
 			IdleLeft:  &idleLeft,
+			Dying:     &dying,
 		},
 		Body: cp.NewBody(1, cp.INFINITY),
 	}
