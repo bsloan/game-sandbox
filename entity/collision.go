@@ -53,7 +53,15 @@ func SlopeHandler(space *cp.Space, collisionType cp.CollisionType) {
 		grounded := n.Y > 0
 		sloping := n.X > 0 || n.X < 0
 		if sloping {
-			dynamicEntity.Body.SetVelocity(dynamicEntity.Body.Velocity().X, dynamicEntity.Body.Velocity().Y-50)
+			// entities need a little uphill boost to get up the hill - apply boost by entity type
+			// TODO: uphillBoost could be an attribute of the Entity
+			uphillBoost := 0.0
+			if dynamicEntity.Type == Player {
+				uphillBoost = 50
+			} else if dynamicEntity.Type == SwordDog {
+				uphillBoost = 75
+			}
+			dynamicEntity.Body.SetVelocity(dynamicEntity.Body.Velocity().X, dynamicEntity.Body.Velocity().Y-uphillBoost)
 			dynamicEntity.OnSlope = true
 		}
 		if grounded {
