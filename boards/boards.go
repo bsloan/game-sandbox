@@ -3,11 +3,12 @@ package boards
 import (
 	_ "embed"
 	"encoding/json"
+	"log"
+	"slices"
+
 	"github.com/bsloan/game-sandbox/asset"
 	"github.com/bsloan/game-sandbox/entity"
 	"github.com/jakecoffman/cp"
-	"log"
-	"slices"
 )
 
 var NoOpTiles = []int{
@@ -127,14 +128,14 @@ func (gb *Gameboard) initializeEntities(space *cp.Space, registry *entity.Regist
 	// FIXME: initialize from the map instead of hard-coding
 	swordDog1 := entity.InitializeSwordDog(space, 555, 414)
 	swordDog2 := entity.InitializeSwordDog(space, 493, 414)
+	alligator1 := entity.InitializeAlligator(space, 820, 414)
 
-	//swordDog3 := entity.InitializeSwordDog(space, 745, 414)
-	//swordDog4 := entity.InitializeSwordDog(space, 806, 414)
-	swordDog5 := entity.InitializeAlligator(space, 820, 414)
+	frog1 := entity.InitializeFrog(space, 1100, 400)
+	frog2 := entity.InitializeFrog(space, 300, 285)
 
 	registry.AddEntity(swordDog1)
 	registry.AddEntity(swordDog2)
-	//registry.AddEntity(swordDog3)
-	//registry.AddEntity(swordDog4)
-	registry.AddEntity(swordDog5)
+	registry.AddEntity(alligator1)
+	registry.AddEntity(frog1)
+	registry.AddEntity(frog2)
 }
