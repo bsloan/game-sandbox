@@ -242,6 +242,18 @@ var (
 	//go:embed sprite/frog_jump_2.png
 	frogJump2Png []byte
 
+	//go:embed sprite/eagle_attack_1.png
+	eagle1Png []byte
+
+	//go:embed sprite/eagle_attack_2.png
+	eagle2Png []byte
+
+	//go:embed sprite/eagle_attack_3.png
+	eagle3Png []byte
+
+	//go:embed sprite/eagle_attack_4.png
+	eagle4Png []byte
+
 	//go:embed sprite/enemy_death_1.png
 	enemyDeath1Png []byte
 
@@ -425,6 +437,16 @@ var (
 	FrogJumpRight1 *ebiten.Image
 	FrogJumpRight2 *ebiten.Image
 
+	EagleLeft1 *ebiten.Image
+	EagleLeft2 *ebiten.Image
+	EagleLeft3 *ebiten.Image
+	EagleLeft4 *ebiten.Image
+
+	EagleRight1 *ebiten.Image
+	EagleRight2 *ebiten.Image
+	EagleRight3 *ebiten.Image
+	EagleRight4 *ebiten.Image
+
 	EnemyDeath1 *ebiten.Image
 	EnemyDeath2 *ebiten.Image
 	EnemyDeath3 *ebiten.Image
@@ -600,6 +622,16 @@ func LoadSprites() {
 
 	FrogJumpRight1 = flipImageXAxis(FrogJumpLeft1)
 	FrogJumpRight2 = flipImageXAxis(FrogJumpLeft2)
+
+	EagleLeft1 = imageFromBytes(eagle1Png)
+	EagleLeft2 = imageFromBytes(eagle2Png)
+	EagleLeft3 = imageFromBytes(eagle3Png)
+	EagleLeft4 = imageFromBytes(eagle4Png)
+
+	EagleRight1 = flipImageXAxis(EagleLeft1)
+	EagleRight2 = flipImageXAxis(EagleLeft2)
+	EagleRight3 = flipImageXAxis(EagleLeft3)
+	EagleRight4 = flipImageXAxis(EagleLeft4)
 
 	EnemyDeath1 = imageFromBytes(enemyDeath1Png)
 	EnemyDeath2 = imageFromBytes(enemyDeath2Png)

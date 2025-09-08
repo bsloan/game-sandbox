@@ -16,6 +16,7 @@ const (
 	SwordDog
 	Frog
 	Alligator
+	Eagle
 )
 
 type EntityState int

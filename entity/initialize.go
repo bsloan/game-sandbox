@@ -529,3 +529,73 @@ func InitializeFrog(space *cp.Space, x, y float64) *Entity {
 	frog.Grounded = true
 	return &frog
 }
+
+func InitializeEagle(space *cp.Space, x, y float64) *Entity {
+	flyRight := Animation{
+		Frames: []*ebiten.Image{
+			asset.EagleRight1,
+			asset.EagleRight2,
+			asset.EagleRight3,
+			asset.EagleRight4,
+			asset.EagleRight2,
+		},
+		AnimationSpeed: 0.2,
+	}
+	flyLeft := Animation{
+		Frames: []*ebiten.Image{
+			asset.EagleLeft1,
+			asset.EagleLeft2,
+			asset.EagleLeft3,
+			asset.EagleLeft4,
+			asset.EagleLeft2,
+		},
+		AnimationSpeed: 0.2,
+	}
+	dying := Animation{
+		Frames: []*ebiten.Image{
+			asset.EnemyDeath1,
+			asset.EnemyDeath2,
+			asset.EnemyDeath3,
+			asset.EnemyDeath4,
+			asset.EnemyDeath5,
+			asset.EnemyDeath6,
+		},
+		AnimationSpeed:        0.3,
+		EntityStateTransition: Dead,
+	}
+	eagle := Entity{
+		Type:   Eagle,
+		State:  MovingLeft,
+		Facing: Left,
+		Animations: map[EntityState]*Animation{
+			MovingLeft:  &flyLeft,
+			MovingRight: &flyRight,
+			Dying:       &dying,
+		},
+		Body: cp.NewBody(1, cp.INFINITY),
+	}
+	eagle.Body.UserData = &eagle
+	space.AddBody(eagle.Body)
+
+	// custom velocity function - first call the default velocity function to apply standard
+	// physics, then set Y velocity to 0 so eagle floats without being pulled downward
+	noGravityVelocityFunc := func(body *cp.Body, gravity cp.Vector, damping float64, dt float64) {
+		cp.BodyUpdateVelocity(body, gravity, damping, dt)
+		body.SetVelocity(body.Velocity().X, 0)
+	}
+
+	eagle.Body.SetVelocityUpdateFunc(noGravityVelocityFunc)
+	eagle.Body.SetPosition(cp.Vector{X: x, Y: y})
+
+	eagleShape := space.AddShape(cp.NewCircle(eagle.Body, 16, cp.Vector{X: 0, Y: 0}))
+	eagleShape.SetElasticity(0)
+	eagleShape.SetFriction(0.75)
+	eagleShape.SetCollisionType(EagleCollisionType)
+	eagle.Shape = eagleShape
+	eagle.AttackDamage = 4
+	eagle.MaxHealth = 2
+	eagle.Health = eagle.MaxHealth
+	eagle.Grounded = false
+
+	return &eagle
+}
