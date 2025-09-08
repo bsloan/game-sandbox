@@ -390,19 +390,32 @@ func (g *Game) MoveFrog(frog *entity.Entity) {
 		}
 	}
 
+	// if frog is jumping up, adjust velocities accordingly
 	if frog.State == entity.JumpingLeft || frog.State == entity.JumpingRight {
 		frog.Grounded = false
 		frog.Shape.SetFriction(0)
+		// TODO: randomize velocities a little bit to keep things interesting
 		xVelocity := 2500.0
 		if frog.State == entity.JumpingLeft {
 			xVelocity = -xVelocity
 		}
 		if frog.Boost > 0 {
-			frog.Body.ApplyForceAtWorldPoint(cp.Vector{X: xVelocity, Y: -settings.PlayerJumpInitialVelocity * 2}, frog.Body.Position())
+			frog.Body.ApplyForceAtLocalPoint(cp.Vector{X: xVelocity, Y: -settings.PlayerJumpInitialVelocity * 2}, cp.Vector{X: 0, Y: 0})
 			frog.Boost--
 		}
 	}
-	// TODO: use different animation when falling down vs. when jumping up
+
+	// if frog has steady downward velocity, it must be falling
+	if frog.Body.Velocity().Y > 70 && !frog.OnSlope {
+		if frog.Facing == entity.Right {
+			frog.State = entity.FallingRight
+		}
+		if frog.Facing == entity.Left {
+			frog.State = entity.FallingLeft
+		}
+		frog.Grounded = false
+		frog.Shape.SetFriction(0)
+	}
 
 	// FIXME: use unique max velocities for Frog
 	if frog.Body.Velocity().X < -settings.SwordDogMaxVelocityX {

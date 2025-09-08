@@ -475,6 +475,18 @@ func InitializeFrog(space *cp.Space, x, y float64) *Entity {
 		},
 		AnimationSpeed: 0.0,
 	}
+	fallLeft := Animation{
+		Frames: []*ebiten.Image{
+			asset.FrogJumpLeft2,
+		},
+		AnimationSpeed: 0.0,
+	}
+	fallRight := Animation{
+		Frames: []*ebiten.Image{
+			asset.FrogJumpRight2,
+		},
+		AnimationSpeed: 0.0,
+	}
 	dying := Animation{
 		Frames: []*ebiten.Image{
 			asset.EnemyDeath1,
@@ -496,6 +508,8 @@ func InitializeFrog(space *cp.Space, x, y float64) *Entity {
 			IdleLeft:     &idleLeft,
 			JumpingLeft:  &jumpLeft,
 			JumpingRight: &jumpRight,
+			FallingLeft:  &fallLeft,
+			FallingRight: &fallRight,
 			Dying:        &dying,
 		},
 		Body:  cp.NewBody(1, cp.INFINITY),
