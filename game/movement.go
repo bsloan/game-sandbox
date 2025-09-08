@@ -2,6 +2,7 @@ package game
 
 import (
 	"math"
+	"math/rand/v2"
 
 	"github.com/bsloan/game-sandbox/entity"
 	"github.com/bsloan/game-sandbox/settings"
@@ -394,13 +395,18 @@ func (g *Game) MoveFrog(frog *entity.Entity) {
 	if frog.State == entity.JumpingLeft || frog.State == entity.JumpingRight {
 		frog.Grounded = false
 		frog.Shape.SetFriction(0)
-		// TODO: randomize velocities a little bit to keep things interesting
-		xVelocity := 2500.0
+
+		// randomize velocities a little bit to keep things interesting
+		xVelocity := rand.IntN(5000-2500+1) + 2500
+		maxYVelocity := 10000
+		minYVelocity := 5000
+		yVelocity := rand.IntN(maxYVelocity-minYVelocity+1) + minYVelocity
+
 		if frog.State == entity.JumpingLeft {
 			xVelocity = -xVelocity
 		}
 		if frog.Boost > 0 {
-			frog.Body.ApplyForceAtLocalPoint(cp.Vector{X: xVelocity, Y: -settings.PlayerJumpInitialVelocity * 2}, cp.Vector{X: 0, Y: 0})
+			frog.Body.ApplyForceAtLocalPoint(cp.Vector{X: float64(xVelocity), Y: float64(-yVelocity)}, cp.Vector{X: 0, Y: 0})
 			frog.Boost--
 		}
 	}
@@ -417,16 +423,7 @@ func (g *Game) MoveFrog(frog *entity.Entity) {
 		frog.Shape.SetFriction(0)
 	}
 
-	// FIXME: use unique max velocities for Frog
-	if frog.Body.Velocity().X < -settings.SwordDogMaxVelocityX {
-		frog.Body.SetVelocity(-settings.SwordDogMaxVelocityX, frog.Body.Velocity().Y)
-	}
-	if frog.Body.Velocity().X > settings.SwordDogMaxVelocityX {
-		frog.Body.SetVelocity(settings.SwordDogMaxVelocityX, frog.Body.Velocity().Y)
-	}
-	if frog.Body.Velocity().Y < -settings.PlayerMaxVelocityY {
-		frog.Body.SetVelocity(frog.Body.Velocity().X, -settings.PlayerMaxVelocityY)
-	}
+	// FIXME: use unique velocities for Frog
 	if frog.Body.Velocity().Y > settings.PlayerMaxVelocityY {
 		frog.Body.SetVelocity(frog.Body.Velocity().X, settings.PlayerMaxVelocityY)
 	}
