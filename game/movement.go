@@ -363,23 +363,60 @@ func (g *Game) MoveFrog(frog *entity.Entity) {
 		return
 	}
 
-	// find proximity to player
 	var frogX = frog.Body.Position().X
-	//var frogY = frog.Body.Position().Y
 	var playerX = g.registry.Player().Body.Position().X
-	//var playerY = g.registry.Player().Body.Position().Y
-	//xDistance := math.Abs(frogX - playerX)
-	//yDistance := math.Abs(frogY - playerY)
 
 	// if idle, switch direction to face the player
-	if frog.State == entity.IdleLeft && playerX > frogX {
-		frog.State = entity.IdleRight
-	} else if frog.State == entity.IdleRight && playerX <= frogX {
-		frog.State = entity.IdleLeft
+	if frog.Grounded {
+		if playerX > frogX {
+			frog.State = entity.IdleRight
+			frog.Facing = entity.Right
+		} else if playerX <= frogX {
+			frog.State = entity.IdleLeft
+			frog.Facing = entity.Left
+		}
+		// jump if occasionally when in view
+		if g.vp.InView(frog) {
+			frog.TickCounter++
+			if frog.TickCounter > 250 {
+				frog.Boost = 2
+				frog.TickCounter = 0
+				if frog.State == entity.IdleLeft {
+					frog.State = entity.JumpingLeft
+				} else {
+					frog.State = entity.JumpingRight
+				}
+			}
+		}
 	}
 
-	// TODO: if idle, and within certain distance to player, maybe jump
+	if frog.State == entity.JumpingLeft || frog.State == entity.JumpingRight {
+		frog.Grounded = false
+		frog.Shape.SetFriction(0)
+		xVelocity := 2500.0
+		if frog.State == entity.JumpingLeft {
+			xVelocity = -xVelocity
+		}
+		if frog.Boost > 0 {
+			frog.Body.ApplyForceAtWorldPoint(cp.Vector{X: xVelocity, Y: -settings.PlayerJumpInitialVelocity * 2}, frog.Body.Position())
+			frog.Boost--
+		}
+	}
+	// TODO: use different animation when falling down vs. when jumping up
 
+	// FIXME: use unique max velocities for Frog
+	if frog.Body.Velocity().X < -settings.SwordDogMaxVelocityX {
+		frog.Body.SetVelocity(-settings.SwordDogMaxVelocityX, frog.Body.Velocity().Y)
+	}
+	if frog.Body.Velocity().X > settings.SwordDogMaxVelocityX {
+		frog.Body.SetVelocity(settings.SwordDogMaxVelocityX, frog.Body.Velocity().Y)
+	}
+	if frog.Body.Velocity().Y < -settings.PlayerMaxVelocityY {
+		frog.Body.SetVelocity(frog.Body.Velocity().X, -settings.PlayerMaxVelocityY)
+	}
+	if frog.Body.Velocity().Y > settings.PlayerMaxVelocityY {
+		frog.Body.SetVelocity(frog.Body.Velocity().X, settings.PlayerMaxVelocityY)
+	}
 }
 
 var EntityBehavior map[entity.EntityType]entity.Behavior

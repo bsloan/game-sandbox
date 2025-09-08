@@ -13,6 +13,7 @@ const (
 	BlockCollisionType
 	SlopeCollisionType
 	GenericEnemyCollisionType
+	FrogCollisionType
 )
 
 func GenericGroundedHandler(space *cp.Space, collisionType cp.CollisionType) {
@@ -20,7 +21,7 @@ func GenericGroundedHandler(space *cp.Space, collisionType cp.CollisionType) {
 
 	handler.BeginFunc = func(arb *cp.Arbiter, space *cp.Space, data interface{}) bool {
 		n := arb.Normal()
-		grounded := n.Y > 0 && math.Abs(n.X) < 0.5
+		grounded := n.Y > 0 && math.Abs(n.X) < 0.5 // check for small x overlap to help not get stuck on walls
 		if grounded {
 			body1, body2 := arb.Bodies()
 			if body1.UserData != nil {
@@ -180,4 +181,10 @@ func InitializeCollisionHandlers(space *cp.Space) {
 	SlopeHandler(space, GenericEnemyCollisionType)
 	ObstructedHandler(space, GenericEnemyCollisionType)
 	PlayerSwordHandler(space, GenericEnemyCollisionType)
+
+	// custom enemy collision handlers
+	DamagePlayerHandler(space, FrogCollisionType)
+	GenericGroundedHandler(space, FrogCollisionType)
+	SlopeHandler(space, FrogCollisionType)
+	PlayerSwordHandler(space, FrogCollisionType)
 }

@@ -236,6 +236,12 @@ var (
 	//go:embed sprite/frog_idle_4.png
 	frogIdle4Png []byte
 
+	//go:embed sprite/frog_jump_1.png
+	frogJump1Png []byte
+
+	//go:embed sprite/frog_jump_2.png
+	frogJump2Png []byte
+
 	//go:embed sprite/enemy_death_1.png
 	enemyDeath1Png []byte
 
@@ -413,6 +419,12 @@ var (
 	FrogIdleRight3 *ebiten.Image
 	FrogIdleRight4 *ebiten.Image
 
+	FrogJumpLeft1 *ebiten.Image
+	FrogJumpLeft2 *ebiten.Image
+
+	FrogJumpRight1 *ebiten.Image
+	FrogJumpRight2 *ebiten.Image
+
 	EnemyDeath1 *ebiten.Image
 	EnemyDeath2 *ebiten.Image
 	EnemyDeath3 *ebiten.Image
@@ -582,6 +594,12 @@ func LoadSprites() {
 	FrogIdleRight2 = flipImageXAxis(FrogIdleLeft2)
 	FrogIdleRight3 = flipImageXAxis(FrogIdleLeft3)
 	FrogIdleRight4 = flipImageXAxis(FrogIdleLeft4)
+
+	FrogJumpLeft1 = imageFromBytes(frogJump1Png)
+	FrogJumpLeft2 = imageFromBytes(frogJump2Png)
+
+	FrogJumpRight1 = flipImageXAxis(FrogJumpLeft1)
+	FrogJumpRight2 = flipImageXAxis(FrogJumpLeft2)
 
 	EnemyDeath1 = imageFromBytes(enemyDeath1Png)
 	EnemyDeath2 = imageFromBytes(enemyDeath2Png)

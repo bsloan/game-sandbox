@@ -1,10 +1,11 @@
 package entity
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/jakecoffman/cp"
 	"math"
 	"slices"
+
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/jakecoffman/cp"
 )
 
 type EntityType int
@@ -69,6 +70,7 @@ type Entity struct {
 	MaxHealth       int
 	Health          int
 	AttackDamage    int
+	TickCounter     int
 	// other metadata: points, etc
 }
 

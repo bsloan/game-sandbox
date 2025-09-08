@@ -463,6 +463,18 @@ func InitializeFrog(space *cp.Space, x, y float64) *Entity {
 		},
 		AnimationSpeed: 0.1,
 	}
+	jumpLeft := Animation{
+		Frames: []*ebiten.Image{
+			asset.FrogJumpLeft1,
+		},
+		AnimationSpeed: 0.0,
+	}
+	jumpRight := Animation{
+		Frames: []*ebiten.Image{
+			asset.FrogJumpRight1,
+		},
+		AnimationSpeed: 0.0,
+	}
 	dying := Animation{
 		Frames: []*ebiten.Image{
 			asset.EnemyDeath1,
@@ -480,11 +492,14 @@ func InitializeFrog(space *cp.Space, x, y float64) *Entity {
 		State:  IdleLeft,
 		Facing: Left,
 		Animations: map[EntityState]*Animation{
-			IdleRight: &idleRight,
-			IdleLeft:  &idleLeft,
-			Dying:     &dying,
+			IdleRight:    &idleRight,
+			IdleLeft:     &idleLeft,
+			JumpingLeft:  &jumpLeft,
+			JumpingRight: &jumpRight,
+			Dying:        &dying,
 		},
-		Body: cp.NewBody(1, cp.INFINITY),
+		Body:  cp.NewBody(1, cp.INFINITY),
+		Boost: 2,
 	}
 	frog.Body.UserData = &frog
 	space.AddBody(frog.Body)
@@ -492,10 +507,11 @@ func InitializeFrog(space *cp.Space, x, y float64) *Entity {
 	frogShape := space.AddShape(cp.NewCircle(frog.Body, 12, cp.Vector{X: 2, Y: 2}))
 	frogShape.SetElasticity(0)
 	frogShape.SetFriction(0.75)
-	frogShape.SetCollisionType(GenericEnemyCollisionType)
+	frogShape.SetCollisionType(FrogCollisionType)
 	frog.Shape = frogShape
 	frog.AttackDamage = 4
 	frog.MaxHealth = 2
 	frog.Health = frog.MaxHealth
+	frog.Grounded = true
 	return &frog
 }
