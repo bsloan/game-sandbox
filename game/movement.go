@@ -247,14 +247,6 @@ func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
 		vx += settings.SwordDogAccelerationStep
 		swordDog.Body.ApplyForceAtWorldPoint(cp.Vector{X: vx, Y: vy}, swordDog.Body.Position())
 	}
-
-	// enforce velocity constraints
-	if swordDog.Body.Velocity().X < -settings.SwordDogMaxVelocityX {
-		swordDog.Body.SetVelocity(-settings.SwordDogMaxVelocityX, swordDog.Body.Velocity().Y)
-	}
-	if swordDog.Body.Velocity().X > settings.SwordDogMaxVelocityX {
-		swordDog.Body.SetVelocity(settings.SwordDogMaxVelocityX, swordDog.Body.Velocity().Y)
-	}
 }
 
 func (g *Game) MoveAlligator(alligator *entity.Entity) {
@@ -395,11 +387,6 @@ func (g *Game) MoveFrog(frog *entity.Entity) {
 		}
 		frog.Grounded = false
 		frog.Shape.SetFriction(0)
-	}
-
-	// FIXME: use unique velocities for Frog
-	if frog.Body.Velocity().Y > settings.PlayerMaxVelocityY {
-		frog.Body.SetVelocity(frog.Body.Velocity().X, settings.PlayerMaxVelocityY)
 	}
 }
 

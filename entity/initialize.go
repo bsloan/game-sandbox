@@ -323,6 +323,17 @@ func InitializeSwordDog(space *cp.Space, x, y float64) *Entity {
 	space.AddBody(swordDog.Body)
 	swordDog.Body.SetPosition(cp.Vector{X: x, Y: y})
 
+	swordDogVelocityLimitFunc := func(body *cp.Body, gravity cp.Vector, damping float64, dt float64) {
+		cp.BodyUpdateVelocity(body, gravity, damping, dt)
+		if body.Velocity().X < -settings.SwordDogMaxVelocityX {
+			body.SetVelocity(-settings.SwordDogMaxVelocityX, body.Velocity().Y)
+		}
+		if body.Velocity().X > settings.SwordDogMaxVelocityX {
+			body.SetVelocity(settings.SwordDogMaxVelocityX, body.Velocity().Y)
+		}
+	}
+	swordDog.Body.SetVelocityUpdateFunc(swordDogVelocityLimitFunc)
+
 	swordDogShape := space.AddShape(cp.NewCircle(swordDog.Body, 11, cp.Vector{X: 10, Y: 0}))
 	swordDogShape.SetElasticity(0)
 	swordDogShape.SetFriction(0.75)
@@ -558,11 +569,21 @@ func InitializeFrog(space *cp.Space, x, y float64) *Entity {
 	frog.Body.UserData = &frog
 	space.AddBody(frog.Body)
 	frog.Body.SetPosition(cp.Vector{X: x, Y: y})
+
+	frogLimitVelocityFunc := func(body *cp.Body, gravity cp.Vector, damping float64, dt float64) {
+		cp.BodyUpdateVelocity(body, gravity, damping, dt)
+		if body.Velocity().Y > settings.PlayerMaxVelocityY {
+			body.SetVelocity(body.Velocity().X, settings.PlayerMaxVelocityY)
+		}
+	}
+	frog.Body.SetVelocityUpdateFunc(frogLimitVelocityFunc)
+	
 	frogShape := space.AddShape(cp.NewCircle(frog.Body, 12, cp.Vector{X: 2, Y: 2}))
 	frogShape.SetElasticity(0)
 	frogShape.SetFriction(0.75)
 	frogShape.SetCollisionType(FrogCollisionType)
 	frog.Shape = frogShape
+
 	frog.AttackDamage = 4
 	frog.MaxHealth = 2
 	frog.Health = frog.MaxHealth
@@ -617,14 +638,13 @@ func InitializeEagle(space *cp.Space, x, y float64) *Entity {
 	eagle.Body.UserData = &eagle
 	space.AddBody(eagle.Body)
 
-	// custom velocity function - first call the default velocity function to apply standard
-	// physics, then set Y velocity to 0 so eagle floats without being pulled downward
+	// set Y velocity to 0 so eagle floats without being pulled downward
 	noGravityVelocityFunc := func(body *cp.Body, gravity cp.Vector, damping float64, dt float64) {
 		cp.BodyUpdateVelocity(body, gravity, damping, dt)
 		body.SetVelocity(body.Velocity().X, 0)
 	}
-
 	eagle.Body.SetVelocityUpdateFunc(noGravityVelocityFunc)
+
 	eagle.Body.SetPosition(cp.Vector{X: x, Y: y})
 
 	eagleShape := space.AddShape(cp.NewCircle(eagle.Body, 16, cp.Vector{X: 0, Y: 0}))
