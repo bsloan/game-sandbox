@@ -119,21 +119,21 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 
 	playerVelocityLimitFunc := func(body *cp.Body, gravity cp.Vector, damping float64, dt float64) {
 		cp.BodyUpdateVelocity(body, gravity, damping, dt)
-		if body.UserData.(*Entity).Running && body.UserData.(*Entity).Body.Velocity().X > settings.PlayerMaxRunningVelocityX {
-			body.UserData.(*Entity).Body.SetVelocity(settings.PlayerMaxRunningVelocityX, body.UserData.(*Entity).Body.Velocity().Y)
-		} else if !body.UserData.(*Entity).Running && body.UserData.(*Entity).Body.Velocity().X > settings.PlayerMaxVelocityX {
-			body.UserData.(*Entity).Body.SetVelocity(settings.PlayerMaxVelocityX, body.UserData.(*Entity).Body.Velocity().Y)
+		if body.UserData.(*Entity).Running && body.Velocity().X > settings.PlayerMaxRunningVelocityX {
+			body.SetVelocity(settings.PlayerMaxRunningVelocityX, body.Velocity().Y)
+		} else if !body.UserData.(*Entity).Running && body.Velocity().X > settings.PlayerMaxVelocityX {
+			body.SetVelocity(settings.PlayerMaxVelocityX, body.Velocity().Y)
 		}
-		if body.UserData.(*Entity).Running && body.UserData.(*Entity).Body.Velocity().X < -settings.PlayerMaxRunningVelocityX {
-			body.UserData.(*Entity).Body.SetVelocity(-settings.PlayerMaxRunningVelocityX, body.UserData.(*Entity).Body.Velocity().Y)
-		} else if !body.UserData.(*Entity).Running && body.UserData.(*Entity).Body.Velocity().X < -settings.PlayerMaxVelocityX {
-			body.UserData.(*Entity).Body.SetVelocity(-settings.PlayerMaxVelocityX, body.UserData.(*Entity).Body.Velocity().Y)
+		if body.UserData.(*Entity).Running && body.Velocity().X < -settings.PlayerMaxRunningVelocityX {
+			body.SetVelocity(-settings.PlayerMaxRunningVelocityX, body.Velocity().Y)
+		} else if !body.UserData.(*Entity).Running && body.Velocity().X < -settings.PlayerMaxVelocityX {
+			body.SetVelocity(-settings.PlayerMaxVelocityX, body.Velocity().Y)
 		}
-		if body.UserData.(*Entity).Body.Velocity().Y > settings.PlayerMaxVelocityY {
-			body.UserData.(*Entity).Body.SetVelocity(body.UserData.(*Entity).Body.Velocity().X, settings.PlayerMaxVelocityY)
+		if body.Velocity().Y > settings.PlayerMaxVelocityY {
+			body.SetVelocity(body.Velocity().X, settings.PlayerMaxVelocityY)
 		}
-		if body.UserData.(*Entity).Body.Velocity().Y < -settings.PlayerJumpVelocityLimit {
-			body.UserData.(*Entity).Body.SetVelocity(body.UserData.(*Entity).Body.Velocity().X, -settings.PlayerJumpVelocityLimit)
+		if body.Velocity().Y < -settings.PlayerJumpVelocityLimit {
+			body.SetVelocity(body.Velocity().X, -settings.PlayerJumpVelocityLimit)
 		}
 	}
 
@@ -322,11 +322,14 @@ func InitializeSwordDog(space *cp.Space, x, y float64) *Entity {
 	swordDog.Body.UserData = &swordDog
 	space.AddBody(swordDog.Body)
 	swordDog.Body.SetPosition(cp.Vector{X: x, Y: y})
+
 	swordDogShape := space.AddShape(cp.NewCircle(swordDog.Body, 11, cp.Vector{X: 10, Y: 0}))
 	swordDogShape.SetElasticity(0)
 	swordDogShape.SetFriction(0.75)
 	swordDogShape.SetCollisionType(GenericEnemyCollisionType)
+
 	swordDog.Shape = swordDogShape
+
 	swordDog.AttackDamage = 2
 	swordDog.MaxHealth = 6
 	swordDog.Health = swordDog.MaxHealth
@@ -445,11 +448,24 @@ func InitializeAlligator(space *cp.Space, x, y float64) *Entity {
 	alligator.Body.UserData = &alligator
 	space.AddBody(alligator.Body)
 	alligator.Body.SetPosition(cp.Vector{X: x, Y: y})
+
+	alligatorVelocityLimitFunc := func(body *cp.Body, gravity cp.Vector, damping float64, dt float64) {
+		cp.BodyUpdateVelocity(body, gravity, damping, dt)
+		if body.Velocity().X < -settings.SwordDogMaxVelocityX {
+			body.SetVelocity(-settings.SwordDogMaxVelocityX, body.Velocity().Y)
+		}
+		if body.Velocity().X > settings.SwordDogMaxVelocityX {
+			body.SetVelocity(settings.SwordDogMaxVelocityX, body.Velocity().Y)
+		}
+	}
+	alligator.Body.SetVelocityUpdateFunc(alligatorVelocityLimitFunc)
+
 	alligatorShape := space.AddShape(cp.NewCircle(alligator.Body, 11, cp.Vector{X: 10, Y: 0}))
 	alligatorShape.SetElasticity(0)
 	alligatorShape.SetFriction(0.75)
 	alligatorShape.SetCollisionType(GenericEnemyCollisionType)
 	alligator.Shape = alligatorShape
+
 	alligator.AttackDamage = 4
 	alligator.MaxHealth = 12
 	alligator.Health = alligator.MaxHealth

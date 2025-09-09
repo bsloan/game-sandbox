@@ -330,14 +330,6 @@ func (g *Game) MoveAlligator(alligator *entity.Entity) {
 		vx += settings.SwordDogAccelerationStep
 		alligator.Body.ApplyForceAtWorldPoint(cp.Vector{X: vx, Y: vy}, alligator.Body.Position())
 	}
-
-	// enforce velocity constraints
-	if alligator.Body.Velocity().X < -settings.SwordDogMaxVelocityX {
-		alligator.Body.SetVelocity(-settings.SwordDogMaxVelocityX, alligator.Body.Velocity().Y)
-	}
-	if alligator.Body.Velocity().X > settings.SwordDogMaxVelocityX {
-		alligator.Body.SetVelocity(settings.SwordDogMaxVelocityX, alligator.Body.Velocity().Y)
-	}
 }
 
 func (g *Game) MoveFrog(frog *entity.Entity) {
