@@ -145,24 +145,6 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 		// if the player is sliding down a slope, add extra friction to control it
 		p.Shape.SetFriction(4.0)
 	}
-
-	// enforce maximum velocity in each direction
-	if p.Running && p.Body.Velocity().X > settings.PlayerMaxRunningVelocityX {
-		p.Body.SetVelocity(settings.PlayerMaxRunningVelocityX, p.Body.Velocity().Y)
-	} else if !p.Running && p.Body.Velocity().X > settings.PlayerMaxVelocityX {
-		p.Body.SetVelocity(settings.PlayerMaxVelocityX, p.Body.Velocity().Y)
-	}
-	if p.Running && p.Body.Velocity().X < -settings.PlayerMaxRunningVelocityX {
-		p.Body.SetVelocity(-settings.PlayerMaxRunningVelocityX, p.Body.Velocity().Y)
-	} else if !p.Running && p.Body.Velocity().X < -settings.PlayerMaxVelocityX {
-		p.Body.SetVelocity(-settings.PlayerMaxVelocityX, p.Body.Velocity().Y)
-	}
-	if p.Body.Velocity().Y > settings.PlayerMaxVelocityY {
-		p.Body.SetVelocity(p.Body.Velocity().X, settings.PlayerMaxVelocityY)
-	}
-	if p.Body.Velocity().Y < -settings.PlayerJumpVelocityLimit {
-		p.Body.SetVelocity(p.Body.Velocity().X, -settings.PlayerJumpVelocityLimit)
-	}
 }
 
 func (g *Game) handleDeadEnemy(e *entity.Entity) bool {

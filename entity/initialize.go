@@ -2,6 +2,7 @@ package entity
 
 import (
 	"github.com/bsloan/game-sandbox/asset"
+	"github.com/bsloan/game-sandbox/settings"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/jakecoffman/cp"
 )
@@ -115,6 +116,29 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 	player.Body.UserData = &player
 	space.AddBody(player.Body)
 	player.Body.SetPosition(cp.Vector{X: x, Y: y})
+
+	playerVelocityLimitFunc := func(body *cp.Body, gravity cp.Vector, damping float64, dt float64) {
+		cp.BodyUpdateVelocity(body, gravity, damping, dt)
+		if body.UserData.(*Entity).Running && body.UserData.(*Entity).Body.Velocity().X > settings.PlayerMaxRunningVelocityX {
+			body.UserData.(*Entity).Body.SetVelocity(settings.PlayerMaxRunningVelocityX, body.UserData.(*Entity).Body.Velocity().Y)
+		} else if !body.UserData.(*Entity).Running && body.UserData.(*Entity).Body.Velocity().X > settings.PlayerMaxVelocityX {
+			body.UserData.(*Entity).Body.SetVelocity(settings.PlayerMaxVelocityX, body.UserData.(*Entity).Body.Velocity().Y)
+		}
+		if body.UserData.(*Entity).Running && body.UserData.(*Entity).Body.Velocity().X < -settings.PlayerMaxRunningVelocityX {
+			body.UserData.(*Entity).Body.SetVelocity(-settings.PlayerMaxRunningVelocityX, body.UserData.(*Entity).Body.Velocity().Y)
+		} else if !body.UserData.(*Entity).Running && body.UserData.(*Entity).Body.Velocity().X < -settings.PlayerMaxVelocityX {
+			body.UserData.(*Entity).Body.SetVelocity(-settings.PlayerMaxVelocityX, body.UserData.(*Entity).Body.Velocity().Y)
+		}
+		if body.UserData.(*Entity).Body.Velocity().Y > settings.PlayerMaxVelocityY {
+			body.UserData.(*Entity).Body.SetVelocity(body.UserData.(*Entity).Body.Velocity().X, settings.PlayerMaxVelocityY)
+		}
+		if body.UserData.(*Entity).Body.Velocity().Y < -settings.PlayerJumpVelocityLimit {
+			body.UserData.(*Entity).Body.SetVelocity(body.UserData.(*Entity).Body.Velocity().X, -settings.PlayerJumpVelocityLimit)
+		}
+	}
+
+	player.Body.SetVelocityUpdateFunc(playerVelocityLimitFunc)
+
 	//playerShape := space.AddShape(cp.NewBox(player.Body, 8, 7, 8))
 	// radius was: 10
 	playerShape := space.AddShape(cp.NewCircle(player.Body, 11, cp.Vector{X: 0, Y: 0}))
