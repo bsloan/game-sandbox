@@ -577,7 +577,7 @@ func InitializeFrog(space *cp.Space, x, y float64) *Entity {
 		}
 	}
 	frog.Body.SetVelocityUpdateFunc(frogLimitVelocityFunc)
-	
+
 	frogShape := space.AddShape(cp.NewCircle(frog.Body, 12, cp.Vector{X: 2, Y: 2}))
 	frogShape.SetElasticity(0)
 	frogShape.SetFriction(0.75)
@@ -641,11 +641,18 @@ func InitializeEagle(space *cp.Space, x, y float64) *Entity {
 	// set Y velocity to 0 so eagle floats without being pulled downward
 	noGravityVelocityFunc := func(body *cp.Body, gravity cp.Vector, damping float64, dt float64) {
 		cp.BodyUpdateVelocity(body, gravity, damping, dt)
+		if body.Velocity().X > 100 {
+			body.SetVelocity(100, body.Velocity().Y)
+		} else if body.Velocity().X < -100 {
+			body.SetVelocity(-100, body.Velocity().Y)
+		}
 		body.SetVelocity(body.Velocity().X, 0)
 	}
 	eagle.Body.SetVelocityUpdateFunc(noGravityVelocityFunc)
 
 	eagle.Body.SetPosition(cp.Vector{X: x, Y: y})
+	eagle.OriginX = x
+	eagle.OriginY = y
 
 	eagleShape := space.AddShape(cp.NewCircle(eagle.Body, 16, cp.Vector{X: 0, Y: 0}))
 	eagleShape.SetElasticity(0)

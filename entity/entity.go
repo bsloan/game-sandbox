@@ -54,24 +54,25 @@ const (
 // https://co0p.github.io/posts/ecs-animation/ provides a good starting point
 
 type Entity struct {
-	Type            EntityType
-	State           EntityState
-	RememberState   EntityState
-	Facing          Direction
-	Grounded        bool
-	OnSlope         bool
-	WeaponAvailable bool
-	Running         bool
-	Damaged         int // number of ticks to show damaged color scale when entity takes damage
-	Boost           float64
-	Animations      map[EntityState]*Animation
-	StaticImage     *ebiten.Image
-	Body            *cp.Body
-	Shape           *cp.Shape
-	MaxHealth       int
-	Health          int
-	AttackDamage    int
-	TickCounter     int
+	Type             EntityType
+	State            EntityState
+	RememberState    EntityState
+	Facing           Direction
+	Grounded         bool
+	OnSlope          bool
+	WeaponAvailable  bool
+	Running          bool
+	Damaged          int // number of ticks to show damaged color scale when entity takes damage
+	Boost            float64
+	Animations       map[EntityState]*Animation
+	StaticImage      *ebiten.Image
+	Body             *cp.Body
+	Shape            *cp.Shape
+	MaxHealth        int
+	Health           int
+	AttackDamage     int
+	TickCounter      int // general-use tick counter for timing entity actions or events
+	OriginX, OriginY float64
 	// other metadata: points, etc
 }
 

@@ -390,6 +390,31 @@ func (g *Game) MoveFrog(frog *entity.Entity) {
 	}
 }
 
+func (g *Game) MoveEagle(eagle *entity.Entity) {
+	// first, check if we're dead
+	if g.handleDeadEnemy(eagle) {
+		return
+	}
+
+	xVelocity := 50.0
+	if eagle.State == entity.MovingLeft {
+		if eagle.Body.Position().X < eagle.OriginX-80 {
+			eagle.State = entity.MovingRight
+		} else {
+			eagle.Body.ApplyForceAtLocalPoint(cp.Vector{X: -xVelocity, Y: 0}, cp.Vector{X: 0, Y: 0})
+		}
+	} else if eagle.State == entity.MovingRight {
+		if eagle.Body.Position().X > eagle.OriginX+80 {
+			eagle.State = entity.MovingLeft
+		} else {
+			eagle.Body.ApplyForceAtLocalPoint(cp.Vector{X: xVelocity, Y: 0}, cp.Vector{X: 0, Y: 0})
+		}
+	}
+
+	// TODO: divebomb the player if x and y coordinates are close
+
+}
+
 var EntityBehavior map[entity.EntityType]entity.Behavior
 
 func InitializeEntityBehavior(g *Game) {
@@ -398,4 +423,5 @@ func InitializeEntityBehavior(g *Game) {
 	EntityBehavior[entity.SwordDog] = g.MoveSwordDog
 	EntityBehavior[entity.Alligator] = g.MoveAlligator
 	EntityBehavior[entity.Frog] = g.MoveFrog
+	EntityBehavior[entity.Eagle] = g.MoveEagle
 }
