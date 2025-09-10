@@ -85,18 +85,18 @@ func (gb *Gameboard) initializeTiles(space *cp.Space) {
 				var tileShape *cp.Shape
 				if tile == asset.GRASS_SLOPE_R_MAGIC_ROOT {
 					// hard code a line segment of a pre-defined length and slope, starting at this tile
-					// this is a hack but it works. this particular slope root creates a 26 degree positive
-					// slope that is 6 tiles wide and 6 tiles high.
-					vert1 := cp.Vector{X: 4, Y: 0}
-					vert2 := cp.Vector{X: 80, Y: -34} // was -36
+					// this is a hack but it works. this slope root creates a positive slope that is
+					// 6 tiles wide and 6 tiles high.
+					vert1 := cp.Vector{X: 3, Y: 2}
+					vert2 := cp.Vector{X: 80, Y: -36}
 					tileShape = cp.NewSegment(tileBody, vert2, vert1, 3)
-					tileShape.SetFriction(0.1)
+					tileShape.SetFriction(0.18)
 					tileShape.SetCollisionType(entity.SlopeCollisionType)
 				} else if tile == asset.GRASS_SLOPE_L_MAGIC_ROOT {
-					vert1 := cp.Vector{X: -4, Y: 0}
-					vert2 := cp.Vector{X: -80, Y: -34} // was: -36
+					vert1 := cp.Vector{X: -3, Y: 2}
+					vert2 := cp.Vector{X: -80, Y: -36}
 					tileShape = cp.NewSegment(tileBody, vert2, vert1, 3)
-					tileShape.SetFriction(0.1)
+					tileShape.SetFriction(0.18)
 					tileShape.SetCollisionType(entity.SlopeCollisionType)
 				} else if tile == asset.GRASS_SLOPE_STEEP_R_MAGIC_ROOT {
 					vert1 := cp.Vector{X: 4, Y: 0}    // 4

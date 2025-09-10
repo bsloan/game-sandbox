@@ -580,7 +580,7 @@ func InitializeFrog(space *cp.Space, x, y float64) *Entity {
 
 	frogShape := space.AddShape(cp.NewCircle(frog.Body, 12, cp.Vector{X: 2, Y: 2}))
 	frogShape.SetElasticity(0)
-	frogShape.SetFriction(0.75)
+	frogShape.SetFriction(1.00)
 	frogShape.SetCollisionType(FrogCollisionType)
 	frog.Shape = frogShape
 
