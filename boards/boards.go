@@ -99,16 +99,16 @@ func (gb *Gameboard) initializeTiles(space *cp.Space) {
 					tileShape.SetFriction(0.18)
 					tileShape.SetCollisionType(entity.SlopeCollisionType)
 				} else if tile == asset.GRASS_SLOPE_STEEP_R_MAGIC_ROOT {
-					vert1 := cp.Vector{X: 4, Y: 0}    // 4
-					vert2 := cp.Vector{X: 29, Y: -24} // 30, -24 better)
+					vert1 := cp.Vector{X: 3, Y: 2}
+					vert2 := cp.Vector{X: 29, Y: -25}
 					tileShape = cp.NewSegment(tileBody, vert2, vert1, 3)
-					tileShape.SetFriction(0.1)
+					tileShape.SetFriction(0.08)
 					tileShape.SetCollisionType(entity.SlopeCollisionType)
 				} else if tile == asset.GRASS_SLOPE_STEEP_L_MAGIC_ROOT {
-					vert1 := cp.Vector{X: -4, Y: 0}    // -4
-					vert2 := cp.Vector{X: -29, Y: -24} // -30, -24
+					vert1 := cp.Vector{X: -3, Y: 2}
+					vert2 := cp.Vector{X: -29, Y: -25}
 					tileShape = cp.NewSegment(tileBody, vert2, vert1, 3)
-					tileShape.SetFriction(0.1)
+					tileShape.SetFriction(0.08)
 					tileShape.SetCollisionType(entity.SlopeCollisionType)
 				} else {
 					// by default, just make it a regular block
