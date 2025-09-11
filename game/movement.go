@@ -142,18 +142,20 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 
 	// make sure player's weapon position tracks player's body position each frame, with slight adjustment
 	if pWeapon != nil {
-		if pWeapon.State == entity.ActiveRight {
+		switch pWeapon.State {
+		case entity.ActiveRight:
 			pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X + 5, p.Body.Position().Y})
-		} else if pWeapon.State == entity.ActiveRight2 {
+		case entity.ActiveRight2:
 			pWeapon.Body.SetPosition(cp.Vector{X: p.Body.Position().X + 5, Y: p.Body.Position().Y})
-		} else if pWeapon.State == entity.ActiveRight3 {
+		case entity.ActiveRight3:
 			pWeapon.Body.SetPosition(cp.Vector{X: p.Body.Position().X + 5, Y: p.Body.Position().Y - 15})
-		} else if pWeapon.State == entity.ActiveLeft2 {
-			pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X - 7, p.Body.Position().Y})
-		} else if pWeapon.State == entity.ActiveLeft3 {
-			pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X - 7, p.Body.Position().Y - 15})
-		} else { // ActiveLeft
+		case entity.ActiveLeft:
 			pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X - 15, p.Body.Position().Y})
+		case entity.ActiveLeft2:
+			pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X - 7, p.Body.Position().Y})
+		case entity.ActiveLeft3:
+			pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X - 7, p.Body.Position().Y - 15})
+		default:
 		}
 	}
 
