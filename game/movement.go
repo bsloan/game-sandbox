@@ -96,10 +96,12 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 			if g.inputDown() {
 				// downslash right
 				pWeapon.State = entity.ActiveRight2
+				pWeapon.Body.SetPosition(cp.Vector{X: p.Body.Position().X + 5, Y: p.Body.Position().Y})
 				weaponShape = g.space.AddShape(cp.NewBox(pWeapon.Body, 28, 35, 10))
 			} else if g.inputUp() {
 				// upslash right
 				pWeapon.State = entity.ActiveRight3
+				pWeapon.Body.SetPosition(cp.Vector{X: p.Body.Position().X + 5, Y: p.Body.Position().Y - 15})
 				weaponShape = g.space.AddShape(cp.NewBox(pWeapon.Body, 28, 35, 10))
 			} else {
 				// regular slash right
@@ -111,11 +113,12 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 			if g.inputDown() {
 				// downslash left
 				pWeapon.State = entity.ActiveLeft2
-				// left downslash has a slightly different offset to be centered correctly on player
 				pWeapon.Body.SetPosition(cp.Vector{X: p.Body.Position().X - 7, Y: p.Body.Position().Y})
 				weaponShape = g.space.AddShape(cp.NewBox(pWeapon.Body, 28, 35, 10))
 			} else if g.inputUp() {
+				// upslash left
 				pWeapon.State = entity.ActiveLeft3
+				pWeapon.Body.SetPosition(cp.Vector{X: p.Body.Position().X - 7, Y: p.Body.Position().Y - 15})
 				weaponShape = g.space.AddShape(cp.NewBox(pWeapon.Body, 28, 35, 10))
 			} else {
 				// regular slash left
@@ -139,12 +142,17 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 
 	// make sure player's weapon position tracks player's body position each frame, with slight adjustment
 	if pWeapon != nil {
-		if p.Facing == entity.Right {
+		if pWeapon.State == entity.ActiveRight {
 			pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X + 5, p.Body.Position().Y})
+		} else if pWeapon.State == entity.ActiveRight2 {
+			pWeapon.Body.SetPosition(cp.Vector{X: p.Body.Position().X + 5, Y: p.Body.Position().Y})
+		} else if pWeapon.State == entity.ActiveRight3 {
+			pWeapon.Body.SetPosition(cp.Vector{X: p.Body.Position().X + 5, Y: p.Body.Position().Y - 15})
 		} else if pWeapon.State == entity.ActiveLeft2 {
-			// left downslash has a slightly different offset to be centered on player
 			pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X - 7, p.Body.Position().Y})
-		} else {
+		} else if pWeapon.State == entity.ActiveLeft3 {
+			pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X - 7, p.Body.Position().Y - 15})
+		} else { // ActiveLeft
 			pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X - 15, p.Body.Position().Y})
 		}
 	}
