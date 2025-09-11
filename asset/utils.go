@@ -28,6 +28,16 @@ func flipImageXAxis(image *ebiten.Image) *ebiten.Image {
 	return flipped
 }
 
+func flipImageYAxis(image *ebiten.Image) *ebiten.Image {
+	width, height := image.Bounds().Dx(), image.Bounds().Dy()
+	flipped := ebiten.NewImage(width, height)
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Scale(1, -1)
+	op.GeoM.Translate(0, float64(height))
+	flipped.DrawImage(image, op)
+	return flipped
+}
+
 func rotateImageClockwise(image *ebiten.Image) *ebiten.Image {
 	// get the original image dimensions
 	originWidth := image.Bounds().Dx()

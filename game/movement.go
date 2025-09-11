@@ -96,32 +96,33 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 			if g.inputDown() && !p.Grounded {
 				// downslash right
 				pWeapon.State = entity.ActiveRight2
-				p.State = entity.ActiveRight
 				weaponShape = g.space.AddShape(cp.NewBox(pWeapon.Body, 28, 35, 10))
 			} else if g.inputUp() && !p.Grounded {
-				// TODO: upslash right
+				// upslash right
+				pWeapon.State = entity.ActiveRight3
+				weaponShape = g.space.AddShape(cp.NewBox(pWeapon.Body, 28, 35, 10))
 			} else {
 				// regular slash right
 				pWeapon.State = entity.ActiveRight
-				p.State = entity.ActiveRight
 				weaponShape = g.space.AddShape(cp.NewBox(pWeapon.Body, 35, 28, 10))
 			}
+			p.State = entity.ActiveRight
 		} else {
 			if g.inputDown() && !p.Grounded {
 				// downslash left
 				pWeapon.State = entity.ActiveLeft2
-				p.State = entity.ActiveLeft
 				// left downslash has a slightly different offset to be centered correctly on player
 				pWeapon.Body.SetPosition(cp.Vector{X: p.Body.Position().X - 7, Y: p.Body.Position().Y})
 				weaponShape = g.space.AddShape(cp.NewBox(pWeapon.Body, 28, 35, 10))
 			} else if g.inputUp() && !p.Grounded {
-				// TODO: upslash right
+				pWeapon.State = entity.ActiveLeft3
+				weaponShape = g.space.AddShape(cp.NewBox(pWeapon.Body, 28, 35, 10))
 			} else {
 				// regular slash left
 				pWeapon.State = entity.ActiveLeft
-				p.State = entity.ActiveLeft
 				weaponShape = g.space.AddShape(cp.NewBox(pWeapon.Body, 35, 28, 10))
 			}
+			p.State = entity.ActiveLeft
 		}
 		weaponShape.SetCollisionType(entity.PlayerSwordCollisionType)
 		pWeapon.Shape = weaponShape
