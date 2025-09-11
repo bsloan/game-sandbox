@@ -179,14 +179,28 @@ func InitializePlayerSword(space *cp.Space, x, y float64) *Entity {
 		AnimationSpeed:        0.4,
 		EntityStateTransition: Dead,
 	}
+	slashDownRight := Animation{
+		Frames: []*ebiten.Image{
+			asset.WhiteDownSlashRight1,
+			asset.WhiteDownSlashRight2,
+			asset.WhiteDownSlashRight3,
+			asset.WhiteDownSlashRight4,
+			asset.WhiteDownSlashRight5,
+			asset.WhiteDownSlashRight6,
+		},
+		AnimationSpeed:        0.4,
+		EntityStateTransition: Dead,
+	}
+
 	sword := Entity{
 		Type:   PlayerWeapon,
 		State:  Idle,
 		Facing: Right,
 		Animations: map[EntityState]*Animation{
-			Idle:        nil,
-			ActiveRight: &slashRight,
-			ActiveLeft:  &slashLeft,
+			Idle:         nil,
+			ActiveRight:  &slashRight,
+			ActiveLeft:   &slashLeft,
+			ActiveRight2: &slashDownRight,
 		},
 		Body: cp.NewBody(0.001, cp.INFINITY),
 	} // mass is set to near-zero to ignore gravity. setting mass to true 0 causes weird physics bugs

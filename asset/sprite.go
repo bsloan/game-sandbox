@@ -313,6 +313,13 @@ var (
 	WhiteSlashLeft5 *ebiten.Image
 	WhiteSlashLeft6 *ebiten.Image
 
+	WhiteDownSlashRight1 *ebiten.Image
+	WhiteDownSlashRight2 *ebiten.Image
+	WhiteDownSlashRight3 *ebiten.Image
+	WhiteDownSlashRight4 *ebiten.Image
+	WhiteDownSlashRight5 *ebiten.Image
+	WhiteDownSlashRight6 *ebiten.Image
+
 	SwordDogIdleRight1 *ebiten.Image
 	SwordDogIdleRight2 *ebiten.Image
 	SwordDogIdleRight3 *ebiten.Image
@@ -498,6 +505,13 @@ func LoadSprites() {
 	WhiteSlashLeft4 = flipImageXAxis(WhiteSlashRight4)
 	WhiteSlashLeft5 = flipImageXAxis(WhiteSlashRight5)
 	WhiteSlashLeft6 = flipImageXAxis(WhiteSlashRight6)
+
+	WhiteDownSlashRight1 = rotateImageClockwise(WhiteSlashRight1)
+	WhiteDownSlashRight2 = rotateImageClockwise(WhiteSlashRight2)
+	WhiteDownSlashRight3 = rotateImageClockwise(WhiteSlashRight3)
+	WhiteDownSlashRight4 = rotateImageClockwise(WhiteSlashRight4)
+	WhiteDownSlashRight5 = rotateImageClockwise(WhiteSlashRight5)
+	WhiteDownSlashRight6 = rotateImageClockwise(WhiteSlashRight6)
 
 	SwordDogIdleRight1 = imageFromBytes(swordDogIdleRight1Png)
 	SwordDogIdleRight2 = imageFromBytes(swordDogIdleRight2Png)

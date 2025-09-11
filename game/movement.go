@@ -6,13 +6,14 @@ import (
 
 	"github.com/bsloan/game-sandbox/entity"
 	"github.com/bsloan/game-sandbox/settings"
-	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/jakecoffman/cp"
 )
 
 func (g *Game) MovePlayer(p *entity.Entity) {
-	var pWeapon = g.registry.Query(entity.PlayerWeapon) // may be nil
+	// get player's weapon - may be nil if it's not being used
+	var pWeapon = g.registry.Query(entity.PlayerWeapon)
 
+	// if no input from player, be idle
 	if !g.inputRight() && !g.inputLeft() && p.State != entity.ActiveRight && p.State != entity.ActiveLeft && p.Grounded {
 		if p.Facing == entity.Right {
 			p.State = entity.IdleRight
@@ -21,6 +22,7 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 		}
 	}
 
+	// no jump input: reset boost if player is on ground, otherwise zero it out if in the air
 	if !g.inputJump() {
 		if p.Grounded {
 			p.Boost = settings.PlayerJumpBoostHeight
@@ -61,7 +63,7 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 		p.Body.ApplyForceAtWorldPoint(cp.Vector{X: vx, Y: vy}, p.Body.Position())
 	}
 
-	if ebiten.IsKeyPressed(ebiten.KeyDown) {
+	if g.inputDown() && p.Grounded {
 		// TODO: crouch
 	}
 
@@ -88,14 +90,24 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 		pWeapon = entity.InitializePlayerSword(g.space, p.Body.Position().X, p.Body.Position().Y)
 		g.registry.AddEntity(pWeapon)
 
+		var weaponShape *cp.Shape = nil
+
 		if p.Facing == entity.Right {
-			pWeapon.State = entity.ActiveRight
-			p.State = entity.ActiveRight
+			if g.inputDown() && !p.Grounded {
+				pWeapon.State = entity.ActiveRight2
+				p.State = entity.ActiveRight
+				weaponShape = g.space.AddShape(cp.NewBox(pWeapon.Body, 28, 35, 10))
+			} else {
+				pWeapon.State = entity.ActiveRight
+				p.State = entity.ActiveRight
+				weaponShape = g.space.AddShape(cp.NewBox(pWeapon.Body, 35, 28, 10))
+			}
 		} else {
+			// TODO: implement leftward downslash
 			pWeapon.State = entity.ActiveLeft
 			p.State = entity.ActiveLeft
+			weaponShape = g.space.AddShape(cp.NewBox(pWeapon.Body, 35, 28, 10))
 		}
-		weaponShape := g.space.AddShape(cp.NewBox(pWeapon.Body, 35, 28, 10))
 		weaponShape.SetCollisionType(entity.PlayerSwordCollisionType)
 		pWeapon.Shape = weaponShape
 		p.WeaponAvailable = false // disable next attack until after the button is released
