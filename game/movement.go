@@ -9,6 +9,27 @@ import (
 	"github.com/jakecoffman/cp"
 )
 
+func adjustPlayerWeaponPosition(pWeapon *entity.Entity, px, py float64) {
+	if pWeapon == nil {
+		return
+	}
+	switch pWeapon.State {
+	case entity.ActiveRight:
+		pWeapon.Body.SetPosition(cp.Vector{px + 5, py})
+	case entity.ActiveRight2:
+		pWeapon.Body.SetPosition(cp.Vector{X: px + 5, Y: py})
+	case entity.ActiveRight3:
+		pWeapon.Body.SetPosition(cp.Vector{X: px + 5, Y: py - 15})
+	case entity.ActiveLeft:
+		pWeapon.Body.SetPosition(cp.Vector{px - 15, py})
+	case entity.ActiveLeft2:
+		pWeapon.Body.SetPosition(cp.Vector{px - 7, py})
+	case entity.ActiveLeft3:
+		pWeapon.Body.SetPosition(cp.Vector{px - 7, py - 15})
+	default:
+	}
+}
+
 func (g *Game) MovePlayer(p *entity.Entity) {
 	// get player's weapon - may be nil if it's not being used
 	var pWeapon = g.registry.Query(entity.PlayerWeapon)
@@ -96,12 +117,10 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 			if g.inputDown() {
 				// downslash right
 				pWeapon.State = entity.ActiveRight2
-				pWeapon.Body.SetPosition(cp.Vector{X: p.Body.Position().X + 5, Y: p.Body.Position().Y})
 				weaponShape = g.space.AddShape(cp.NewBox(pWeapon.Body, 28, 35, 10))
 			} else if g.inputUp() {
 				// upslash right
 				pWeapon.State = entity.ActiveRight3
-				pWeapon.Body.SetPosition(cp.Vector{X: p.Body.Position().X + 5, Y: p.Body.Position().Y - 15})
 				weaponShape = g.space.AddShape(cp.NewBox(pWeapon.Body, 28, 35, 10))
 			} else {
 				// regular slash right
@@ -113,12 +132,10 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 			if g.inputDown() {
 				// downslash left
 				pWeapon.State = entity.ActiveLeft2
-				pWeapon.Body.SetPosition(cp.Vector{X: p.Body.Position().X - 7, Y: p.Body.Position().Y})
 				weaponShape = g.space.AddShape(cp.NewBox(pWeapon.Body, 28, 35, 10))
 			} else if g.inputUp() {
 				// upslash left
 				pWeapon.State = entity.ActiveLeft3
-				pWeapon.Body.SetPosition(cp.Vector{X: p.Body.Position().X - 7, Y: p.Body.Position().Y - 15})
 				weaponShape = g.space.AddShape(cp.NewBox(pWeapon.Body, 28, 35, 10))
 			} else {
 				// regular slash left
@@ -141,23 +158,7 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 	}
 
 	// make sure player's weapon position tracks player's body position each frame, with slight adjustment
-	if pWeapon != nil {
-		switch pWeapon.State {
-		case entity.ActiveRight:
-			pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X + 5, p.Body.Position().Y})
-		case entity.ActiveRight2:
-			pWeapon.Body.SetPosition(cp.Vector{X: p.Body.Position().X + 5, Y: p.Body.Position().Y})
-		case entity.ActiveRight3:
-			pWeapon.Body.SetPosition(cp.Vector{X: p.Body.Position().X + 5, Y: p.Body.Position().Y - 15})
-		case entity.ActiveLeft:
-			pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X - 15, p.Body.Position().Y})
-		case entity.ActiveLeft2:
-			pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X - 7, p.Body.Position().Y})
-		case entity.ActiveLeft3:
-			pWeapon.Body.SetPosition(cp.Vector{p.Body.Position().X - 7, p.Body.Position().Y - 15})
-		default:
-		}
-	}
+	adjustPlayerWeaponPosition(pWeapon, p.Body.Position().X, p.Body.Position().Y)
 
 	// determine if player is falling, change friction and sprite animation accordingly
 	if p.Body.Velocity().Y > 70 && !p.OnSlope {
