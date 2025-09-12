@@ -42,6 +42,8 @@ const (
 	ActiveLeft3
 	Dying
 	Dead
+	CrouchRight
+	CrouchLeft
 )
 
 type Direction int

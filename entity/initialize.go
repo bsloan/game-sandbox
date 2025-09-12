@@ -92,6 +92,20 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 		AnimationSpeed:        0.4,
 		EntityStateTransition: Idle,
 	}
+	crouchRight := Animation{
+		Frames: []*ebiten.Image{
+			asset.PlayerCrouchRight1,
+			asset.PlayerCrouchRight2,
+		},
+		AnimationSpeed: 0.1,
+	}
+	crouchLeft := Animation{
+		Frames: []*ebiten.Image{
+			asset.PlayerCrouchLeft1,
+			asset.PlayerCrouchLeft2,
+		},
+		AnimationSpeed: 0.1,
+	}
 	player := Entity{
 		Type:   Player,
 		State:  Idle,
@@ -108,6 +122,8 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 			FallingLeft:  &fallLeft,
 			ActiveRight:  &activeRight,
 			ActiveLeft:   &activeLeft,
+			CrouchRight:  &crouchRight,
+			CrouchLeft:   &crouchLeft,
 		},
 		Body:  cp.NewBody(1, cp.INFINITY),
 		Boost: 0,

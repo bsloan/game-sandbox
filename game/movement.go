@@ -34,6 +34,19 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 	// get player's weapon - may be nil if it's not being used
 	var pWeapon = g.registry.Query(entity.PlayerWeapon)
 
+	if p.State != entity.CrouchLeft && p.State != entity.CrouchRight && (p.RememberState == entity.CrouchLeft || p.RememberState == entity.CrouchRight) {
+		p.Body.EachShape(func(shape *cp.Shape) {
+			p.Body.RemoveShape(shape)
+			g.space.RemoveShape(shape)
+		})
+		p.RememberState = p.State
+		playerShape := g.space.AddShape(cp.NewCircle(p.Body, 11, cp.Vector{X: 0, Y: 0}))
+		playerShape.SetElasticity(0)
+		playerShape.SetFriction(0.75)
+		playerShape.SetCollisionType(entity.PlayerCollisionType)
+		p.Shape = playerShape
+	}
+
 	// if no input from player, be idle
 	if !g.inputRight() && !g.inputLeft() && p.State != entity.ActiveRight && p.State != entity.ActiveLeft && p.Grounded {
 		if p.Facing == entity.Right {
@@ -50,6 +63,29 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 		} else {
 			p.Boost = 0
 		}
+	}
+
+	// if player pressed down, there's no other input, and player is not already crouching or attacking, then
+	// detach the player's current shape and attach a smaller/shorter one (initiate crouch)
+	if g.inputDown() && p.Grounded && !g.inputRight() && !g.inputLeft() && p.State != entity.ActiveRight && p.State != entity.ActiveLeft && p.State != entity.CrouchRight && p.State != entity.CrouchLeft {
+		if p.Facing == entity.Right {
+			p.State = entity.CrouchRight
+		} else {
+			p.State = entity.CrouchLeft
+		}
+		p.Body.EachShape(func(shape *cp.Shape) {
+			p.Body.RemoveShape(shape)
+			g.space.RemoveShape(shape)
+		})
+		//playerShape := g.space.AddShape(cp.NewCircle(p.Body, 5, cp.Vector{X: 0, Y: 9}))
+		playerShape := g.space.AddShape(cp.NewBox(p.Body, 5, 5, 7))
+		playerShape.SetElasticity(0)
+		playerShape.SetFriction(0.75)
+		playerShape.SetCollisionType(entity.PlayerCollisionType)
+		p.Shape = playerShape
+		p.RememberState = p.State
+
+		// TODO: refactor the shape adding/removing to be part of initialize, so we can reuse it
 	}
 
 	if g.inputRight() {
