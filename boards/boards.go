@@ -136,6 +136,10 @@ func (gb *Gameboard) initializeEntities(space *cp.Space, registry *entity.Regist
 	eagle1 := entity.InitializeEagle(space, 300, 250)
 
 	gem1 := entity.InitializeGem(space, 940, 375)
+	gem2 := entity.InitializeGem(space, 170, 365)
+	gem3 := entity.InitializeGem(space, 210, 413)
+	gem4 := entity.InitializeGem(space, 226, 413)
+	gem5 := entity.InitializeGem(space, 242, 413)
 
 	registry.AddEntity(swordDog1)
 	registry.AddEntity(swordDog2)
@@ -144,4 +148,8 @@ func (gb *Gameboard) initializeEntities(space *cp.Space, registry *entity.Regist
 	registry.AddEntity(frog2)
 	registry.AddEntity(eagle1)
 	registry.AddEntity(gem1)
+	registry.AddEntity(gem2)
+	registry.AddEntity(gem3)
+	registry.AddEntity(gem4)
+	registry.AddEntity(gem5)
 }

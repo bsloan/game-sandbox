@@ -176,7 +176,26 @@ func GemHandler(space *cp.Space, collisionType cp.CollisionType) {
 	handler := space.NewCollisionHandler(collisionType, GemCollisionType)
 
 	handler.BeginFunc = func(arb *cp.Arbiter, space *cp.Space, data interface{}) bool {
-		// TODO: if player, change gem's state and add to player's gem inventory
+		body1, body2 := arb.Bodies()
+
+		var gemBody *cp.Body
+		var otherBody *cp.Body
+
+		if body1.UserData.(*Entity).Type == Gem {
+			gemBody = body1
+			otherBody = body2
+		} else {
+			gemBody = body2
+			otherBody = body1
+		}
+
+		if otherBody.UserData.(*Entity).Type == Player {
+			gemBody.UserData.(*Entity).State = Dying
+			gemBody.EachShape(func(shape *cp.Shape) {
+				gemBody.RemoveShape(shape)
+				space.RemoveShape(shape)
+			})
+		}
 
 		// ignore entity/gem collisions
 		return false
