@@ -784,6 +784,12 @@ func InitializeGem(space *cp.Space, x, y float64) *Entity {
 			Dying: &gemFeedback,
 		},
 		Body: cp.NewStaticBody(),
+		DrawOffsetX: map[EntityState]float64{
+			Dying: -10,
+		},
+		DrawOffsetY: map[EntityState]float64{
+			Dying: -10,
+		},
 	}
 	gem.Body.UserData = &gem
 	space.AddBody(gem.Body)

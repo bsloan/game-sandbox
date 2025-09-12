@@ -155,6 +155,18 @@ func (p *Viewport) Draw(g *Game) {
 			x -= p.viewX
 			y -= p.viewY
 
+			// adjust the image by any custom offsets for the entity's current state
+			drawOffsetX, found := e.DrawOffsetX[e.State]
+			if !found {
+				drawOffsetX = 0
+			}
+			drawOffsetY, found := e.DrawOffsetY[e.State]
+			if !found {
+				drawOffsetY = 0
+			}
+			x += drawOffsetX
+			y += drawOffsetY
+
 			// draw the e
 			entityImage := e.Image()
 			if entityImage != nil {
