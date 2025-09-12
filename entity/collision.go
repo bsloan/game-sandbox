@@ -172,11 +172,22 @@ func PlayerSwordHandler(space *cp.Space, collisionType cp.CollisionType) {
 	}
 }
 
+func GemHandler(space *cp.Space, collisionType cp.CollisionType) {
+	handler := space.NewCollisionHandler(collisionType, GemCollisionType)
+
+	handler.BeginFunc = func(arb *cp.Arbiter, space *cp.Space, data interface{}) bool {
+		// TODO: if player, change gem's state and add to player's gem inventory
+
+		// ignore entity/gem collisions
+		return false
+	}
+}
+
 func InitializeCollisionHandlers(space *cp.Space) {
 	// attach collision handlers to player
 	GenericGroundedHandler(space, PlayerCollisionType)
 	SlopeHandler(space, PlayerCollisionType)
-	// TODO: add handler for player/gem collision
+	GemHandler(space, PlayerCollisionType)
 
 	// attach collision handlers to generic enemies
 	DamagePlayerHandler(space, GenericEnemyCollisionType)
@@ -184,7 +195,7 @@ func InitializeCollisionHandlers(space *cp.Space) {
 	SlopeHandler(space, GenericEnemyCollisionType)
 	ObstructedHandler(space, GenericEnemyCollisionType)
 	PlayerSwordHandler(space, GenericEnemyCollisionType)
-	// TODO: add handler to ignore enemy/gem collisions
+	GemHandler(space, GenericEnemyCollisionType)
 
 	// custom enemy collision handlers
 	// frog
@@ -192,8 +203,10 @@ func InitializeCollisionHandlers(space *cp.Space) {
 	GenericGroundedHandler(space, FrogCollisionType)
 	SlopeHandler(space, FrogCollisionType)
 	PlayerSwordHandler(space, FrogCollisionType)
+	GemHandler(space, FrogCollisionType)
 	// eagle
 	DamagePlayerHandler(space, EagleCollisionType)
 	PlayerSwordHandler(space, EagleCollisionType)
 	ObstructedHandler(space, EagleCollisionType)
+	GemHandler(space, EagleCollisionType)
 }
