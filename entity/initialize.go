@@ -7,6 +7,34 @@ import (
 	"github.com/jakecoffman/cp"
 )
 
+func InitializeNormalPlayerShape(space *cp.Space, player *Entity) {
+	//playerShape := space.AddShape(cp.NewBox(player.Body, 8, 7, 8))
+	// radius was: 10
+	player.Body.EachShape(func(shape *cp.Shape) {
+		player.Body.RemoveShape(shape)
+		space.RemoveShape(shape)
+	})
+	playerShape := space.AddShape(cp.NewCircle(player.Body, 11, cp.Vector{X: 0, Y: 0}))
+	playerShape.SetElasticity(0)
+	playerShape.SetFriction(0.75)
+	playerShape.SetCollisionType(PlayerCollisionType)
+	player.Shape = playerShape
+}
+
+func InitializeCrouchPlayerShape(space *cp.Space, player *Entity) {
+	player.Body.EachShape(func(shape *cp.Shape) {
+		player.Body.RemoveShape(shape)
+		space.RemoveShape(shape)
+	})
+	//playerShape := g.space.AddShape(cp.NewCircle(p.Body, 5, cp.Vector{X: 0, Y: 9}))
+	playerShape := space.AddShape(cp.NewBox(player.Body, 5, 5, 7))
+	playerShape.SetElasticity(0)
+	playerShape.SetFriction(0.75)
+	playerShape.SetCollisionType(PlayerCollisionType)
+	player.Shape = playerShape
+	player.RememberState = player.State
+}
+
 func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 	idleRight := Animation{
 		Frames: []*ebiten.Image{
@@ -125,10 +153,11 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 			CrouchRight:  &crouchRight,
 			CrouchLeft:   &crouchLeft,
 		},
-		Body:  cp.NewBody(1, cp.INFINITY),
-		Boost: 0,
+		Body:      cp.NewBody(1, cp.INFINITY),
+		Boost:     0,
+		MaxHealth: 50,
 	}
-
+	player.Health = player.MaxHealth
 	player.Body.UserData = &player
 	space.AddBody(player.Body)
 	player.Body.SetPosition(cp.Vector{X: x, Y: y})
@@ -155,17 +184,7 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 
 	player.Body.SetVelocityUpdateFunc(playerVelocityLimitFunc)
 
-	//playerShape := space.AddShape(cp.NewBox(player.Body, 8, 7, 8))
-	// radius was: 10
-	playerShape := space.AddShape(cp.NewCircle(player.Body, 11, cp.Vector{X: 0, Y: 0}))
-
-	playerShape.SetElasticity(0)
-	playerShape.SetFriction(0.75)
-	playerShape.SetCollisionType(PlayerCollisionType)
-	player.Shape = playerShape
-
-	player.MaxHealth = 50
-	player.Health = player.MaxHealth
+	InitializeNormalPlayerShape(space, &player)
 
 	return &player
 }

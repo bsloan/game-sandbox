@@ -34,17 +34,9 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 	// get player's weapon - may be nil if it's not being used
 	var pWeapon = g.registry.Query(entity.PlayerWeapon)
 
+	// if we are transitioning from crouching to not-crouching in this update, reset the player's shape to normal
 	if p.State != entity.CrouchLeft && p.State != entity.CrouchRight && (p.RememberState == entity.CrouchLeft || p.RememberState == entity.CrouchRight) {
-		p.Body.EachShape(func(shape *cp.Shape) {
-			p.Body.RemoveShape(shape)
-			g.space.RemoveShape(shape)
-		})
-		p.RememberState = p.State
-		playerShape := g.space.AddShape(cp.NewCircle(p.Body, 11, cp.Vector{X: 0, Y: 0}))
-		playerShape.SetElasticity(0)
-		playerShape.SetFriction(0.75)
-		playerShape.SetCollisionType(entity.PlayerCollisionType)
-		p.Shape = playerShape
+		entity.InitializeNormalPlayerShape(g.space, p)
 	}
 
 	// if no input from player, be idle
@@ -73,19 +65,7 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 		} else {
 			p.State = entity.CrouchLeft
 		}
-		p.Body.EachShape(func(shape *cp.Shape) {
-			p.Body.RemoveShape(shape)
-			g.space.RemoveShape(shape)
-		})
-		//playerShape := g.space.AddShape(cp.NewCircle(p.Body, 5, cp.Vector{X: 0, Y: 9}))
-		playerShape := g.space.AddShape(cp.NewBox(p.Body, 5, 5, 7))
-		playerShape.SetElasticity(0)
-		playerShape.SetFriction(0.75)
-		playerShape.SetCollisionType(entity.PlayerCollisionType)
-		p.Shape = playerShape
-		p.RememberState = p.State
-
-		// TODO: refactor the shape adding/removing to be part of initialize, so we can reuse it
+		entity.InitializeCrouchPlayerShape(g.space, p)
 	}
 
 	if g.inputRight() {
