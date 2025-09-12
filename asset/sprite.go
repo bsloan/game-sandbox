@@ -272,6 +272,33 @@ var (
 	//go:embed sprite/enemy_death_6.png
 	enemyDeath6Png []byte
 
+	//go:embed sprite/item_feedback_1.png
+	itemFeedback1Png []byte
+
+	//go:embed sprite/item_feedback_2.png
+	itemFeedback2Png []byte
+
+	//go:embed sprite/item_feedback_3.png
+	itemFeedback3Png []byte
+
+	//go:embed sprite/item_feedback_4.png
+	itemFeedback4Png []byte
+
+	//go:embed sprite/gem_1.png
+	gem1Png []byte
+
+	//go:embed sprite/gem_2.png
+	gem2Png []byte
+
+	//go:embed sprite/gem_3.png
+	gem3Png []byte
+
+	//go:embed sprite/gem_4.png
+	gem4Png []byte
+
+	//go:embed sprite/gem_5.png
+	gem5Png []byte
+
 	PlayerIdleRight1 *ebiten.Image
 	PlayerIdleRight2 *ebiten.Image
 	PlayerIdleRight3 *ebiten.Image
@@ -486,6 +513,17 @@ var (
 	EnemyDeath4 *ebiten.Image
 	EnemyDeath5 *ebiten.Image
 	EnemyDeath6 *ebiten.Image
+
+	ItemFeedback1 *ebiten.Image
+	ItemFeedback2 *ebiten.Image
+	ItemFeedback3 *ebiten.Image
+	ItemFeedback4 *ebiten.Image
+
+	Gem1 *ebiten.Image
+	Gem2 *ebiten.Image
+	Gem3 *ebiten.Image
+	Gem4 *ebiten.Image
+	Gem5 *ebiten.Image
 )
 
 func LoadSprites() {
@@ -706,4 +744,15 @@ func LoadSprites() {
 	EnemyDeath4 = imageFromBytes(enemyDeath4Png)
 	EnemyDeath5 = imageFromBytes(enemyDeath5Png)
 	EnemyDeath6 = imageFromBytes(enemyDeath6Png)
+
+	ItemFeedback1 = imageFromBytes(itemFeedback1Png)
+	ItemFeedback2 = imageFromBytes(itemFeedback2Png)
+	ItemFeedback3 = imageFromBytes(itemFeedback3Png)
+	ItemFeedback4 = imageFromBytes(itemFeedback4Png)
+
+	Gem1 = imageFromBytes(gem1Png)
+	Gem2 = imageFromBytes(gem2Png)
+	Gem3 = imageFromBytes(gem3Png)
+	Gem4 = imageFromBytes(gem4Png)
+	Gem5 = imageFromBytes(gem5Png)
 }

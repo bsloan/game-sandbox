@@ -64,7 +64,7 @@ type Gameboard struct {
 func (gb *Gameboard) LoadGameboard(mapData []byte, space *cp.Space, registry *entity.Registry) {
 	err := json.Unmarshal(mapData, &gb)
 	if err != nil {
-		log.Fatal("Error unmarshaling JSON for map:", err)
+		log.Fatal("Error loading gameboard data:", err)
 	}
 	gb.TileWidth = len(gb.Map[0])
 	gb.TileHeight = len(gb.Map)
@@ -135,10 +135,13 @@ func (gb *Gameboard) initializeEntities(space *cp.Space, registry *entity.Regist
 
 	eagle1 := entity.InitializeEagle(space, 300, 250)
 
+	gem1 := entity.InitializeGem(space, 940, 350)
+
 	registry.AddEntity(swordDog1)
 	registry.AddEntity(swordDog2)
 	registry.AddEntity(alligator1)
 	registry.AddEntity(frog1)
 	registry.AddEntity(frog2)
 	registry.AddEntity(eagle1)
+	registry.AddEntity(gem1)
 }

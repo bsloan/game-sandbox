@@ -15,6 +15,7 @@ const (
 	GenericEnemyCollisionType
 	FrogCollisionType
 	EagleCollisionType
+	GemCollisionType
 )
 
 func GenericGroundedHandler(space *cp.Space, collisionType cp.CollisionType) {
@@ -175,6 +176,7 @@ func InitializeCollisionHandlers(space *cp.Space) {
 	// attach collision handlers to player
 	GenericGroundedHandler(space, PlayerCollisionType)
 	SlopeHandler(space, PlayerCollisionType)
+	// TODO: add handler for player/gem collision
 
 	// attach collision handlers to generic enemies
 	DamagePlayerHandler(space, GenericEnemyCollisionType)
@@ -182,6 +184,7 @@ func InitializeCollisionHandlers(space *cp.Space) {
 	SlopeHandler(space, GenericEnemyCollisionType)
 	ObstructedHandler(space, GenericEnemyCollisionType)
 	PlayerSwordHandler(space, GenericEnemyCollisionType)
+	// TODO: add handler to ignore enemy/gem collisions
 
 	// custom enemy collision handlers
 	// frog

@@ -17,6 +17,7 @@ const (
 	Frog
 	Alligator
 	Eagle
+	Gem
 )
 
 type EntityState int

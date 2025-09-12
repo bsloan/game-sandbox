@@ -753,3 +753,44 @@ func InitializeEagle(space *cp.Space, x, y float64) *Entity {
 
 	return &eagle
 }
+
+func InitializeGem(space *cp.Space, x, y float64) *Entity {
+	gemIdle := Animation{
+		Frames: []*ebiten.Image{
+			asset.Gem1,
+			asset.Gem2,
+			asset.Gem3,
+			asset.Gem4,
+			asset.Gem5,
+		},
+		AnimationSpeed: 0.35,
+	}
+	gemFeedback := Animation{
+		Frames: []*ebiten.Image{
+			asset.ItemFeedback1,
+			asset.ItemFeedback2,
+			asset.ItemFeedback3,
+			asset.ItemFeedback4,
+		},
+		AnimationSpeed:        0.3,
+		EntityStateTransition: Dead,
+	}
+	gem := Entity{
+		Type:   Gem,
+		State:  Idle,
+		Facing: Left,
+		Animations: map[EntityState]*Animation{
+			Idle:  &gemIdle,
+			Dying: &gemFeedback,
+		},
+		Body: cp.NewStaticBody(),
+	}
+	gem.Body.UserData = &gem
+	space.AddBody(gem.Body)
+	gem.Body.SetPosition(cp.Vector{X: x, Y: y})
+	gemShape := space.AddShape(cp.NewCircle(gem.Body, 8, cp.Vector{X: 0, Y: 0}))
+	gemShape.SetElasticity(0)
+	gemShape.SetCollisionType(GemCollisionType)
+	gem.Shape = gemShape
+	return &gem
+}
