@@ -9,6 +9,11 @@ const (
 	NonstandardGamepadButtonDown  = 17
 	NonstandardGamepadButtonX     = 3
 	NonstandardGamepadButtonA     = 0
+
+	StandardGamepadButtonUp    = 16
+	StandardGamepadButtonRight = 17
+	StandardGamepadButtonDown  = 18
+	StandardGamepadButtonLeft  = 19
 )
 
 func (g *Game) gamepadAvailable() bool {
@@ -24,19 +29,19 @@ func (g *Game) inputJump() bool {
 }
 
 func (g *Game) inputLeft() bool {
-	return ebiten.IsKeyPressed(ebiten.KeyLeft) || ebiten.IsKeyPressed(ebiten.KeyA) || (g.gamepadAvailable() && ebiten.IsGamepadButtonPressed(g.gamepadIds[0], NonstandardGamepadButtonLeft))
+	return ebiten.IsKeyPressed(ebiten.KeyLeft) || ebiten.IsKeyPressed(ebiten.KeyA) || (g.gamepadAvailable() && ebiten.IsGamepadButtonPressed(g.gamepadIds[0], StandardGamepadButtonLeft))
 }
 
 func (g *Game) inputRight() bool {
-	return ebiten.IsKeyPressed(ebiten.KeyRight) || ebiten.IsKeyPressed(ebiten.KeyD) || (g.gamepadAvailable() && ebiten.IsGamepadButtonPressed(g.gamepadIds[0], NonstandardGamepadButtonRight))
+	return ebiten.IsKeyPressed(ebiten.KeyRight) || ebiten.IsKeyPressed(ebiten.KeyD) || (g.gamepadAvailable() && ebiten.IsGamepadButtonPressed(g.gamepadIds[0], StandardGamepadButtonRight))
 }
 
 func (g *Game) inputUp() bool {
-	return ebiten.IsKeyPressed(ebiten.KeyUp) || ebiten.IsKeyPressed(ebiten.KeyW) || (g.gamepadAvailable() && ebiten.IsGamepadButtonPressed(g.gamepadIds[0], NonstandardGamepadButtonUp))
+	return ebiten.IsKeyPressed(ebiten.KeyUp) || ebiten.IsKeyPressed(ebiten.KeyW) || (g.gamepadAvailable() && ebiten.IsGamepadButtonPressed(g.gamepadIds[0], StandardGamepadButtonUp))
 }
 
 func (g *Game) inputDown() bool {
-	return ebiten.IsKeyPressed(ebiten.KeyDown) || ebiten.IsKeyPressed(ebiten.KeyS) || (g.gamepadAvailable() && ebiten.IsGamepadButtonPressed(g.gamepadIds[0], NonstandardGamepadButtonDown))
+	return ebiten.IsKeyPressed(ebiten.KeyDown) || ebiten.IsKeyPressed(ebiten.KeyS) || (g.gamepadAvailable() && ebiten.IsGamepadButtonPressed(g.gamepadIds[0], StandardGamepadButtonDown))
 }
 
 func (g *Game) inputAttack() bool {
