@@ -78,6 +78,8 @@ type Entity struct {
 	AttackDamage     int
 	TickCounter      int // general-use tick counter for timing entity actions or events
 	OriginX, OriginY float64
+	DrawOffsetX      map[EntityState]float64
+	DrawOffsetY      map[EntityState]float64
 	// other metadata: points, etc
 }
 
