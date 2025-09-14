@@ -1,6 +1,8 @@
 package entity
 
 import (
+	"log"
+
 	"github.com/bsloan/game-sandbox/asset"
 	"github.com/bsloan/game-sandbox/settings"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -10,6 +12,7 @@ import (
 func InitializeNormalPlayerShape(space *cp.Space, player *Entity) {
 	//playerShape := space.AddShape(cp.NewBox(player.Body, 8, 7, 8))
 	// radius was: 10
+	log.Println("Initializing normal player shape")
 	player.Body.EachShape(func(shape *cp.Shape) {
 		player.Body.RemoveShape(shape)
 		space.RemoveShape(shape)
@@ -22,6 +25,7 @@ func InitializeNormalPlayerShape(space *cp.Space, player *Entity) {
 }
 
 func InitializeCrouchPlayerShape(space *cp.Space, player *Entity) {
+	log.Println("Initializing crouch player shape")
 	player.Body.EachShape(func(shape *cp.Shape) {
 		player.Body.RemoveShape(shape)
 		space.RemoveShape(shape)

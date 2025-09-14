@@ -37,10 +37,11 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 	// if we are transitioning from crouching to not-crouching in this update, reset the player's shape to normal
 	if p.State != entity.CrouchLeft && p.State != entity.CrouchRight && (p.RememberState == entity.CrouchLeft || p.RememberState == entity.CrouchRight) {
 		entity.InitializeNormalPlayerShape(g.space, p)
+		p.RememberState = entity.Idle
 	}
 
 	// if no input from player, be idle
-	if !g.inputRight() && !g.inputLeft() && p.State != entity.ActiveRight && p.State != entity.ActiveLeft && p.Grounded {
+	if !g.inputDown() && !g.inputRight() && !g.inputLeft() && p.State != entity.ActiveRight && p.State != entity.ActiveLeft && p.Grounded {
 		if p.Facing == entity.Right {
 			p.State = entity.IdleRight
 		} else if p.Facing == entity.Left {
