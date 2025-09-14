@@ -47,6 +47,16 @@ var ForegroundTiles = []int{
 	asset.BRANCH_FOREGROUND_2,
 }
 
+const (
+	Gem              = 1
+	PlayerStart      = 2
+	PlayerCheckpoint = 3
+	SwordDog         = 4
+	Frog             = 5
+	Alligator        = 6
+	Eagle            = 7
+)
+
 var (
 	//go:embed map.json
 	Level1Map []byte
@@ -54,6 +64,7 @@ var (
 
 type Gameboard struct {
 	Map         [][]int `json:"map"`
+	EntityLayer [][]int `json:"entityLayer"`
 	TileSize    int     `json:"tilesize"`
 	TileWidth   int
 	TileHeight  int
@@ -125,6 +136,29 @@ func (gb *Gameboard) initializeTiles(space *cp.Space) {
 }
 
 func (gb *Gameboard) initializeEntities(space *cp.Space, registry *entity.Registry) {
+	for ty := 0; ty < gb.TileHeight; ty++ {
+		for tx := 0; tx < gb.TileWidth; tx++ {
+			e := gb.EntityLayer[ty][tx]
+			if e > 0 {
+				x, y := float64(tx*16), float64(ty*16)
+				switch e {
+				case Gem:
+					{
+						gem := entity.InitializeGem(space, x, y)
+						registry.AddEntity(gem)
+					}
+				case Frog:
+					{
+						frog := entity.InitializeFrog(space, x, y)
+						registry.AddEntity(frog)
+					}
+				}
+			}
+		}
+	}
+}
+
+func (gb *Gameboard) initializeEntitiesOld(space *cp.Space, registry *entity.Registry) {
 	// FIXME: initialize from the map instead of hard-coding
 	swordDog1 := entity.InitializeSwordDog(space, 555, 414)
 	swordDog2 := entity.InitializeSwordDog(space, 493, 414)
