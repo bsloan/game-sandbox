@@ -56,6 +56,9 @@ const (
 	Alligator        = 6
 	Eagle            = 7
 	SpiralBlockProp  = 8
+	TreeProp         = 9
+	PineTreeProp     = 10
+	PalmTreeProp     = 11
 )
 
 var (
@@ -162,6 +165,11 @@ func (gb *Gameboard) initializeEntities(space *cp.Space, registry *entity.Regist
 					{
 						block := entity.InitializeSpiralBlockProp(space, x, y)
 						registry.AddEntity(block)
+					}
+				case TreeProp:
+					{
+						tree := entity.InitializeDecorativeProp(space, entity.TreeProp, x, y)
+						registry.AddEntity(tree)
 					}
 				}
 			}

@@ -19,6 +19,9 @@ const (
 	Eagle
 	Gem
 	SpiralBlockProp
+	TreeProp
+	PineTreeProp
+	PalmTreeProp
 )
 
 type EntityState int

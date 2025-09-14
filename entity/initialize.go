@@ -821,3 +821,31 @@ func InitializeSpiralBlockProp(space *cp.Space, x, y float64) *Entity {
 	block.Shape = blockShape
 	return &block
 }
+
+func InitializeDecorativeProp(space *cp.Space, entityType EntityType, x, y float64) *Entity {
+	var propImage *ebiten.Image
+	switch entityType {
+	case TreeProp:
+		propImage = asset.TreeProp
+	case PineTreeProp:
+		propImage = asset.PineTreeProp
+	case PalmTreeProp:
+		propImage = asset.PalmTreeProp
+	default:
+		propImage = nil
+	}
+
+	prop := Entity{
+		Type:        entityType,
+		State:       Idle,
+		StaticImage: propImage,
+		Body:        cp.NewStaticBody(),
+	}
+	space.AddBody(prop.Body)
+	prop.Body.SetPosition(cp.Vector{X: x, Y: y + 8}) // no idea why this 8 pixel y offset is needed here
+	propShape := space.AddShape(cp.NewBox(prop.Body, 32, 32, 0))
+	propShape.SetSensor(true) // decorative shapes don't block
+	prop.Shape = propShape
+
+	return &prop
+}

@@ -208,6 +208,15 @@ var (
 	//go:embed environment/cave_ceil_1.png
 	caveCeil1Png []byte
 
+	//go:embed environment/tree.png
+	treePropPng []byte
+
+	//go:embed environment/pine.png
+	pinePropPng []byte
+
+	//go:embed environment/palm.png
+	palmPropPng []byte
+
 	//go:embed environment/back.png
 	skyBackgroundPng []byte
 
@@ -262,7 +271,11 @@ var (
 	CaveBackgroundR7    *ebiten.Image
 	CaveBackgroundRocks *ebiten.Image
 	SpiralBlockTile     *ebiten.Image
-	SpiralBlockProp     *ebiten.Image
+
+	SpiralBlockProp *ebiten.Image
+	TreeProp        *ebiten.Image
+	PineTreeProp    *ebiten.Image
+	PalmTreeProp    *ebiten.Image
 
 	GrassForeground1  *ebiten.Image
 	GrassForeground2  *ebiten.Image
@@ -335,6 +348,9 @@ func LoadTiles() {
 
 	// static props
 	SpiralBlockProp = imageFromBytes(spiralBlockPropPng)
+	TreeProp = imageFromBytes(treePropPng)
+	PineTreeProp = imageFromBytes(pinePropPng)
+	PalmTreeProp = imageFromBytes(palmPropPng)
 
 	// assign tile images to values
 	TileImages[1] = GrassLeft
