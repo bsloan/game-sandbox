@@ -144,6 +144,10 @@ func (r *Registry) RemoveDead(space *cp.Space) {
 				entity.Body.RemoveShape(shape)
 				space.RemoveShape(shape)
 			})
+			entity.Body.EachConstraint(func(constraint *cp.Constraint) {
+				entity.Body.RemoveConstraint(constraint)
+			})
+			space.RemoveBody(entity.Body)
 			entitiesToRemove = append(entitiesToRemove, i)
 		}
 	}
