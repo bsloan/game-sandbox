@@ -100,11 +100,7 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 		}
 		p.Body.ApplyForceAtWorldPoint(cp.Vector{X: vx, Y: vy}, p.Body.Position())
 	}
-
-	if g.inputDown() && p.Grounded {
-		// TODO: crouch
-	}
-
+	
 	if g.inputJump() && p.Boost > 0 {
 		if p.State == entity.JumpingRight || p.State == entity.JumpingLeft {
 			// player is already in a jump, diminish boost
