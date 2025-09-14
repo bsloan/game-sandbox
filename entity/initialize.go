@@ -804,3 +804,20 @@ func InitializeGem(space *cp.Space, x, y float64) *Entity {
 	gem.Shape = gemShape
 	return &gem
 }
+
+func InitializeSpiralBlockProp(space *cp.Space, x, y float64) *Entity {
+	block := Entity{
+		Type:        SpiralBlockProp,
+		State:       Idle,
+		StaticImage: asset.SpiralBlockProp,
+		Body:        cp.NewStaticBody(),
+	}
+	space.AddBody(block.Body)
+	block.Body.SetPosition(cp.Vector{X: x, Y: y + 8}) // no idea why this 8 pixel y offset is needed here
+	blockShape := space.AddShape(cp.NewBox(block.Body, 32, 32, 0))
+	blockShape.SetElasticity(0)
+	blockShape.SetFriction(1)
+	blockShape.SetCollisionType(BlockCollisionType)
+	block.Shape = blockShape
+	return &block
+}

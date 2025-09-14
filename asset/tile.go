@@ -71,6 +71,8 @@ const (
 	CAVE_BACKGROUND_R_6   = 53
 	CAVE_BACKGROUND_R_7   = 54
 	CAVE_BACKGROUND_ROCKS = 55
+
+	SPIRAL_BLOCK = 56
 )
 
 var (
@@ -194,6 +196,12 @@ var (
 	//go:embed environment/cave_rocks.png
 	caveRocksPng []byte
 
+	//go:embed environment/spiral_block_tile.png
+	spiralBlockTilePng []byte
+
+	//go:embed environment/spiral_block_prop.png
+	spiralBlockPropPng []byte
+
 	//go:embed environment/grass_float_m_cave.png
 	grassFloatMiddleCavePng []byte
 
@@ -253,6 +261,8 @@ var (
 	CaveBackgroundR6    *ebiten.Image
 	CaveBackgroundR7    *ebiten.Image
 	CaveBackgroundRocks *ebiten.Image
+	SpiralBlockTile     *ebiten.Image
+	SpiralBlockProp     *ebiten.Image
 
 	GrassForeground1  *ebiten.Image
 	GrassForeground2  *ebiten.Image
@@ -297,6 +307,7 @@ func LoadTiles() {
 	PlankEndL = imageFromBytes(plankEndLPng)
 	PlankEndR = imageFromBytes(plankEndRPng)
 	PlankMiddle = imageFromBytes(plankMiddlePng)
+	SpiralBlockTile = imageFromBytes(spiralBlockTilePng)
 
 	GrassForeground1 = imageFromBytes(grassForeground1Png)
 	GrassForeground2 = imageFromBytes(grassForeground2Png)
@@ -321,6 +332,9 @@ func LoadTiles() {
 	CaveBackgroundR6 = flipImageXAxis(CaveBackgroundL6)
 	CaveBackgroundR7 = flipImageXAxis(CaveBackgroundL7)
 	CaveBackgroundRocks = imageFromBytes(caveRocksPng)
+
+	// static props
+	SpiralBlockProp = imageFromBytes(spiralBlockPropPng)
 
 	// assign tile images to values
 	TileImages[1] = GrassLeft
@@ -389,4 +403,5 @@ func LoadTiles() {
 	TileImages[54] = CaveBackgroundR7
 
 	TileImages[55] = CaveBackgroundRocks
+	TileImages[SPIRAL_BLOCK] = SpiralBlockTile
 }

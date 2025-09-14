@@ -55,6 +55,7 @@ const (
 	Frog             = 5
 	Alligator        = 6
 	Eagle            = 7
+	SpiralBlockProp  = 8
 )
 
 var (
@@ -156,6 +157,11 @@ func (gb *Gameboard) initializeEntities(space *cp.Space, registry *entity.Regist
 					{
 						frog := entity.InitializeFrog(space, x, y)
 						registry.AddEntity(frog)
+					}
+				case SpiralBlockProp:
+					{
+						block := entity.InitializeSpiralBlockProp(space, x, y)
+						registry.AddEntity(block)
 					}
 				}
 			}

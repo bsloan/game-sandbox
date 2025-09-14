@@ -18,6 +18,7 @@ const (
 	Alligator
 	Eagle
 	Gem
+	SpiralBlockProp
 )
 
 type EntityState int
