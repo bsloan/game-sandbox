@@ -142,6 +142,11 @@ func (gb *Gameboard) initializeEntities(space *cp.Space, registry *entity.Regist
 			if e > 0 {
 				x, y := float64(tx*16), float64(ty*16)
 				switch e {
+				case PlayerStart:
+					{
+						player := entity.InitializePlayer(space, x, y)
+						registry.AddEntity(player)
+					}
 				case Gem:
 					{
 						gem := entity.InitializeGem(space, x, y)

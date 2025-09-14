@@ -228,10 +228,7 @@ func NewGameplaySession(game *Game) {
 	// allow no overlap between shapes in the space, to reduce prevalence of tile overlap/collision bug
 	//space.SetCollisionSlop(0.00)
 
-	player := entity.InitializePlayer(space, 10, 400)
-
 	r := entity.Registry{}
-	r.AddEntity(player)
 
 	entity.InitializeCollisionHandlers(space)
 
@@ -250,7 +247,7 @@ func NewGameplaySession(game *Game) {
 	game.gameMode = GameplayMode
 
 	// set the initial position of the viewport
-	game.CenterViewport(player.Position())
+	game.CenterViewport(game.registry.Player().Position())
 }
 
 func (g *Game) CenterViewport(x, y float64) {
