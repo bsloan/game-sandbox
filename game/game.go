@@ -8,7 +8,7 @@ import (
 	"slices"
 
 	"github.com/bsloan/game-sandbox/asset"
-	"github.com/bsloan/game-sandbox/boards"
+	"github.com/bsloan/game-sandbox/board"
 	"github.com/bsloan/game-sandbox/entity"
 	"github.com/bsloan/game-sandbox/settings"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -124,7 +124,7 @@ func (p *Viewport) Draw(g *Game) {
 		xTileCount := 0
 		for tx := tileX; tx <= (tileX+settings.ScreenWidthTiles+1) && tx < g.board.TileWidth; tx++ {
 			tile := g.board.Map[ty][tx]
-			if slices.Contains(boards.ForegroundTiles, tile) {
+			if slices.Contains(board.ForegroundTiles, tile) {
 				// save foreground tiles for rendering later
 				foregroundTiles = append(foregroundTiles, tileCoords{X: xTileCount, Y: yTileCount, Tile: tile})
 			} else if tile != 0 {
@@ -201,7 +201,7 @@ const (
 
 type Game struct {
 	vp             Viewport
-	board          boards.Gameboard
+	board          board.Gameboard
 	debug          bool
 	registry       entity.Registry
 	space          *cp.Space
@@ -235,8 +235,8 @@ func NewGameplaySession(game *Game) {
 
 	entity.InitializeCollisionHandlers(space)
 
-	gameboard := boards.Gameboard{}
-	gameboard.LoadGameboard(boards.Level1Map, space, &r)
+	gameboard := board.Gameboard{}
+	gameboard.LoadGameboard(board.Level1Map, space, &r)
 
 	game.vp = Viewport{
 		MaxViewX: float64(gameboard.PixelWidth - settings.ScreenWidth - settings.TileSize),
