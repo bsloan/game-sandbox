@@ -161,6 +161,16 @@ func (gb *Gameboard) initializeEntities(space *cp.Space, registry *entity.Regist
 						frog := entity.InitializeFrog(space, x, y)
 						registry.AddEntity(frog)
 					}
+				case Eagle:
+					{
+						eagle := entity.InitializeEagle(space, x, y)
+						registry.AddEntity(eagle)
+					}
+				case SwordDog:
+					{
+						swordDog := entity.InitializeSwordDog(space, x, y)
+						registry.AddEntity(swordDog)
+					}
 				case SpiralBlockProp:
 					{
 						block := entity.InitializeSpiralBlockProp(space, x, y)
