@@ -805,17 +805,30 @@ func InitializeGem(space *cp.Space, x, y float64) *Entity {
 	return &gem
 }
 
-func InitializeCoin(space *cp.Space, x, y float64) *Entity {
-	coinIdle := Animation{
-		Frames: []*ebiten.Image{
-			asset.Coin1,
-			asset.Coin2,
-			asset.Coin3,
-			asset.Coin4,
-			asset.Coin5,
-			asset.Coin6,
-		},
-		AnimationSpeed: 0.35,
+func InitializeCoin(space *cp.Space, shiny bool, x, y float64) *Entity {
+	var coinIdle Animation
+	if shiny {
+		coinIdle = Animation{
+			Frames: []*ebiten.Image{
+				asset.Coin1Shiny,
+				asset.Coin2Shiny,
+				asset.Coin3Shiny,
+				asset.Coin4Shiny,
+			},
+			AnimationSpeed: 0.35,
+		}
+	} else {
+		coinIdle = Animation{
+			Frames: []*ebiten.Image{
+				asset.Coin1,
+				asset.Coin2,
+				asset.Coin3,
+				asset.Coin4,
+				asset.Coin5,
+				asset.Coin6,
+			},
+			AnimationSpeed: 0.35,
+		}
 	}
 	coinFeedback := Animation{
 		Frames: []*ebiten.Image{

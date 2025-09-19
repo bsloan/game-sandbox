@@ -60,6 +60,7 @@ const (
 	PineTreeProp     = 10
 	PalmTreeProp     = 11
 	Coin             = 12
+	ShinyCoin        = 13
 )
 
 var (
@@ -184,7 +185,12 @@ func (gb *Gameboard) initializeEntities(space *cp.Space, registry *entity.Regist
 					}
 				case Coin:
 					{
-						coin := entity.InitializeCoin(space, x, y)
+						coin := entity.InitializeCoin(space, false, x, y)
+						registry.AddEntity(coin)
+					}
+				case ShinyCoin:
+					{
+						coin := entity.InitializeCoin(space, true, x, y)
 						registry.AddEntity(coin)
 					}
 				}
