@@ -271,6 +271,7 @@ func InitializeCollisionHandlers(space *cp.Space) {
 	SlopeHandler(space, FrogCollisionType)
 	PlayerSwordHandler(space, FrogCollisionType)
 	GemHandler(space, FrogCollisionType)
+	PassthroughBelowHandler(space, FrogCollisionType)
 	// eagle
 	DamagePlayerHandler(space, EagleCollisionType)
 	PlayerSwordHandler(space, EagleCollisionType)

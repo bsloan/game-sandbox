@@ -73,6 +73,9 @@ const (
 	CAVE_BACKGROUND_ROCKS = 55
 
 	SPIRAL_BLOCK = 56
+
+	LADDER_DARK1=57
+	LADDER_TRANSPARENT1=58
 )
 
 var (
@@ -208,6 +211,12 @@ var (
 	//go:embed environment/cave_ceil_1.png
 	caveCeil1Png []byte
 
+	//go:embed environment/ladder_dark1.png
+	ladderDark1Png []byte
+
+	//go:embed environment/ladder_transparent1.png
+	ladderTransparent1Png []byte
+
 	//go:embed environment/tree.png
 	treePropPng []byte
 
@@ -272,6 +281,9 @@ var (
 	CaveBackgroundRocks *ebiten.Image
 	SpiralBlockTile     *ebiten.Image
 
+	LadderDark1         *ebiten.Image
+	LadderTransparent1  *ebiten.Image
+
 	SpiralBlockProp *ebiten.Image
 	TreeProp        *ebiten.Image
 	PineTreeProp    *ebiten.Image
@@ -321,6 +333,9 @@ func LoadTiles() {
 	PlankEndR = imageFromBytes(plankEndRPng)
 	PlankMiddle = imageFromBytes(plankMiddlePng)
 	SpiralBlockTile = imageFromBytes(spiralBlockTilePng)
+
+	LadderDark1 = imageFromBytes(ladderDark1Png)
+	LadderTransparent1 = imageFromBytes(ladderTransparent1Png)
 
 	GrassForeground1 = imageFromBytes(grassForeground1Png)
 	GrassForeground2 = imageFromBytes(grassForeground2Png)
@@ -420,4 +435,7 @@ func LoadTiles() {
 
 	TileImages[55] = CaveBackgroundRocks
 	TileImages[SPIRAL_BLOCK] = SpiralBlockTile
+
+	TileImages[LADDER_DARK1] = LadderDark1
+	TileImages[LADDER_TRANSPARENT1] = LadderTransparent1
 }
