@@ -16,6 +16,7 @@ const (
 	FrogCollisionType
 	EagleCollisionType
 	GemCollisionType
+	PassthroughBelowCollisionType
 )
 
 func GenericGroundedHandler(space *cp.Space, collisionType cp.CollisionType) {
@@ -207,11 +208,53 @@ func GemHandler(space *cp.Space, collisionType cp.CollisionType) {
 	}
 }
 
+func PassthroughBelowHandler(space *cp.Space, collisionType cp.CollisionType) {
+	handler := space.NewCollisionHandler(collisionType, PassthroughBelowCollisionType)
+
+	// PreSolve function to allow passing upward through the tile from below
+	handler.PreSolveFunc = func(arb *cp.Arbiter, space *cp.Space, data interface{}) bool {
+		n := arb.Normal()
+
+		// ignore the collision if it is mostly horizontal
+		if math.Abs(n.X) > math.Abs(n.Y) {
+			return false
+		}
+
+		// check if the normal points generally downward.
+		// if the normal's y-component is negative, that means the entity
+		// is hitting this tile from the bottom so we can ignore the collision.
+		if n.Y < -0.3 {
+			return false // Return `false` to ignore the collision
+		}
+
+		// proceed with collision normally - we must be colliding mostly top-down
+		return true
+	}
+
+	// add a "grounded" handler so that the entity can still be grounded on top of the pass-thru tile
+	handler.BeginFunc = func(arb *cp.Arbiter, space *cp.Space, data interface{}) bool {
+		n := arb.Normal()
+		grounded := n.Y > 0 //&& math.Abs(n.X) < 0.5 // check for small x overlap to help not get stuck on walls
+		if grounded {
+			body1, body2 := arb.Bodies()
+			if body1.UserData != nil {
+				body1.UserData.(*Entity).Grounded = true
+				body1.UserData.(*Entity).Shape.SetFriction(0.75)
+			} else {
+				body2.UserData.(*Entity).Grounded = true
+				body1.UserData.(*Entity).Shape.SetFriction(0.75)
+			}
+		}
+		return true
+	}
+}
+
 func InitializeCollisionHandlers(space *cp.Space) {
 	// attach collision handlers to player
 	GenericGroundedHandler(space, PlayerCollisionType)
 	SlopeHandler(space, PlayerCollisionType)
 	GemHandler(space, PlayerCollisionType)
+	PassthroughBelowHandler(space, PlayerCollisionType)
 
 	// attach collision handlers to generic enemies
 	DamagePlayerHandler(space, GenericEnemyCollisionType)

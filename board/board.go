@@ -47,6 +47,12 @@ var ForegroundTiles = []int{
 	asset.BRANCH_FOREGROUND_2,
 }
 
+var PassthroughBelowTiles = []int{
+	asset.PLANK_MIDDLE,
+	asset.PLANK_LEFT_END,
+	asset.PLANK_RIGHT_END,
+}
+
 const (
 	Gem              = 1
 	PlayerStart      = 2
@@ -127,6 +133,10 @@ func (gb *Gameboard) initializeTiles(space *cp.Space) {
 					tileShape = cp.NewSegment(tileBody, vert2, vert1, 3)
 					tileShape.SetFriction(0.08)
 					tileShape.SetCollisionType(entity.SlopeCollisionType)
+				} else if slices.Contains(PassthroughBelowTiles, tile) {
+					tileShape = cp.NewBox(tileBody, 16, 16, 0)
+					tileShape.SetFriction(1)
+					tileShape.SetCollisionType(entity.PassthroughBelowCollisionType)
 				} else {
 					// by default, just make it a regular block
 					tileShape = cp.NewBox(tileBody, 16, 16, 0)
