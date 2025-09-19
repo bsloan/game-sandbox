@@ -22,6 +22,7 @@ const (
 	TreeProp
 	PineTreeProp
 	PalmTreeProp
+	Coin
 )
 
 type EntityState int

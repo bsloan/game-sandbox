@@ -299,6 +299,36 @@ var (
 	//go:embed sprite/gem_5.png
 	gem5Png []byte
 
+	//go:embed sprite/coin1.png
+	coin1Png []byte
+
+	//go:embed sprite/coin2.png
+	coin2Png []byte
+
+	//go:embed sprite/coin3.png
+	coin3Png []byte
+
+	//go:embed sprite/coin4.png
+	coin4Png []byte
+
+	//go:embed sprite/coin5.png
+	coin5Png []byte
+
+	//go:embed sprite/coin6.png
+	coin6Png []byte
+
+	//go:embed sprite/coin1_shiny.png
+	coin1ShinyPng []byte
+
+	//go:embed sprite/coin2_shiny.png
+	coin2ShinyPng []byte
+
+	//go:embed sprite/coin3_shiny.png
+	coin3ShinyPng []byte
+
+	//go:embed sprite/coin4_shiny.png
+	coin4ShinyPng []byte
+
 	PlayerIdleRight1 *ebiten.Image
 	PlayerIdleRight2 *ebiten.Image
 	PlayerIdleRight3 *ebiten.Image
@@ -524,6 +554,18 @@ var (
 	Gem3 *ebiten.Image
 	Gem4 *ebiten.Image
 	Gem5 *ebiten.Image
+
+	Coin1 *ebiten.Image
+	Coin2 *ebiten.Image
+	Coin3 *ebiten.Image
+	Coin4 *ebiten.Image
+	Coin5 *ebiten.Image
+	Coin6 *ebiten.Image
+
+	Coin1Shiny *ebiten.Image
+	Coin2Shiny *ebiten.Image
+	Coin3Shiny *ebiten.Image
+	Coin4Shiny *ebiten.Image
 )
 
 func LoadSprites() {
@@ -755,4 +797,16 @@ func LoadSprites() {
 	Gem3 = imageFromBytes(gem3Png)
 	Gem4 = imageFromBytes(gem4Png)
 	Gem5 = imageFromBytes(gem5Png)
+
+	Coin1 = imageFromBytes(coin1Png)
+	Coin2 = imageFromBytes(coin2Png)
+	Coin3 = imageFromBytes(coin3Png)
+	Coin4 = imageFromBytes(coin4Png)
+	Coin5 = imageFromBytes(coin5Png)
+	Coin6 = imageFromBytes(coin6Png)
+
+	Coin1Shiny = imageFromBytes(coin1ShinyPng)
+	Coin2Shiny = imageFromBytes(coin2ShinyPng)
+	Coin3Shiny = imageFromBytes(coin3ShinyPng)
+	Coin4Shiny = imageFromBytes(coin4ShinyPng)
 }

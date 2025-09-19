@@ -805,6 +805,54 @@ func InitializeGem(space *cp.Space, x, y float64) *Entity {
 	return &gem
 }
 
+func InitializeCoin(space *cp.Space, x, y float64) *Entity {
+	coinIdle := Animation{
+		Frames: []*ebiten.Image{
+			asset.Coin1,
+			asset.Coin2,
+			asset.Coin3,
+			asset.Coin4,
+			asset.Coin5,
+			asset.Coin6,
+		},
+		AnimationSpeed: 0.35,
+	}
+	coinFeedback := Animation{
+		Frames: []*ebiten.Image{
+			asset.ItemFeedback1,
+			asset.ItemFeedback2,
+			asset.ItemFeedback3,
+			asset.ItemFeedback4,
+		},
+		AnimationSpeed:        0.3,
+		EntityStateTransition: Dead,
+	}
+	coin := Entity{
+		Type:   Coin,
+		State:  Idle,
+		Facing: Left,
+		Animations: map[EntityState]*Animation{
+			Idle:  &coinIdle,
+			Dying: &coinFeedback,
+		},
+		Body: cp.NewStaticBody(),
+		DrawOffsetX: map[EntityState]float64{
+			Dying: -10,
+		},
+		DrawOffsetY: map[EntityState]float64{
+			Dying: -10,
+		},
+	}
+	coin.Body.UserData = &coin
+	space.AddBody(coin.Body)
+	coin.Body.SetPosition(cp.Vector{X: x, Y: y})
+	gemShape := space.AddShape(cp.NewCircle(coin.Body, 8, cp.Vector{X: 0, Y: 0}))
+	gemShape.SetElasticity(0)
+	gemShape.SetCollisionType(GemCollisionType) // TODO: coin may need its own distinct collision type
+	coin.Shape = gemShape
+	return &coin
+}
+
 func InitializeSpiralBlockProp(space *cp.Space, x, y float64) *Entity {
 	block := Entity{
 		Type:        SpiralBlockProp,
