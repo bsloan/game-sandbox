@@ -51,6 +51,7 @@ const (
 	CrouchRight
 	CrouchLeft
 	ClimbingUpActive
+	ClimbingDownActive
 	ClimbingIdle
 )
 

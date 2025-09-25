@@ -158,21 +158,22 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 		State:  Idle,
 		Facing: Right,
 		Animations: map[EntityState]*Animation{
-			Idle:             &idleRight,
-			IdleRight:        &idleRight,
-			IdleLeft:         &idleLeft,
-			MovingRight:      &moveRight,
-			MovingLeft:       &moveLeft,
-			JumpingRight:     &jumpRight,
-			JumpingLeft:      &jumpLeft,
-			FallingRight:     &fallRight,
-			FallingLeft:      &fallLeft,
-			ActiveRight:      &activeRight,
-			ActiveLeft:       &activeLeft,
-			CrouchRight:      &crouchRight,
-			CrouchLeft:       &crouchLeft,
-			ClimbingUpActive: &climbActive,
-			ClimbingIdle:     &climbIdle,
+			Idle:               &idleRight,
+			IdleRight:          &idleRight,
+			IdleLeft:           &idleLeft,
+			MovingRight:        &moveRight,
+			MovingLeft:         &moveLeft,
+			JumpingRight:       &jumpRight,
+			JumpingLeft:        &jumpLeft,
+			FallingRight:       &fallRight,
+			FallingLeft:        &fallLeft,
+			ActiveRight:        &activeRight,
+			ActiveLeft:         &activeLeft,
+			CrouchRight:        &crouchRight,
+			CrouchLeft:         &crouchLeft,
+			ClimbingUpActive:   &climbActive,
+			ClimbingDownActive: &climbActive,
+			ClimbingIdle:       &climbIdle,
 		},
 		Body:      cp.NewBody(1, cp.INFINITY),
 		Boost:     0,
@@ -188,17 +189,17 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 		cp.BodyUpdateVelocity(body, gravity, damping, dt)
 
 		// limit player's horizontal movement velocity rightward
-		if body.UserData.(*Entity).State == ClimbingIdle || body.UserData.(*Entity).State == ClimbingUpActive && body.Velocity().X > settings.PlayerMaxVelocityX/2 {
-			body.SetVelocity(settings.PlayerMaxVelocityX/2, body.Velocity().Y)
+		if (body.UserData.(*Entity).State == ClimbingIdle || body.UserData.(*Entity).State == ClimbingUpActive || body.UserData.(*Entity).State == ClimbingDownActive) && body.Velocity().X > settings.PlayerMaxVelocityX/3 {
+			body.SetVelocity(settings.PlayerMaxVelocityX/3, body.Velocity().Y)
 		} else if body.UserData.(*Entity).Running && body.Velocity().X > settings.PlayerMaxRunningVelocityX {
 			body.SetVelocity(settings.PlayerMaxRunningVelocityX, body.Velocity().Y)
 		} else if !body.UserData.(*Entity).Running && body.Velocity().X > settings.PlayerMaxVelocityX {
 			body.SetVelocity(settings.PlayerMaxVelocityX, body.Velocity().Y)
 		}
 
-		// limit player's horizontal movement velocity leftware
-		if body.UserData.(*Entity).State == ClimbingIdle || body.UserData.(*Entity).State == ClimbingUpActive && body.Velocity().X < -settings.PlayerMaxVelocityX/2 {
-			body.SetVelocity(-settings.PlayerMaxVelocityX/2, body.Velocity().Y)
+		// limit player's horizontal movement velocity leftward
+		if (body.UserData.(*Entity).State == ClimbingIdle || body.UserData.(*Entity).State == ClimbingUpActive || body.UserData.(*Entity).State == ClimbingDownActive) && body.Velocity().X < -settings.PlayerMaxVelocityX/3 {
+			body.SetVelocity(-settings.PlayerMaxVelocityX/3, body.Velocity().Y)
 		} else if body.UserData.(*Entity).Running && body.Velocity().X < -settings.PlayerMaxRunningVelocityX {
 			body.SetVelocity(-settings.PlayerMaxRunningVelocityX, body.Velocity().Y)
 		} else if !body.UserData.(*Entity).Running && body.Velocity().X < -settings.PlayerMaxVelocityX {
