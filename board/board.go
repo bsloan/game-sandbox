@@ -38,6 +38,8 @@ var NoOpTiles = []int{
 	asset.CAVE_BACKGROUND_R_6,
 	asset.CAVE_BACKGROUND_R_7,
 	asset.CAVE_BACKGROUND_ROCKS,
+	asset.LADDER_TRANSPARENT1,
+	asset.LADDER_DARK1,
 }
 
 var ForegroundTiles = []int{
@@ -51,6 +53,13 @@ var PassthroughBelowTiles = []int{
 	asset.PLANK_MIDDLE,
 	asset.PLANK_LEFT_END,
 	asset.PLANK_RIGHT_END,
+	// TODO: maybe make a special tile type "ladder top" that is a passthru-below tile
+	//  so that player can stand at the top of a ladder
+}
+
+var ClimbableTiles = []int{
+	asset.LADDER_TRANSPARENT1,
+	asset.LADDER_DARK1,
 }
 
 const (

@@ -138,24 +138,40 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 		},
 		AnimationSpeed: 0.1,
 	}
+	climbActive := Animation{
+		Frames: []*ebiten.Image{
+			asset.PlayerClimb2,
+			asset.PlayerClimb1,
+			asset.PlayerClimb3,
+		},
+		AnimationSpeed: 0.1,
+	}
+	climbIdle := Animation{
+		Frames: []*ebiten.Image{
+			asset.PlayerClimb1,
+		},
+		AnimationSpeed: 0.0,
+	}
 	player := Entity{
 		Type:   Player,
 		State:  Idle,
 		Facing: Right,
 		Animations: map[EntityState]*Animation{
-			Idle:         &idleRight,
-			IdleRight:    &idleRight,
-			IdleLeft:     &idleLeft,
-			MovingRight:  &moveRight,
-			MovingLeft:   &moveLeft,
-			JumpingRight: &jumpRight,
-			JumpingLeft:  &jumpLeft,
-			FallingRight: &fallRight,
-			FallingLeft:  &fallLeft,
-			ActiveRight:  &activeRight,
-			ActiveLeft:   &activeLeft,
-			CrouchRight:  &crouchRight,
-			CrouchLeft:   &crouchLeft,
+			Idle:           &idleRight,
+			IdleRight:      &idleRight,
+			IdleLeft:       &idleLeft,
+			MovingRight:    &moveRight,
+			MovingLeft:     &moveLeft,
+			JumpingRight:   &jumpRight,
+			JumpingLeft:    &jumpLeft,
+			FallingRight:   &fallRight,
+			FallingLeft:    &fallLeft,
+			ActiveRight:    &activeRight,
+			ActiveLeft:     &activeLeft,
+			CrouchRight:    &crouchRight,
+			CrouchLeft:     &crouchLeft,
+			ClimbingActive: &climbActive,
+			ClimbingIdle:   &climbIdle,
 		},
 		Body:      cp.NewBody(1, cp.INFINITY),
 		Boost:     0,

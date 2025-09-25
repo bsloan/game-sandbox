@@ -50,6 +50,8 @@ const (
 	Dead
 	CrouchRight
 	CrouchLeft
+	ClimbingActive
+	ClimbingIdle
 )
 
 type Direction int

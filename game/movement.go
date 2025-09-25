@@ -3,7 +3,9 @@ package game
 import (
 	"math"
 	"math/rand/v2"
+	"slices"
 
+	"github.com/bsloan/game-sandbox/board"
 	"github.com/bsloan/game-sandbox/entity"
 	"github.com/bsloan/game-sandbox/settings"
 	"github.com/jakecoffman/cp"
@@ -30,6 +32,12 @@ func adjustPlayerWeaponPosition(pWeapon *entity.Entity, px, py float64) {
 	}
 }
 
+func (g *Game) canClimb(e *entity.Entity) bool {
+	tx := int(e.Body.Position().X / settings.TileSize)
+	ty := int(e.Body.Position().Y / settings.TileSize)
+	return slices.Contains(board.ClimbableTiles, g.board.Map[ty][tx+1]) || slices.Contains(board.ClimbableTiles, g.board.Map[ty][tx])
+}
+
 func (g *Game) MovePlayer(p *entity.Entity) {
 	// get player's weapon - may be nil if it's not being used
 	var pWeapon = g.registry.Query(entity.PlayerWeapon)
@@ -40,8 +48,8 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 		p.RememberState = entity.Idle
 	}
 
-	// if no input from player, be idle
-	if !g.inputDown() && !g.inputRight() && !g.inputLeft() && p.State != entity.ActiveRight && p.State != entity.ActiveLeft && p.Grounded {
+	// if no input from player, and player is not climbing, be idle
+	if !g.inputDown() && !g.inputRight() && !g.inputLeft() && p.State != entity.ActiveRight && p.State != entity.ActiveLeft && p.State != entity.ClimbingIdle && p.State != entity.ClimbingActive && p.Grounded {
 		if p.Facing == entity.Right {
 			p.State = entity.IdleRight
 		} else if p.Facing == entity.Left {
@@ -101,6 +109,15 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 			vx -= settings.PlayerAccelerationStep
 		}
 		p.Body.ApplyForceAtWorldPoint(cp.Vector{X: vx, Y: vy}, p.Body.Position())
+	}
+
+	// climb a ladder
+	if g.inputUp() && g.canClimb(p) && p.State != entity.ClimbingActive {
+		// initiate climb from some other state
+		p.State = entity.ClimbingActive
+	} else if !g.inputUp() && g.canClimb(p) && p.State == entity.ClimbingActive {
+		// already in a climbing state, on a climbable tile, but up button is released
+		p.State = entity.ClimbingIdle
 	}
 
 	// jump

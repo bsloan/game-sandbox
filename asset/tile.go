@@ -74,8 +74,8 @@ const (
 
 	SPIRAL_BLOCK = 56
 
-	LADDER_DARK1=57
-	LADDER_TRANSPARENT1=58
+	LADDER_DARK1        = 57
+	LADDER_TRANSPARENT1 = 58
 )
 
 var (
@@ -281,8 +281,8 @@ var (
 	CaveBackgroundRocks *ebiten.Image
 	SpiralBlockTile     *ebiten.Image
 
-	LadderDark1         *ebiten.Image
-	LadderTransparent1  *ebiten.Image
+	LadderDark1        *ebiten.Image
+	LadderTransparent1 *ebiten.Image
 
 	SpiralBlockProp *ebiten.Image
 	TreeProp        *ebiten.Image

@@ -361,6 +361,10 @@ var (
 	PlayerCrouchLeft1  *ebiten.Image
 	PlayerCrouchLeft2  *ebiten.Image
 
+	PlayerClimb1 *ebiten.Image
+	PlayerClimb2 *ebiten.Image
+	PlayerClimb3 *ebiten.Image
+
 	WhiteSlashRight1 *ebiten.Image
 	WhiteSlashRight2 *ebiten.Image
 	WhiteSlashRight3 *ebiten.Image
@@ -603,6 +607,10 @@ func LoadSprites() {
 	PlayerJumpLeft1 = flipImageXAxis(PlayerJumpRight1)
 	PlayerFallRight1 = imageFromBytes(playerFallRight1Png)
 	PlayerFallLeft1 = flipImageXAxis(PlayerFallRight1)
+
+	PlayerClimb1 = imageFromBytes(playerClimb1Png)
+	PlayerClimb2 = imageFromBytes(playerClimb2Png)
+	PlayerClimb3 = imageFromBytes(playerClimb3Png)
 
 	WhiteSlashRight1 = imageFromBytes(whiteSlashRight1Png)
 	WhiteSlashRight2 = imageFromBytes(whiteSlashRight2Png)
