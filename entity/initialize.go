@@ -187,13 +187,19 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 		// standard velocity update for player body
 		cp.BodyUpdateVelocity(body, gravity, damping, dt)
 
-		// limit player's horizontal movement velocity
-		if body.UserData.(*Entity).Running && body.Velocity().X > settings.PlayerMaxRunningVelocityX {
+		// limit player's horizontal movement velocity rightward
+		if body.UserData.(*Entity).State == ClimbingIdle || body.UserData.(*Entity).State == ClimbingUpActive && body.Velocity().X > settings.PlayerMaxVelocityX/2 {
+			body.SetVelocity(settings.PlayerMaxVelocityX/2, body.Velocity().Y)
+		} else if body.UserData.(*Entity).Running && body.Velocity().X > settings.PlayerMaxRunningVelocityX {
 			body.SetVelocity(settings.PlayerMaxRunningVelocityX, body.Velocity().Y)
 		} else if !body.UserData.(*Entity).Running && body.Velocity().X > settings.PlayerMaxVelocityX {
 			body.SetVelocity(settings.PlayerMaxVelocityX, body.Velocity().Y)
 		}
-		if body.UserData.(*Entity).Running && body.Velocity().X < -settings.PlayerMaxRunningVelocityX {
+
+		// limit player's horizontal movement velocity leftware
+		if body.UserData.(*Entity).State == ClimbingIdle || body.UserData.(*Entity).State == ClimbingUpActive && body.Velocity().X < -settings.PlayerMaxVelocityX/2 {
+			body.SetVelocity(-settings.PlayerMaxVelocityX/2, body.Velocity().Y)
+		} else if body.UserData.(*Entity).Running && body.Velocity().X < -settings.PlayerMaxRunningVelocityX {
 			body.SetVelocity(-settings.PlayerMaxRunningVelocityX, body.Velocity().Y)
 		} else if !body.UserData.(*Entity).Running && body.Velocity().X < -settings.PlayerMaxVelocityX {
 			body.SetVelocity(-settings.PlayerMaxVelocityX, body.Velocity().Y)
