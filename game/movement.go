@@ -117,9 +117,15 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 	}
 
 	// climb a ladder
-	if g.inputUp() && g.canClimb(p) && p.State != entity.ClimbingUpActive {
-		// initiate climb from some other state
+	if g.inputUp() && g.canClimb(p) {
+		// climb
 		p.State = entity.ClimbingUpActive
+		p.Grounded = false
+		// if player is in free fall, zero-out downward velocity since we're climbing now
+		if p.Body.Velocity().Y > 70 {
+			p.Body.SetVelocity(p.Body.Velocity().X, 0)
+		}
+		p.Body.ApplyForceAtLocalPoint(cp.Vector{X: 0, Y: -settings.PlayerClimbVelocity}, cp.Vector{X: 0, Y: 0})
 	} else if !g.inputUp() && g.canClimb(p) && p.State == entity.ClimbingUpActive {
 		// already in a climbing state, on a climbable tile, but up button is released
 		p.State = entity.ClimbingIdle
@@ -200,7 +206,7 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 	adjustPlayerWeaponPosition(pWeapon, p.Body.Position().X, p.Body.Position().Y)
 
 	// determine if player is falling, change friction and sprite animation accordingly
-	if p.Body.Velocity().Y > 70 && !p.OnSlope {
+	if p.Body.Velocity().Y > 70 && !p.OnSlope && p.State != entity.ClimbingUpActive && p.State != entity.ClimbingIdle {
 		// player has steady downward velocity and is falling
 		if p.Facing == entity.Right {
 			p.State = entity.FallingRight
@@ -217,7 +223,7 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 		p.Grounded = false
 		p.Shape.SetFriction(0)
 	}
-	if p.Grounded && !p.OnSlope {
+	if p.Grounded && !p.OnSlope && p.State != entity.ClimbingUpActive && p.State != entity.ClimbingIdle {
 		// reset the player to normal friction and y velocity for being on solid ground
 		p.Shape.SetFriction(0.75)
 		p.Body.SetVelocity(p.Body.Velocity().X, 0)

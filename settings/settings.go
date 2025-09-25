@@ -18,6 +18,7 @@ const (
 	PlayerJumpBoostHeight         = 30
 	PlayerJumpInitialVelocity     = 6000
 	PlayerJumpContinueVelocity    = 400
+	PlayerClimbVelocity           = 650
 	SwordDogAccelerationStep      = 500
 	SwordDogMaxVelocityX          = 75
 )

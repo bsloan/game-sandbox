@@ -203,8 +203,8 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 		if body.Velocity().Y > settings.PlayerMaxVelocityY {
 			body.SetVelocity(body.Velocity().X, settings.PlayerMaxVelocityY)
 		}
-		// if player is climbing up or idle on ladder, zero-out downward velocity
-		if body.UserData.(*Entity).State == ClimbingUpActive || body.UserData.(*Entity).State == ClimbingIdle {
+		// if player is idle on ladder, zero-out downward velocity
+		if body.UserData.(*Entity).State == ClimbingIdle {
 			body.SetVelocity(body.Velocity().X, 0)
 		}
 
