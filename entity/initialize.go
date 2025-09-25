@@ -143,6 +143,7 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 			asset.PlayerClimb2,
 			asset.PlayerClimb1,
 			asset.PlayerClimb3,
+			asset.PlayerClimb1,
 		},
 		AnimationSpeed: 0.1,
 	}
@@ -157,21 +158,21 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 		State:  Idle,
 		Facing: Right,
 		Animations: map[EntityState]*Animation{
-			Idle:           &idleRight,
-			IdleRight:      &idleRight,
-			IdleLeft:       &idleLeft,
-			MovingRight:    &moveRight,
-			MovingLeft:     &moveLeft,
-			JumpingRight:   &jumpRight,
-			JumpingLeft:    &jumpLeft,
-			FallingRight:   &fallRight,
-			FallingLeft:    &fallLeft,
-			ActiveRight:    &activeRight,
-			ActiveLeft:     &activeLeft,
-			CrouchRight:    &crouchRight,
-			CrouchLeft:     &crouchLeft,
-			ClimbingActive: &climbActive,
-			ClimbingIdle:   &climbIdle,
+			Idle:             &idleRight,
+			IdleRight:        &idleRight,
+			IdleLeft:         &idleLeft,
+			MovingRight:      &moveRight,
+			MovingLeft:       &moveLeft,
+			JumpingRight:     &jumpRight,
+			JumpingLeft:      &jumpLeft,
+			FallingRight:     &fallRight,
+			FallingLeft:      &fallLeft,
+			ActiveRight:      &activeRight,
+			ActiveLeft:       &activeLeft,
+			CrouchRight:      &crouchRight,
+			CrouchLeft:       &crouchLeft,
+			ClimbingUpActive: &climbActive,
+			ClimbingIdle:     &climbIdle,
 		},
 		Body:      cp.NewBody(1, cp.INFINITY),
 		Boost:     0,
@@ -183,7 +184,10 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 	player.Body.SetPosition(cp.Vector{X: x, Y: y})
 
 	playerVelocityLimitFunc := func(body *cp.Body, gravity cp.Vector, damping float64, dt float64) {
+		// standard velocity update for player body
 		cp.BodyUpdateVelocity(body, gravity, damping, dt)
+
+		// limit player's horizontal movement velocity
 		if body.UserData.(*Entity).Running && body.Velocity().X > settings.PlayerMaxRunningVelocityX {
 			body.SetVelocity(settings.PlayerMaxRunningVelocityX, body.Velocity().Y)
 		} else if !body.UserData.(*Entity).Running && body.Velocity().X > settings.PlayerMaxVelocityX {
@@ -194,9 +198,17 @@ func InitializePlayer(space *cp.Space, x, y float64) *Entity {
 		} else if !body.UserData.(*Entity).Running && body.Velocity().X < -settings.PlayerMaxVelocityX {
 			body.SetVelocity(-settings.PlayerMaxVelocityX, body.Velocity().Y)
 		}
+
+		// limit player's downward velocity
 		if body.Velocity().Y > settings.PlayerMaxVelocityY {
 			body.SetVelocity(body.Velocity().X, settings.PlayerMaxVelocityY)
 		}
+		// if player is climbing up or idle on ladder, zero-out downward velocity
+		if body.UserData.(*Entity).State == ClimbingUpActive || body.UserData.(*Entity).State == ClimbingIdle {
+			body.SetVelocity(body.Velocity().X, 0)
+		}
+
+		// limit player's upward velocity
 		if body.Velocity().Y < -settings.PlayerJumpVelocityLimit {
 			body.SetVelocity(body.Velocity().X, -settings.PlayerJumpVelocityLimit)
 		}

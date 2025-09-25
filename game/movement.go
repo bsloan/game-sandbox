@@ -49,12 +49,17 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 	}
 
 	// if no input from player, and player is not climbing, be idle
-	if !g.inputDown() && !g.inputRight() && !g.inputLeft() && p.State != entity.ActiveRight && p.State != entity.ActiveLeft && p.State != entity.ClimbingIdle && p.State != entity.ClimbingActive && p.Grounded {
+	if !g.inputDown() && !g.inputRight() && !g.inputLeft() && p.State != entity.ActiveRight && p.State != entity.ActiveLeft && p.State != entity.ClimbingIdle && p.State != entity.ClimbingUpActive && p.Grounded {
 		if p.Facing == entity.Right {
 			p.State = entity.IdleRight
 		} else if p.Facing == entity.Left {
 			p.State = entity.IdleLeft
 		}
+	}
+
+	// if in a climbing state but not on a climbable tile, unset climbing state
+	if !g.canClimb(p) && (p.State == entity.ClimbingUpActive || p.State == entity.ClimbingIdle) {
+		p.State = entity.Idle
 	}
 
 	// no jump input: reset boost if player is on ground, otherwise zero it out if in the air
@@ -112,10 +117,10 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 	}
 
 	// climb a ladder
-	if g.inputUp() && g.canClimb(p) && p.State != entity.ClimbingActive {
+	if g.inputUp() && g.canClimb(p) && p.State != entity.ClimbingUpActive {
 		// initiate climb from some other state
-		p.State = entity.ClimbingActive
-	} else if !g.inputUp() && g.canClimb(p) && p.State == entity.ClimbingActive {
+		p.State = entity.ClimbingUpActive
+	} else if !g.inputUp() && g.canClimb(p) && p.State == entity.ClimbingUpActive {
 		// already in a climbing state, on a climbable tile, but up button is released
 		p.State = entity.ClimbingIdle
 	}

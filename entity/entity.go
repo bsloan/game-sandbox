@@ -50,7 +50,7 @@ const (
 	Dead
 	CrouchRight
 	CrouchLeft
-	ClimbingActive
+	ClimbingUpActive
 	ClimbingIdle
 )
 
