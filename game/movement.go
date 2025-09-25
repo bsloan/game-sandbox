@@ -234,14 +234,23 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 		p.Grounded = false
 		p.Shape.SetFriction(0)
 	}
+
+	// reset the player to normal friction and y velocity for being on solid ground
 	if p.Grounded && !p.OnSlope && p.State != entity.ClimbingUpActive && p.State != entity.ClimbingIdle && p.State != entity.ClimbingDownActive {
-		// reset the player to normal friction and y velocity for being on solid ground
 		p.Shape.SetFriction(0.75)
 		p.Body.SetVelocity(p.Body.Velocity().X, 0)
 	}
+
+	// if the player is sliding down a slope, add extra friction to control it
 	if p.Grounded && p.OnSlope && p.Body.Velocity().Y > 2 {
-		// if the player is sliding down a slope, add extra friction to control it
 		p.Shape.SetFriction(4.0)
+	}
+
+	// if player is climbing and there is no right/left input, zero-out X velocity to prevent sliding sideways
+	if p.State == entity.ClimbingUpActive || p.State == entity.ClimbingIdle || p.State == entity.ClimbingDownActive {
+		if !g.inputRight() && !g.inputLeft() {
+			p.Body.SetVelocity(0, p.Body.Velocity().Y)
+		}
 	}
 }
 
