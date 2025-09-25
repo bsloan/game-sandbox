@@ -69,6 +69,7 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 		entity.InitializeCrouchPlayerShape(g.space, p)
 	}
 
+	// move right
 	if g.inputRight() {
 		p.Facing = entity.Right
 		if p.Grounded {
@@ -85,6 +86,7 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 		p.Body.ApplyForceAtWorldPoint(cp.Vector{X: vx, Y: vy}, p.Body.Position())
 	}
 
+	// move left
 	if g.inputLeft() {
 		p.Facing = entity.Left
 		if p.Grounded {
@@ -100,7 +102,8 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 		}
 		p.Body.ApplyForceAtWorldPoint(cp.Vector{X: vx, Y: vy}, p.Body.Position())
 	}
-	
+
+	// jump
 	if g.inputJump() && p.Boost > 0 {
 		if p.State == entity.JumpingRight || p.State == entity.JumpingLeft {
 			// player is already in a jump, diminish boost
@@ -119,6 +122,7 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 		}
 	}
 
+	// attack and/or run ...
 	if g.inputAttack() && pWeapon == nil && p.WeaponAvailable {
 		// create a special Entity for the slash and animate it
 		pWeapon = entity.InitializePlayerSword(g.space, p.Body.Position().X, p.Body.Position().Y)
