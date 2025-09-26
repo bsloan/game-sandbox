@@ -106,6 +106,33 @@ func ObstructedHandler(space *cp.Space, collisionType cp.CollisionType) {
 	}
 }
 
+func EagleObstructedHandler(space *cp.Space, collisionType cp.CollisionType) {
+	handler := space.NewCollisionHandler(EagleCollisionType, collisionType)
+	handler.BeginFunc = func(arb *cp.Arbiter, space *cp.Space, data interface{}) bool {
+		n := arb.Normal()
+		body1, _ := arb.Bodies()
+		var eagle = body1.UserData.(*Entity)
+
+		if eagle.State == ActiveLeft {
+			eagle.State = ActiveLeft2
+		} else if eagle.State == ActiveRight {
+			eagle.State = ActiveRight2
+		} else if eagle.State == ActiveLeft2 || eagle.State == ActiveRight2 {
+			// stay in the same state and change nothing
+		} else {
+			if n.X > 0.5 {
+				eagle.Facing = Left
+				eagle.State = MovingLeft
+			} else if n.X < -0.5 {
+				eagle.Facing = Right
+				eagle.State = MovingRight
+			}
+		}
+
+		return true
+	}
+}
+
 func DamagePlayerHandler(space *cp.Space, collisionType cp.CollisionType) {
 	handler := space.NewCollisionHandler(collisionType, PlayerCollisionType)
 
@@ -143,6 +170,72 @@ func DamagePlayerHandler(space *cp.Space, collisionType cp.CollisionType) {
 		} else if n.Y < 0 {
 			playerBody.ApplyForceAtLocalPoint(cp.Vector{X: 0, Y: -settings.PlayerJumpInitialVelocity * 3}, cp.Vector{X: 0, Y: 0})
 			playerBody.UserData.(*Entity).Damaged = 5
+		}
+
+		// subtract enemy's attack damage from player's health
+		playerBody.UserData.(*Entity).Health -= enemyBody.UserData.(*Entity).AttackDamage
+
+		return true
+	}
+}
+
+func EagleDamagePlayerHandler(space *cp.Space) {
+	handler := space.NewCollisionHandler(EagleCollisionType, PlayerCollisionType)
+
+	handler.BeginFunc = func(arb *cp.Arbiter, space *cp.Space, data interface{}) bool {
+		n := arb.Normal()
+		body1, body2 := arb.Bodies()
+
+		// FIXME: clean this up
+
+		var enemyBody *cp.Body
+		var playerBody *cp.Body
+
+		if body1.UserData.(*Entity).Type == Player {
+			playerBody = body1
+			enemyBody = body2
+		} else {
+			playerBody = body2
+			enemyBody = body1
+		}
+
+		// allow a grace period if we've just gotten hit
+		if playerBody.UserData.(*Entity).Damaged > 0 {
+			return true
+		}
+
+		// jolt the player backwards a bit
+		if n.X > 0 {
+			playerBody.ApplyForceAtLocalPoint(cp.Vector{X: settings.PlayerJumpInitialVelocity * 3, Y: 0}, cp.Vector{X: 0, Y: 0})
+			playerBody.UserData.(*Entity).Damaged = 5
+		} else if n.X < 0 {
+			playerBody.ApplyForceAtLocalPoint(cp.Vector{X: -settings.PlayerJumpInitialVelocity * 3, Y: 0}, cp.Vector{X: 0, Y: 0})
+			playerBody.UserData.(*Entity).Damaged = 5
+		}
+		if n.Y > 0 {
+			playerBody.ApplyForceAtLocalPoint(cp.Vector{X: 0, Y: settings.PlayerJumpInitialVelocity * 3}, cp.Vector{X: 0, Y: 0})
+			playerBody.UserData.(*Entity).Damaged = 5
+		} else if n.Y < 0 {
+			playerBody.ApplyForceAtLocalPoint(cp.Vector{X: 0, Y: -settings.PlayerJumpInitialVelocity * 3}, cp.Vector{X: 0, Y: 0})
+			playerBody.UserData.(*Entity).Damaged = 5
+		}
+
+		if enemyBody.UserData.(*Entity).State == ActiveLeft {
+			enemyBody.SetVelocity(enemyBody.Position().X, 0)
+			enemyBody.UserData.(*Entity).State = ActiveLeft2
+		} else if enemyBody.UserData.(*Entity).State == ActiveRight {
+			enemyBody.SetVelocity(enemyBody.Position().X, 0)
+			enemyBody.UserData.(*Entity).State = ActiveRight2
+		} else if enemyBody.UserData.(*Entity).State == ActiveLeft2 || enemyBody.UserData.(*Entity).State == ActiveRight2 {
+			// stay in the same state and change nothing
+		} else {
+			if n.X > 0.5 {
+				enemyBody.UserData.(*Entity).Facing = Left
+				enemyBody.UserData.(*Entity).State = MovingLeft
+			} else if n.X < -0.5 {
+				enemyBody.UserData.(*Entity).Facing = Right
+				enemyBody.UserData.(*Entity).State = MovingRight
+			}
 		}
 
 		// subtract enemy's attack damage from player's health
@@ -273,8 +366,9 @@ func InitializeCollisionHandlers(space *cp.Space) {
 	GemHandler(space, FrogCollisionType)
 	PassthroughBelowHandler(space, FrogCollisionType)
 	// eagle
-	DamagePlayerHandler(space, EagleCollisionType)
 	PlayerSwordHandler(space, EagleCollisionType)
-	ObstructedHandler(space, EagleCollisionType)
+	EagleObstructedHandler(space, BlockCollisionType)
+	EagleDamagePlayerHandler(space)
+	//DamagePlayerHandler(space, EagleCollisionType)
 	GemHandler(space, EagleCollisionType)
 }

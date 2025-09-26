@@ -520,8 +520,46 @@ func (g *Game) MoveEagle(eagle *entity.Entity) {
 		}
 	}
 
-	// TODO: divebomb the player if x and y coordinates are close
+	// divebomb the player if x and y coordinates are close
+	var playerX = g.registry.Player().Body.Position().X
+	var playerY = g.registry.Player().Body.Position().Y
+	var eagleX = eagle.Body.Position().X
+	var eagleY = eagle.Body.Position().Y
+	xDistance := math.Abs(eagleX - playerX)
 
+	if xDistance < 30 && playerY > eagleY && eagle.State != entity.ActiveLeft && eagle.State != entity.ActiveRight {
+		if eagle.State == entity.MovingLeft {
+			eagle.State = entity.ActiveLeft
+			eagle.RememberState = entity.MovingLeft
+		} else if eagle.State == entity.MovingRight {
+			eagle.State = entity.ActiveRight
+			eagle.RememberState = entity.MovingRight
+		}
+	}
+
+	// eagle is either swooping down, flying back up, or hanging in the air
+	if eagle.State == entity.ActiveLeft || eagle.State == entity.ActiveRight {
+		// divebomb until boost runs out, then reset
+		eagle.Boost--
+		eagle.Body.ApplyForceAtLocalPoint(cp.Vector{X: 0, Y: settings.EagleDivebombVelocity}, cp.Vector{X: 0, Y: 0})
+		if eagle.Boost <= 0 {
+			eagle.Boost = 50
+			if eagle.State == entity.ActiveLeft {
+				eagle.State = entity.ActiveLeft2
+			} else {
+				eagle.State = entity.ActiveRight2
+			}
+		}
+	} else if eagle.State == entity.ActiveLeft2 || eagle.State == entity.ActiveRight2 {
+		// fly back up to origin y
+		eagle.Body.ApplyForceAtLocalPoint(cp.Vector{X: 0, Y: -settings.EagleFlyUpVelocity}, cp.Vector{X: 0, Y: 0})
+		if eagle.Body.Position().Y <= eagle.OriginY {
+			eagle.State = eagle.RememberState
+		}
+	} else {
+		// if not flying up or swooping down, zero-out y velocity to float
+		eagle.Body.SetVelocity(eagle.Body.Velocity().X, 0)
+	}
 }
 
 var EntityBehavior map[entity.EntityType]entity.Behavior

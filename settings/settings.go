@@ -21,4 +21,6 @@ const (
 	PlayerClimbVelocity           = 600
 	SwordDogAccelerationStep      = 500
 	SwordDogMaxVelocityX          = 75
+	EagleFlyUpVelocity            = 700
+	EagleDivebombVelocity         = 400
 )

@@ -755,11 +755,16 @@ func InitializeEagle(space *cp.Space, x, y float64) *Entity {
 		State:  MovingLeft,
 		Facing: Left,
 		Animations: map[EntityState]*Animation{
-			MovingLeft:  &flyLeft,
-			MovingRight: &flyRight,
-			Dying:       &dying,
+			MovingLeft:   &flyLeft,
+			MovingRight:  &flyRight,
+			ActiveLeft:   &flyLeft,
+			ActiveRight:  &flyRight,
+			ActiveLeft2:  &flyLeft,
+			ActiveRight2: &flyRight,
+			Dying:        &dying,
 		},
-		Body: cp.NewBody(1, cp.INFINITY),
+		Body:  cp.NewBody(1, cp.INFINITY),
+		Boost: 50,
 	}
 	eagle.Body.UserData = &eagle
 	space.AddBody(eagle.Body)
@@ -767,13 +772,20 @@ func InitializeEagle(space *cp.Space, x, y float64) *Entity {
 	// set Y velocity to 0 so eagle floats without being pulled downward
 	noGravityVelocityFunc := func(body *cp.Body, gravity cp.Vector, damping float64, dt float64) {
 		cp.BodyUpdateVelocity(body, gravity, damping, dt)
+
+		// limit eagle's horizontal velocity
 		if body.Velocity().X > 100 {
 			body.SetVelocity(100, body.Velocity().Y)
 		} else if body.Velocity().X < -100 {
 			body.SetVelocity(-100, body.Velocity().Y)
 		}
-		body.SetVelocity(body.Velocity().X, 0)
+
+		// limit eagle's upward velocity
+		if body.Velocity().Y < -settings.PlayerJumpVelocityLimit {
+			body.SetVelocity(body.Velocity().X, -settings.PlayerJumpVelocityLimit)
+		}
 	}
+
 	eagle.Body.SetVelocityUpdateFunc(noGravityVelocityFunc)
 
 	eagle.Body.SetPosition(cp.Vector{X: x, Y: y})
