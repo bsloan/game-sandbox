@@ -71,9 +71,9 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 		}
 	}
 
-	// if player pressed down, there's no other input, and player is not already crouching or attacking, then
+	// if player pressed down, there's no other input, and player is not already crouching, attacking, or climbing, then
 	// detach the player's current shape and attach a smaller/shorter one (initiate crouch)
-	if g.inputDown() && p.Grounded && !g.inputRight() && !g.inputLeft() && p.State != entity.ActiveRight && p.State != entity.ActiveLeft && p.State != entity.CrouchRight && p.State != entity.CrouchLeft {
+	if g.inputDown() && p.Grounded && !g.inputRight() && !g.inputLeft() && p.State != entity.ActiveRight && p.State != entity.ActiveLeft && p.State != entity.CrouchRight && p.State != entity.CrouchLeft && p.State != entity.ClimbingDownActive && p.State != entity.ClimbingUpActive && p.State != entity.ClimbingIdle {
 		if p.Facing == entity.Right {
 			p.State = entity.CrouchRight
 		} else {
