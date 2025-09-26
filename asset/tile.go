@@ -77,7 +77,14 @@ const (
 	LADDER_DARK1        = 57
 	LADDER_TRANSPARENT1 = 58
 
-	CAVE_CEILING = 59
+	CAVE_CEILING1       = 59
+	CAVE_CEILING2       = 60
+	CAVE_CEILING3       = 61
+	CAVE_CEILING4       = 62
+	CAVE_STALACTITE     = 63
+	CAVE_CEILING3_VINE1 = 64
+	CAVE_CEILING3_VINE2 = 65
+	CAVE_CEILING4_VINE1 = 66
 )
 
 var (
@@ -213,6 +220,27 @@ var (
 	//go:embed environment/cave_ceil_1.png
 	caveCeil1Png []byte
 
+	//go:embed environment/cave_ceil_2.png
+	caveCeil2Png []byte
+
+	//go:embed environment/cave_ceil_3.png
+	caveCeil3Png []byte
+
+	//go:embed environment/cave_ceil_stalac.png
+	caveCeilStalactitePng []byte
+
+	//go:embed environment/cave_ceil_3_vine1.png
+	caveCeil3Vine1Png []byte
+
+	//go:embed environment/cave_ceil_3_vine2.png
+	caveCeil3Vine2Png []byte
+
+	//go:embed environment/cave_ceil_4.png
+	caveCeil4Png []byte
+
+	//go:embed environment/cave_ceil_4_vine1.png
+	caveCeil4Vine1Png []byte
+
 	//go:embed environment/ladder_dark1.png
 	ladderDark1Png []byte
 
@@ -234,54 +262,61 @@ var (
 	//go:embed environment/middle.png
 	hillsMidgroundPng []byte
 
-	GrassLeft           *ebiten.Image
-	GrassMiddle         *ebiten.Image
-	GrassRight          *ebiten.Image
-	GrassFloatLeft      *ebiten.Image
-	GrassFloatMiddle    *ebiten.Image
-	GrassFloatRight     *ebiten.Image
-	DirtMiddle          *ebiten.Image
-	DirtLeft1           *ebiten.Image
-	DirtLeft2           *ebiten.Image
-	DirtRight1          *ebiten.Image
-	DirtRight2          *ebiten.Image
-	DirtRocks1          *ebiten.Image
-	DirtRocks2          *ebiten.Image
-	DirtBottom1         *ebiten.Image
-	DirtBottom2         *ebiten.Image
-	GrassSlopeR1        *ebiten.Image
-	GrassSlopeR2        *ebiten.Image
-	GrassSlopeR3        *ebiten.Image
-	GrassSlopeR4        *ebiten.Image
-	GrassSlopeL1        *ebiten.Image
-	GrassSlopeL2        *ebiten.Image
-	GrassSlopeL3        *ebiten.Image
-	GrassSlopeL4        *ebiten.Image
-	GrassSlopeSteepR1   *ebiten.Image
-	GrassSlopeSteepR2   *ebiten.Image
-	GrassSlopeSteepL1   *ebiten.Image
-	GrassSlopeSteepL2   *ebiten.Image
-	PlankBaseL          *ebiten.Image
-	PlankBaseR          *ebiten.Image
-	PlankEndL           *ebiten.Image
-	PlankEndR           *ebiten.Image
-	PlankMiddle         *ebiten.Image
-	CaveBackgroundL1    *ebiten.Image
-	CaveBackgroundL2    *ebiten.Image
-	CaveBackgroundL3    *ebiten.Image
-	CaveBackgroundL4    *ebiten.Image
-	CaveBackgroundL5    *ebiten.Image
-	CaveBackgroundL6    *ebiten.Image
-	CaveBackgroundL7    *ebiten.Image
-	CaveBackgroundR1    *ebiten.Image
-	CaveBackgroundR2    *ebiten.Image
-	CaveBackgroundR3    *ebiten.Image
-	CaveBackgroundR4    *ebiten.Image
-	CaveBackgroundR5    *ebiten.Image
-	CaveBackgroundR6    *ebiten.Image
-	CaveBackgroundR7    *ebiten.Image
-	CaveBackgroundRocks *ebiten.Image
-	CaveCeiling         *ebiten.Image
+	GrassLeft             *ebiten.Image
+	GrassMiddle           *ebiten.Image
+	GrassRight            *ebiten.Image
+	GrassFloatLeft        *ebiten.Image
+	GrassFloatMiddle      *ebiten.Image
+	GrassFloatRight       *ebiten.Image
+	DirtMiddle            *ebiten.Image
+	DirtLeft1             *ebiten.Image
+	DirtLeft2             *ebiten.Image
+	DirtRight1            *ebiten.Image
+	DirtRight2            *ebiten.Image
+	DirtRocks1            *ebiten.Image
+	DirtRocks2            *ebiten.Image
+	DirtBottom1           *ebiten.Image
+	DirtBottom2           *ebiten.Image
+	GrassSlopeR1          *ebiten.Image
+	GrassSlopeR2          *ebiten.Image
+	GrassSlopeR3          *ebiten.Image
+	GrassSlopeR4          *ebiten.Image
+	GrassSlopeL1          *ebiten.Image
+	GrassSlopeL2          *ebiten.Image
+	GrassSlopeL3          *ebiten.Image
+	GrassSlopeL4          *ebiten.Image
+	GrassSlopeSteepR1     *ebiten.Image
+	GrassSlopeSteepR2     *ebiten.Image
+	GrassSlopeSteepL1     *ebiten.Image
+	GrassSlopeSteepL2     *ebiten.Image
+	PlankBaseL            *ebiten.Image
+	PlankBaseR            *ebiten.Image
+	PlankEndL             *ebiten.Image
+	PlankEndR             *ebiten.Image
+	PlankMiddle           *ebiten.Image
+	CaveBackgroundL1      *ebiten.Image
+	CaveBackgroundL2      *ebiten.Image
+	CaveBackgroundL3      *ebiten.Image
+	CaveBackgroundL4      *ebiten.Image
+	CaveBackgroundL5      *ebiten.Image
+	CaveBackgroundL6      *ebiten.Image
+	CaveBackgroundL7      *ebiten.Image
+	CaveBackgroundR1      *ebiten.Image
+	CaveBackgroundR2      *ebiten.Image
+	CaveBackgroundR3      *ebiten.Image
+	CaveBackgroundR4      *ebiten.Image
+	CaveBackgroundR5      *ebiten.Image
+	CaveBackgroundR6      *ebiten.Image
+	CaveBackgroundR7      *ebiten.Image
+	CaveBackgroundRocks   *ebiten.Image
+	CaveCeiling1          *ebiten.Image
+	CaveCeiling2          *ebiten.Image
+	CaveCeiling3          *ebiten.Image
+	CaveCeiling4          *ebiten.Image
+	CaveCeilingStalactite *ebiten.Image
+	CaveCeiling3Vine1     *ebiten.Image
+	CaveCeiling3Vine2     *ebiten.Image
+	CaveCeiling4Vine1     *ebiten.Image
 
 	SpiralBlockTile *ebiten.Image
 
@@ -364,7 +399,14 @@ func LoadTiles() {
 	CaveBackgroundR6 = flipImageXAxis(CaveBackgroundL6)
 	CaveBackgroundR7 = flipImageXAxis(CaveBackgroundL7)
 	CaveBackgroundRocks = imageFromBytes(caveRocksPng)
-	CaveCeiling = imageFromBytes(caveCeil1Png)
+	CaveCeiling1 = imageFromBytes(caveCeil1Png)
+	CaveCeiling2 = imageFromBytes(caveCeil2Png)
+	CaveCeiling3 = imageFromBytes(caveCeil3Png)
+	CaveCeiling4 = imageFromBytes(caveCeil4Png)
+	CaveCeiling3Vine1 = imageFromBytes(caveCeil3Vine1Png)
+	CaveCeiling3Vine2 = imageFromBytes(caveCeil3Vine2Png)
+	CaveCeilingStalactite = imageFromBytes(caveCeilStalactitePng)
+	CaveCeiling4Vine1 = imageFromBytes(caveCeil4Vine1Png)
 
 	// static props
 	SpiralBlockProp = imageFromBytes(spiralBlockPropPng)
@@ -444,5 +486,12 @@ func LoadTiles() {
 	TileImages[LADDER_DARK1] = LadderDark1
 	TileImages[LADDER_TRANSPARENT1] = LadderTransparent1
 
-	TileImages[CAVE_CEILING] = CaveCeiling
+	TileImages[CAVE_CEILING1] = CaveCeiling1
+	TileImages[CAVE_CEILING2] = CaveCeiling2
+	TileImages[CAVE_CEILING3] = CaveCeiling3
+	TileImages[CAVE_CEILING4] = CaveCeiling4
+	TileImages[CAVE_STALACTITE] = CaveCeilingStalactite
+	TileImages[CAVE_CEILING3_VINE1] = CaveCeiling3Vine1
+	TileImages[CAVE_CEILING3_VINE2] = CaveCeiling3Vine2
+	TileImages[CAVE_CEILING4_VINE1] = CaveCeiling4Vine1
 }
