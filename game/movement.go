@@ -124,6 +124,8 @@ func (g *Game) MovePlayer(p *entity.Entity) {
 		// if player is in free fall, zero-out downward velocity since we're climbing now
 		if p.Body.Velocity().Y > 70 {
 			p.Body.SetVelocity(p.Body.Velocity().X, 0)
+		} else if p.Body.Velocity().Y < -70 {
+			p.Body.SetVelocity(p.Body.Velocity().X, -70) // also limit upward velocity/speed
 		}
 		p.Body.ApplyForceAtLocalPoint(cp.Vector{X: 0, Y: -settings.PlayerClimbVelocity}, cp.Vector{X: 0, Y: 0})
 	} else if g.inputDown() && g.canClimb(p) {
