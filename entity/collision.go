@@ -362,6 +362,5 @@ func InitializeCollisionHandlers(space *cp.Space) {
 	PlayerSwordHandler(space, EagleCollisionType)
 	EagleObstructedHandler(space, BlockCollisionType)
 	EagleDamagePlayerHandler(space)
-	//DamagePlayerHandler(space, EagleCollisionType)
 	GemHandler(space, EagleCollisionType)
 }

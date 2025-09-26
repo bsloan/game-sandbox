@@ -294,7 +294,7 @@ func (g *Game) MoveSwordDog(swordDog *entity.Entity) {
 	}
 
 	// chase the player if we're close
-	if xDistance < 128 && notAttacking {
+	if xDistance < 50 && notAttacking {
 		if playerX > swordDogX {
 			swordDog.Facing = entity.Right
 			swordDog.State = entity.MovingRight
