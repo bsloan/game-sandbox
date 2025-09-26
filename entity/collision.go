@@ -184,19 +184,11 @@ func EagleDamagePlayerHandler(space *cp.Space) {
 
 	handler.BeginFunc = func(arb *cp.Arbiter, space *cp.Space, data interface{}) bool {
 		n := arb.Normal()
-		body1, body2 := arb.Bodies()
+		eagleBody, playerBody := arb.Bodies()
 
-		// FIXME: clean this up
-
-		var enemyBody *cp.Body
-		var playerBody *cp.Body
-
-		if body1.UserData.(*Entity).Type == Player {
-			playerBody = body1
-			enemyBody = body2
-		} else {
-			playerBody = body2
-			enemyBody = body1
+		// should be unreachable, but just in case: make sure both bodies have entities attached
+		if eagleBody.UserData == nil || playerBody.UserData == nil {
+			return true
 		}
 
 		// allow a grace period if we've just gotten hit
@@ -220,26 +212,27 @@ func EagleDamagePlayerHandler(space *cp.Space) {
 			playerBody.UserData.(*Entity).Damaged = 5
 		}
 
-		if enemyBody.UserData.(*Entity).State == ActiveLeft {
-			enemyBody.SetVelocity(enemyBody.Position().X, 0)
-			enemyBody.UserData.(*Entity).State = ActiveLeft2
-		} else if enemyBody.UserData.(*Entity).State == ActiveRight {
-			enemyBody.SetVelocity(enemyBody.Position().X, 0)
-			enemyBody.UserData.(*Entity).State = ActiveRight2
-		} else if enemyBody.UserData.(*Entity).State == ActiveLeft2 || enemyBody.UserData.(*Entity).State == ActiveRight2 {
+		// if eagle hits the player while divebombing, stop divebombing and start flying back up
+		if eagleBody.UserData.(*Entity).State == ActiveLeft {
+			eagleBody.SetVelocity(eagleBody.Position().X, 0)
+			eagleBody.UserData.(*Entity).State = ActiveLeft2
+		} else if eagleBody.UserData.(*Entity).State == ActiveRight {
+			eagleBody.SetVelocity(eagleBody.Position().X, 0)
+			eagleBody.UserData.(*Entity).State = ActiveRight2
+		} else if eagleBody.UserData.(*Entity).State == ActiveLeft2 || eagleBody.UserData.(*Entity).State == ActiveRight2 {
 			// stay in the same state and change nothing
 		} else {
 			if n.X > 0.5 {
-				enemyBody.UserData.(*Entity).Facing = Left
-				enemyBody.UserData.(*Entity).State = MovingLeft
+				eagleBody.UserData.(*Entity).Facing = Left
+				eagleBody.UserData.(*Entity).State = MovingLeft
 			} else if n.X < -0.5 {
-				enemyBody.UserData.(*Entity).Facing = Right
-				enemyBody.UserData.(*Entity).State = MovingRight
+				eagleBody.UserData.(*Entity).Facing = Right
+				eagleBody.UserData.(*Entity).State = MovingRight
 			}
 		}
 
 		// subtract enemy's attack damage from player's health
-		playerBody.UserData.(*Entity).Health -= enemyBody.UserData.(*Entity).AttackDamage
+		playerBody.UserData.(*Entity).Health -= eagleBody.UserData.(*Entity).AttackDamage
 
 		return true
 	}
