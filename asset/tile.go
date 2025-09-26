@@ -76,6 +76,8 @@ const (
 
 	LADDER_DARK1        = 57
 	LADDER_TRANSPARENT1 = 58
+
+	CAVE_CEILING = 59
 )
 
 var (
@@ -279,7 +281,9 @@ var (
 	CaveBackgroundR6    *ebiten.Image
 	CaveBackgroundR7    *ebiten.Image
 	CaveBackgroundRocks *ebiten.Image
-	SpiralBlockTile     *ebiten.Image
+	CaveCeiling         *ebiten.Image
+
+	SpiralBlockTile *ebiten.Image
 
 	LadderDark1        *ebiten.Image
 	LadderTransparent1 *ebiten.Image
@@ -360,6 +364,7 @@ func LoadTiles() {
 	CaveBackgroundR6 = flipImageXAxis(CaveBackgroundL6)
 	CaveBackgroundR7 = flipImageXAxis(CaveBackgroundL7)
 	CaveBackgroundRocks = imageFromBytes(caveRocksPng)
+	CaveCeiling = imageFromBytes(caveCeil1Png)
 
 	// static props
 	SpiralBlockProp = imageFromBytes(spiralBlockPropPng)
@@ -438,4 +443,6 @@ func LoadTiles() {
 
 	TileImages[LADDER_DARK1] = LadderDark1
 	TileImages[LADDER_TRANSPARENT1] = LadderTransparent1
+
+	TileImages[CAVE_CEILING] = CaveCeiling
 }
